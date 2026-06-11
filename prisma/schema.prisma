@@ -1,0 +1,96 @@
+// IPMAT Mock Platform — data model.
+// SQLite has no native enums; string fields use the documented allowed values
+// defined in src/lib/examConfig.ts (Exam, Section, Difficulty, QType, Mode).
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  attempts  Attempt[]
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  // "QUANT" | "VERBAL" | "LR" — the subject pool. The mock generator maps each
+  // exam section to (subject, type): e.g. Indore QA_MCQ and Rohtak QA both pull
+  // from QUANT/MCQ, so quant content is shared across both exams.
+  subject     String
+  // "MCQ" | "SHORT_ANSWER"
+  type        String
+  topic       String
+  subTopic    String?
+  // "EASY" | "MEDIUM" | "HARD"
+  difficulty  String   @default("MEDIUM")
+  // Question text. For RC, the shared passage is stored in `passage`.
+  stem        String
+  passage     String?
+  // JSON array of option strings for MCQ; null for short answer.
+  options     String?
+  // For MCQ: the correct option text. For SHORT_ANSWER: accepted answer(s) as a
+  // JSON array of acceptable strings (compared trimmed, case-insensitive).
+  answer      String
+  explanation String?
+  // JSON array of free-form tags.
+  tags        String?
+  createdAt   DateTime @default(now())
+
+  answers AttemptAnswer[]
+
+  @@index([subject, type, topic, difficulty])
+}
+
+model Attempt {
+  id            String    @id @default(cuid())
+  profile       Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId     String
+  // "INDORE" | "ROHTAK"
+  exam          String
+  // "FULL" | "SECTIONAL" | "TOPIC"
+  mode          String    @default("FULL")
+  // For SECTIONAL/TOPIC modes: which section / topic this attempt targets.
+  scopeSection  String?
+  scopeTopic    String?
+  startedAt     DateTime  @default(now())
+  submittedAt   DateTime?
+  // Results (filled on submit).
+  rawScore      Int?
+  maxScore      Int?
+  // JSON: { [section]: { score, correct, wrong, skipped, max } }
+  sectionScores String?
+  percentile    Float?
+  clearedCutoff Boolean?
+
+  answers AttemptAnswer[]
+
+  @@index([profileId, submittedAt])
+}
+
+model AttemptAnswer {
+  id           String   @id @default(cuid())
+  attempt      Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  attemptId    String
+  question     Question @relation(fields: [questionId], references: [id])
+  questionId   String
+  section      String
+  // Display order within the mock.
+  order        Int
+  // The user's response (option text or typed answer); null if untouched.
+  given        String?
+  // "answered" | "marked" | "skipped" | "unseen"
+  status       String   @default("unseen")
+  isCorrect    Boolean?
+  marks        Int?
+  timeSpentSec Int      @default(0)
+
+  @@index([attemptId, order])
+}
