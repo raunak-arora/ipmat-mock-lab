@@ -33,7 +33,7 @@ export default function RootLayout({
                 className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
               >
                 <Settings className="h-4 w-4" />
-                Questions
+                Admin
               </Link>
             </nav>
           </div>
