@@ -81,7 +81,9 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   const submittedRef = useRef(false);
 
   const [, setTick] = useState(0);
-  const [viewSection, setViewSection] = useState<SectionKey>(sections[0].key);
+  // For SECTIONAL/TOPIC mocks all questions belong to one section; start there.
+  const initialSection = (data.questions[0]?.section ?? sections[0].key) as SectionKey;
+  const [viewSection, setViewSection] = useState<SectionKey>(initialSection);
   // The user's last explicit question selection; the *displayed* question is
   // derived from it so a time-driven section change can't strand the view.
   const [selectedQId, setSelectedQId] = useState<string>(
@@ -123,8 +125,11 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
 
   // For Indore the viewable section is forced to the timer's active section;
   // for Rohtak the user picks freely.
+  // Sectional locking only applies to FULL mocks — SECTIONAL/TOPIC have one fixed section.
   const effectiveSection =
-    config.sectionalTiming && activeSectionKey ? activeSectionKey : viewSection;
+    config.sectionalTiming && data.mode === "FULL" && activeSectionKey
+      ? activeSectionKey
+      : viewSection;
   const viewQuestions = bySection.get(effectiveSection) ?? [];
   // Resolve the displayed question, falling back to the first in the section if
   // the selection belongs to a section that has since locked.
@@ -244,6 +249,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   };
 
   const sectionLocked = (index: number) =>
+    data.mode === "FULL" &&
     config.sectionalTiming &&
     timing.activeIndex != null &&
     index !== timing.activeIndex;
@@ -279,7 +285,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             <span className="text-muted">{data.mode} mock</span>
           </div>
           <div className="flex items-center gap-4">
-            {timing.sectionRemaining != null && (
+            {data.mode === "FULL" && timing.sectionRemaining != null && (
               <div
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-semibold tabular-nums",
@@ -418,7 +424,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             })}
           </div>
 
-          {config.sectionalTiming && (
+          {data.mode === "FULL" && config.sectionalTiming && (
             <p className="mb-3 flex items-start gap-1.5 rounded-md bg-warning/10 p-2 text-xs text-warning">
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               Sections are locked by a 40-minute timer. You can&apos;t return to a
