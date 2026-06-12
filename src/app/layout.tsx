@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GraduationCap, LayoutDashboard, Settings } from "lucide-react";
+import { GraduationCap, LayoutDashboard, LogIn, LogOut, Settings } from "lucide-react";
+import { auth, signIn, signOut, ADMIN_EMAIL } from "@/auth";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,9 +9,12 @@ export const metadata: Metadata = {
   description: "Realistic IPMAT Indore & Rohtak mock exams with performance analytics.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await auth();
+  const isAdmin = session?.user?.email === ADMIN_EMAIL;
+
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
@@ -35,6 +39,48 @@ export default function RootLayout({
                 <Settings className="h-4 w-4" />
                 Admin
               </Link>
+
+              {isAdmin ? (
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut({ redirectTo: "/" });
+                  }}
+                >
+                  <button
+                    type="submit"
+                    title={`Signed in as ${session.user?.email}`}
+                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {session.user?.image ? (
+                      <img
+                        src={session.user.image}
+                        alt=""
+                        className="h-5 w-5 rounded-full"
+                      />
+                    ) : (
+                      <LogOut className="h-4 w-4" />
+                    )}
+                    Sign out
+                  </button>
+                </form>
+              ) : (
+                <form
+                  action={async () => {
+                    "use server";
+                    await signIn("google", { redirectTo: "/admin" });
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Admin login
+                  </button>
+                </form>
+              )}
             </nav>
           </div>
         </header>
