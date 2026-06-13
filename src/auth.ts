@@ -23,8 +23,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return true;
       }
 
-      // Student denied page is accessible to any signed-in user
-      if (pathname === "/denied") return true;
+      // Landing page and denied page are public
+      if (pathname === "/" || pathname === "/denied") return true;
 
       // All other routes require any Google sign-in; allowlist is checked in the page
       if (!session?.user) return false;
