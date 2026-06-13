@@ -46,8 +46,8 @@ export default async function RootLayout({
                     email={session.user?.email}
                   />
                 </>
-              ) : (
-                // Student nav
+              ) : session?.user ? (
+                // Logged-in student nav
                 <>
                   <Link
                     href="/dashboard"
@@ -56,21 +56,32 @@ export default async function RootLayout({
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
-                  <form
+                  <SignOutButton
                     action={async () => {
                       "use server";
-                      await signIn("google", { redirectTo: "/admin" });
+                      await signOut({ redirectTo: "/" });
                     }}
-                  >
-                    <button
-                      type="submit"
-                      className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-muted/50 hover:text-muted"
-                    >
-                      <LogIn className="h-3.5 w-3.5" />
-                      Admin
-                    </button>
-                  </form>
+                    name={session.user?.name}
+                    image={session.user?.image}
+                    email={session.user?.email}
+                  />
                 </>
+              ) : (
+                // Signed-out nav (shouldn't normally show — middleware requires login)
+                <form
+                  action={async () => {
+                    "use server";
+                    await signIn("google", { redirectTo: "/" });
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-muted/50 hover:text-muted"
+                  >
+                    <LogIn className="h-3.5 w-3.5" />
+                    Sign in
+                  </button>
+                </form>
               )}
             </nav>
           </div>

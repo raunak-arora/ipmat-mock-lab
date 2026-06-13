@@ -1,20 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Play, Loader2, ArrowRight, ArrowLeft, User } from "lucide-react";
+import { Play, Loader2 } from "lucide-react";
 import { EXAMS, Exam, Mode, SectionKey } from "@/lib/examConfig";
 import { Button, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-interface Profile { id: string; name: string; }
+interface Props {
+  profileId: string;
+  profileName: string;
+}
 
-export default function StartMock() {
+export default function StartMock({ profileId, profileName }: Props) {
   const router = useRouter();
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [profileId, setProfileId] = useState("");
-  const [newName, setNewName] = useState("");
-  const [step, setStep] = useState<"who" | "exam">("who");
 
   const [exam, setExam] = useState<Exam>("INDORE");
   const [mode, setMode] = useState<Mode>("FULL");
@@ -23,46 +22,21 @@ export default function StartMock() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch("/api/profiles")
-      .then((r) => r.json())
-      .then((p: Profile[]) => setProfiles(p))
-      .catch(() => {});
-  }, []);
-
-  const selectedProfile = profiles.find((p) => p.id === profileId);
-  const displayName = selectedProfile?.name ?? newName.trim();
-
   const config = EXAMS[exam];
   const sectionOptions = config.sections;
   const activeSection = sectionOptions.find((s) => s.key === scopeSection) ?? sectionOptions[0];
-
-  function handleContinue() {
-    if (!displayName) { setError("Enter your name to continue."); return; }
-    setError(null);
-    setStep("exam");
-  }
 
   const start = async () => {
     setError(null);
     setLoading(true);
     try {
-      let pid = profileId;
-      if (!pid && newName.trim()) {
-        const res = await fetch("/api/profiles", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: newName.trim() }),
-        });
-        const profile = await res.json();
-        pid = profile.id;
-      }
-      if (!pid) { setError("Pick or create a profile first."); setLoading(false); return; }
       const res = await fetch("/api/attempts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          profileId: pid, exam, mode,
+          profileId,
+          exam,
+          mode,
           scopeSection: mode !== "FULL" ? scopeSection || activeSection.key : undefined,
           scopeTopic: mode === "TOPIC" ? scopeTopic || undefined : undefined,
         }),
@@ -76,80 +50,18 @@ export default function StartMock() {
       const { attemptId } = await res.json();
       router.push(`/mock/${attemptId}`);
     } catch {
-      setError("Something went wrong. Is the database seeded?");
+      setError("Something went wrong.");
       setLoading(false);
     }
   };
 
-  /* ── Step 1: Who's taking this? ── */
-  if (step === "who") {
-    return (
-      <Card className="space-y-6 py-8 px-6 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-          <User className="h-7 w-7 text-primary" />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">Who&apos;s taking this mock?</h2>
-          <p className="mt-1 text-sm text-muted">Select your profile or enter your name to get started.</p>
-        </div>
-
-        {/* Existing profiles */}
-        {profiles.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2">
-            {profiles.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => { setProfileId(p.id); setNewName(""); }}
-                className={cn(
-                  "rounded-xl border px-4 py-2 text-sm font-medium transition",
-                  profileId === p.id && !newName
-                    ? "border-primary bg-primary/5 text-primary"
-                    : "hover:bg-background"
-                )}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* New name input */}
-        <div className="mx-auto max-w-xs">
-          <input
-            value={newName}
-            onChange={(e) => { setNewName(e.target.value); setProfileId(""); }}
-            onKeyDown={(e) => e.key === "Enter" && handleContinue()}
-            placeholder={profiles.length > 0 ? "Or enter a new name…" : "Enter your name…"}
-            className="w-full rounded-xl border px-4 py-2.5 text-sm text-center focus:border-primary focus:outline-none"
-            autoFocus
-          />
-        </div>
-
-        {error && <p className="text-sm text-danger">{error}</p>}
-
-        <Button size="lg" onClick={handleContinue} className="mx-auto px-10">
-          Continue <ArrowRight className="ml-1.5 h-4 w-4" />
-        </Button>
-      </Card>
-    );
-  }
-
-  /* ── Step 2: Pick exam ── */
   return (
     <Card className="space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">Start a new mock</h2>
-          <p className="text-sm text-muted">
-            Taking as <span className="font-medium text-foreground">{displayName}</span>
-          </p>
-        </div>
-        <button
-          onClick={() => { setStep("who"); setError(null); }}
-          className="flex items-center gap-1 text-xs text-muted hover:text-foreground"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" /> Change
-        </button>
+      <div>
+        <h2 className="text-lg font-semibold">Start a new mock</h2>
+        <p className="text-sm text-muted">
+          Taking as <span className="font-medium text-foreground">{profileName}</span>
+        </p>
       </div>
 
       {/* Exam */}

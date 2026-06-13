@@ -1,13 +1,27 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowRight, Clock, ListChecks, Target } from "lucide-react";
+import { auth, ADMIN_EMAIL } from "@/auth";
 import { prisma } from "@/lib/db";
 import { EXAMS } from "@/lib/examConfig";
 import StartMock from "@/components/StartMock";
 import { Badge, Card } from "@/components/ui";
+import { isStudentAllowed, getOrCreateProfile } from "@/lib/allowlist";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  const session = await auth();
+  const email = session?.user?.email ?? "";
+  const isAdmin = email === ADMIN_EMAIL;
+
+  if (!isAdmin) {
+    const allowed = await isStudentAllowed(email);
+    if (!allowed) redirect("/denied");
+  }
+
+  const profile = await getOrCreateProfile(email, session?.user?.name ?? "");
+
   const recent = await prisma.attempt.findMany({
     where: { submittedAt: { not: null } },
     orderBy: { submittedAt: "desc" },
@@ -27,7 +41,7 @@ export default async function Home() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <StartMock />
+        <StartMock profileId={profile.id} profileName={profile.name} />
 
         <div className="space-y-4">
           {/* Pattern reference */}

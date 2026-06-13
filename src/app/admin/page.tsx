@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { BarChart2, BookOpen } from "lucide-react";
+import { BarChart2, BookOpen, Users } from "lucide-react";
 import QuestionAdmin from "@/components/QuestionAdmin";
 import AdminPerformance from "@/components/AdminPerformance";
+import StudentManager from "@/components/StudentManager";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { key: "performance", label: "Performance", icon: BarChart2 },
   { key: "questions", label: "Question Bank", icon: BookOpen },
+  { key: "students", label: "Students", icon: Users },
 ] as const;
 
 type Tab = (typeof TABS)[number]["key"];
@@ -21,7 +23,7 @@ export default function AdminPage() {
       <div>
         <h1 className="text-2xl font-bold">Admin</h1>
         <p className="mt-1 text-sm text-muted">
-          Track student performance or manage the question bank.
+          Track performance, manage the question bank, or control student access.
         </p>
       </div>
 
@@ -48,6 +50,7 @@ export default function AdminPage() {
 
       {tab === "performance" && <AdminPerformance />}
       {tab === "questions" && <QuestionAdmin />}
+      {tab === "students" && <StudentManager />}
     </div>
   );
 }

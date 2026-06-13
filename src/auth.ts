@@ -13,16 +13,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized({ auth: session, request }) {
       const { pathname } = request.nextUrl;
-      // Only guard /admin routes.
-      if (!pathname.startsWith("/admin")) return true;
-      // The "denied" page itself must be publicly reachable.
-      if (pathname === "/admin/denied") return true;
-      // Not signed in → NextAuth handles the redirect to signin.
-      if (!session?.user) return false;
-      // Signed in with the wrong account → denied page.
-      if (session.user.email !== ADMIN_EMAIL) {
-        return Response.redirect(new URL("/admin/denied", request.nextUrl));
+
+      // Admin routes
+      if (pathname.startsWith("/admin")) {
+        if (pathname === "/admin/denied") return true;
+        if (!session?.user) return false;
+        if (session.user.email !== ADMIN_EMAIL)
+          return Response.redirect(new URL("/admin/denied", request.nextUrl));
+        return true;
       }
+
+      // Student denied page is accessible to any signed-in user
+      if (pathname === "/denied") return true;
+
+      // All other routes require any Google sign-in; allowlist is checked in the page
+      if (!session?.user) return false;
       return true;
     },
   },
