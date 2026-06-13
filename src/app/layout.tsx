@@ -26,45 +26,51 @@ export default async function RootLayout({
               <span>IPMAT Mock Lab</span>
             </Link>
             <nav className="flex items-center gap-1 text-sm">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                Dashboard
-              </Link>
-              <Link
-                href="/admin"
-                className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
-              >
-                <Settings className="h-4 w-4" />
-                Admin
-              </Link>
-
               {isAdmin ? (
-                <SignOutButton
-                  action={async () => {
-                    "use server";
-                    await signOut({ redirectTo: "/" });
-                  }}
-                  name={session.user?.name}
-                  image={session.user?.image}
-                />
-              ) : (
-                <form
-                  action={async () => {
-                    "use server";
-                    await signIn("google", { redirectTo: "/admin" });
-                  }}
-                >
-                  <button
-                    type="submit"
+                // Admin nav
+                <>
+                  <Link
+                    href="/admin"
                     className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
                   >
-                    <LogIn className="h-4 w-4" />
-                    Admin login
-                  </button>
-                </form>
+                    <Settings className="h-4 w-4" />
+                    Admin
+                  </Link>
+                  <SignOutButton
+                    action={async () => {
+                      "use server";
+                      await signOut({ redirectTo: "/" });
+                    }}
+                    name={session.user?.name}
+                    image={session.user?.image}
+                    email={session.user?.email}
+                  />
+                </>
+              ) : (
+                // Student nav
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Link>
+                  <form
+                    action={async () => {
+                      "use server";
+                      await signIn("google", { redirectTo: "/admin" });
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs text-muted/50 hover:text-muted"
+                    >
+                      <LogIn className="h-3.5 w-3.5" />
+                      Admin
+                    </button>
+                  </form>
+                </>
               )}
             </nav>
           </div>
