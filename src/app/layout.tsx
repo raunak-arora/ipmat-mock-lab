@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GraduationCap, LayoutDashboard, LogIn, LogOut, Settings } from "lucide-react";
+import { GraduationCap, LayoutDashboard, LogIn, Settings } from "lucide-react";
 import { auth, signIn, signOut, ADMIN_EMAIL } from "@/auth";
+import { SignOutButton } from "@/components/SignOutButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,30 +42,14 @@ export default async function RootLayout({
               </Link>
 
               {isAdmin ? (
-                <form
+                <SignOutButton
                   action={async () => {
                     "use server";
                     await signOut({ redirectTo: "/" });
                   }}
-                >
-                  <button
-                    type="submit"
-                    title={`Signed in as ${session.user?.email}`}
-                    className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {session.user?.image ? (
-                      <img
-                        src={session.user.image}
-                        alt=""
-                        className="h-5 w-5 rounded-full"
-                      />
-                    ) : (
-                      <LogOut className="h-4 w-4" />
-                    )}
-                    Sign out
-                  </button>
-                </form>
+                  name={session.user?.name}
+                  image={session.user?.image}
+                />
               ) : (
                 <form
                   action={async () => {

@@ -4,7 +4,12 @@ import Google from "next-auth/providers/google";
 export const ADMIN_EMAIL = "raunaknarora098@gmail.com";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google],
+  providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+  ],
   callbacks: {
     authorized({ auth: session, request }) {
       const { pathname } = request.nextUrl;
@@ -12,7 +17,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!pathname.startsWith("/admin")) return true;
       // The "denied" page itself must be publicly reachable.
       if (pathname === "/admin/denied") return true;
-      // Not signed in → go to Google login.
+      // Not signed in → NextAuth handles the redirect to signin.
       if (!session?.user) return false;
       // Signed in with the wrong account → denied page.
       if (session.user.email !== ADMIN_EMAIL) {
