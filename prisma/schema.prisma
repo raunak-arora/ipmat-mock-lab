@@ -1,6 +1,5 @@
 // IPMAT Mock Platform — data model.
-// SQLite has no native enums; string fields use the documented allowed values
-// defined in src/lib/examConfig.ts (Exam, Section, Difficulty, QType, Mode).
+// String fields are used for enum-like values defined in src/lib/examConfig.ts.
 
 generator client {
   provider = "prisma-client-js"
@@ -8,8 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Profile {
