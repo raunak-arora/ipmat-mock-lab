@@ -91,9 +91,21 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   );
 
   // ----- timing (recomputed every render; each tick re-renders) -----
+  // For non-FULL mocks only one section is in scope — use its time limit.
+  const effectiveTotalSec = useMemo(() => {
+    if (data.mode !== "FULL") {
+      const sectionKey = data.questions[0]?.section as SectionKey | undefined;
+      const sec = sectionKey ? sections.find((s) => s.key === sectionKey) : null;
+      return (
+        (sec?.timeLimitMin ?? Math.round(config.durationMin / sections.length)) * 60
+      );
+    }
+    return config.durationMin * 60;
+  }, [data.mode, data.questions, sections, config.durationMin]);
+
   const computeTiming = () => {
     const e = elapsedSec();
-    const totalSec = config.durationMin * 60;
+    const totalSec = effectiveTotalSec;
     if (config.sectionalTiming) {
       let cum = 0;
       for (let i = 0; i < sections.length; i++) {
@@ -184,16 +196,15 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     const interval = setInterval(() => {
       if (submittedRef.current) return;
       const e = elapsedSec();
-      const totalSec = config.durationMin * 60;
       const id = cidRef.current;
-      if (id && e < totalSec) {
+      if (id && e < effectiveTotalSec) {
         timeRef.current[id] = (timeRef.current[id] ?? 0) + 1;
       }
-      if (e >= totalSec) submit();
+      if (e >= effectiveTotalSec) submit();
       setTick((t) => t + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [elapsedSec, config.durationMin, submit]);
+  }, [elapsedSec, effectiveTotalSec, submit]);
 
   // Autosave every 10 seconds.
   useEffect(() => {
@@ -303,7 +314,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
               )}
             >
               <Clock className="h-4 w-4" />
-              Total: {formatClock(timing.globalRemaining)}
+              {data.mode === "FULL" ? "Total" : "Time"}: {formatClock(timing.globalRemaining)}
             </div>
           </div>
         </div>
