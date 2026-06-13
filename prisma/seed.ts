@@ -4,13 +4,6 @@ import { allSeedQuestions } from "../src/data";
 const prisma = new PrismaClient();
 
 async function main() {
-  // A default profile so the app is usable immediately.
-  await prisma.profile.upsert({
-    where: { name: "My Brother" },
-    update: {},
-    create: { name: "My Brother" },
-  });
-
   // Re-seeding replaces the bank, but only when it hasn't been hand-edited via
   // the admin UI yet. We detect that by tagging seeded rows.
   const existing = await prisma.question.count();
