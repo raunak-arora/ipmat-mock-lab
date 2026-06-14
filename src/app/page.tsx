@@ -145,7 +145,8 @@ export default async function Home() {
     ? Math.round(recent.reduce((s, a) => s + (a.percentile ?? 0), 0) / recent.length)
     : null;
 
-  const firstName = profile.name.split(" ")[0];
+  const displayName = session.user.name || profile.name;
+  const firstName = displayName.split(" ")[0];
 
   return (
     <div className="space-y-6">
@@ -172,7 +173,7 @@ export default async function Home() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-        <StartMock profileId={profile.id} profileName={profile.name} />
+        <StartMock profileId={profile.id} profileName={displayName} />
 
         <div className="space-y-4">
           {/* Recent attempts */}

@@ -7,17 +7,7 @@ export async function isStudentAllowed(email: string): Promise<boolean> {
 
 export async function getOrCreateProfile(email: string, googleName: string) {
   const existing = await prisma.profile.findUnique({ where: { email } });
-  if (existing) {
-    // Keep the name in sync with Google, but only if the new name isn't
-    // already taken by a different profile (name is @unique in the schema).
-    if (googleName && existing.name !== googleName) {
-      const taken = await prisma.profile.findUnique({ where: { name: googleName } });
-      if (!taken) {
-        return await prisma.profile.update({ where: { email }, data: { name: googleName } });
-      }
-    }
-    return existing;
-  }
+  if (existing) return existing;
 
   const name = googleName || email.split("@")[0];
   try {
