@@ -265,7 +265,12 @@ export default function AdminPerformance() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-semibold tabular-nums">
-                        {row.rawScore}/{row.maxScore}
+                        {row.rawScore}/
+                        {row.mode === "FULL"
+                          ? row.maxScore
+                          : Object.values(row.sectionScores)
+                              .filter((ss) => ss.correct + ss.wrong + ss.skipped > 0)
+                              .reduce((s, ss) => s + ss.max, 0) || row.maxScore}
                       </span>
                       <Badge tone={row.clearedCutoff ? "success" : "danger"}>
                         {row.percentile.toFixed(1)}%ile
@@ -290,8 +295,9 @@ export default function AdminPerformance() {
                             </tr>
                           </thead>
                           <tbody>
-                            {Object.entries(row.sectionScores).map(
-                              ([key, ss]) => (
+                            {Object.entries(row.sectionScores)
+                              .filter(([, ss]) => ss.correct + ss.wrong + ss.skipped > 0)
+                              .map(([key, ss]) => (
                                 <tr key={key} className="border-b last:border-0">
                                   <td className="px-3 py-2 font-medium">
                                     {SECTION_LABELS[key as SectionKey] ?? key}
