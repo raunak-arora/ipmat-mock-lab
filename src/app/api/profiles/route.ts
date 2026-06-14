@@ -7,7 +7,20 @@ export async function GET() {
     where: { email: { not: ADMIN_EMAIL } },
     orderBy: { createdAt: "asc" },
   });
-  return NextResponse.json(profiles);
+
+  const emails = profiles.map((p) => p.email).filter(Boolean) as string[];
+  const allowed = await prisma.allowedStudent.findMany({
+    where: { email: { in: emails } },
+    select: { email: true, name: true },
+  });
+  const nameByEmail = new Map(allowed.map((s) => [s.email, s.name]));
+
+  return NextResponse.json(
+    profiles.map((p) => ({
+      id: p.id,
+      name: (p.email && nameByEmail.get(p.email)) || p.name,
+    }))
+  );
 }
 
 export async function POST(req: Request) {

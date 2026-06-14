@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, UserPlus } from "lucide-react";
+import { Trash2, UserPlus, Pencil, Check, X } from "lucide-react";
 import { Card } from "@/components/ui";
 
 interface Student {
@@ -17,6 +17,8 @@ export default function StudentManager() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
 
   async function load() {
     const res = await fetch("/api/students");
@@ -37,6 +39,16 @@ export default function StudentManager() {
     setLoading(false);
     if (res.ok) { setEmail(""); setName(""); load(); }
     else { const b = await res.json(); setError(b.error ?? "Failed to add."); }
+  }
+
+  async function rename(id: string) {
+    await fetch(`/api/students/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: editName.trim() || null }),
+    });
+    setEditingId(null);
+    load();
   }
 
   async function remove(id: string) {
@@ -90,17 +102,36 @@ export default function StudentManager() {
         ) : (
           <div className="divide-y">
             {students.map((s) => (
-              <div key={s.id} className="flex items-center justify-between py-2.5">
-                <div>
-                  <p className="text-sm font-medium">{s.name ?? s.email}</p>
-                  {s.name && <p className="text-xs text-muted">{s.email}</p>}
-                </div>
-                <button
-                  onClick={() => remove(s.id)}
-                  className="rounded-md p-1.5 text-muted hover:bg-danger/10 hover:text-danger"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+              <div key={s.id} className="flex items-center justify-between py-2.5 gap-2">
+                {editingId === s.id ? (
+                  <>
+                    <input
+                      autoFocus
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") rename(s.id); if (e.key === "Escape") setEditingId(null); }}
+                      className="flex-1 rounded-lg border px-2 py-1 text-sm focus:border-primary focus:outline-none"
+                    />
+                    <button onClick={() => rename(s.id)} className="rounded-md p-1.5 text-success hover:bg-success/10"><Check className="h-4 w-4" /></button>
+                    <button onClick={() => setEditingId(null)} className="rounded-md p-1.5 text-muted hover:bg-background"><X className="h-4 w-4" /></button>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{s.name ?? s.email}</p>
+                      {s.name && <p className="text-xs text-muted">{s.email}</p>}
+                    </div>
+                    <button
+                      onClick={() => { setEditingId(s.id); setEditName(s.name ?? ""); }}
+                      className="rounded-md p-1.5 text-muted hover:bg-background"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button onClick={() => remove(s.id)} className="rounded-md p-1.5 text-muted hover:bg-danger/10 hover:text-danger">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
+                )}
               </div>
             ))}
           </div>
