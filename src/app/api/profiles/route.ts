@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { ADMIN_EMAIL } from "@/auth";
+import { auth, ADMIN_EMAIL } from "@/auth";
 
 export async function GET() {
+  const session = await auth();
+  if (session?.user?.email !== ADMIN_EMAIL)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const profiles = await prisma.profile.findMany({
     where: { email: { not: ADMIN_EMAIL } },
     orderBy: { createdAt: "asc" },
@@ -21,17 +25,4 @@ export async function GET() {
       name: (p.email && nameByEmail.get(p.email)) || p.name,
     }))
   );
-}
-
-export async function POST(req: Request) {
-  const { name } = await req.json();
-  if (!name || typeof name !== "string" || !name.trim()) {
-    return NextResponse.json({ error: "Name is required" }, { status: 400 });
-  }
-  const profile = await prisma.profile.upsert({
-    where: { name: name.trim() },
-    update: {},
-    create: { name: name.trim() },
-  });
-  return NextResponse.json(profile);
 }

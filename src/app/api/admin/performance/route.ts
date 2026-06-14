@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth, ADMIN_EMAIL } from "@/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const session = await auth();
+  if (session?.user?.email !== ADMIN_EMAIL)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { searchParams } = new URL(req.url);
   const profileId = searchParams.get("profileId");
 
@@ -33,29 +38,46 @@ export async function GET(req: Request) {
   });
   const nameByEmail = new Map(allowedStudents.map((s) => [s.email, s.name]));
 
-  const series = attempts.map((a, i) => {
+  // Track per-profile attempt index for correct numbering.
+  const profileIndexMap = new Map<string, number>();
+
+  const series = attempts.map((a) => {
+    const sectionScores: Record<string, { correct: number; wrong: number; skipped: number; max: number }> =
+      JSON.parse(a.sectionScores ?? "{}");
+    const effectiveMax =
+      Object.values(sectionScores)
+        .filter((ss) => ss.correct + ss.wrong + ss.skipped > 0)
+        .reduce((sum, ss) => sum + ss.max, 0) ||
+      a.maxScore ||
+      1;
+
+    const perStudentIdx = (profileIndexMap.get(a.profileId) ?? 0) + 1;
+    profileIndexMap.set(a.profileId, perStudentIdx);
+
     // Aggregate time per section from individual question times.
     const sectionTimes: Record<string, number> = {};
     for (const ans of a.answers) {
       sectionTimes[ans.section] =
         (sectionTimes[ans.section] ?? 0) + ans.timeSpentSec;
     }
+
     const displayName =
       (a.profile.email && nameByEmail.get(a.profile.email)) || a.profile.name;
+
     return {
       id: a.id,
-      index: i + 1,
+      index: perStudentIdx,
       profileName: displayName,
       profileId: a.profileId,
       exam: a.exam,
       mode: a.mode,
       date: a.submittedAt?.toISOString() ?? null,
       rawScore: a.rawScore ?? 0,
-      maxScore: a.maxScore ?? 0,
-      scorePct: Math.round(((a.rawScore ?? 0) / (a.maxScore || 1)) * 100),
+      maxScore: effectiveMax,
+      scorePct: Math.round(((a.rawScore ?? 0) / effectiveMax) * 100),
       percentile: a.percentile ?? 0,
       clearedCutoff: a.clearedCutoff ?? false,
-      sectionScores: JSON.parse(a.sectionScores ?? "{}") as Record<
+      sectionScores: sectionScores as Record<
         string,
         {
           score: number;

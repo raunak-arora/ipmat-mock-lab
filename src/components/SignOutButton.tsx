@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { LogOut, ShieldCheck, UserCircle } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
 
 interface Props {
   action: () => Promise<void>;
@@ -109,14 +109,6 @@ export function SignOutButton({ action, name, image, email }: Props) {
 
           {/* Actions */}
           <div className="p-1">
-            <button
-              type="button"
-              onClick={() => { setDropdownOpen(false); }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-foreground hover:bg-background"
-            >
-              <UserCircle className="h-4 w-4 text-muted" />
-              Edit profile
-            </button>
             <button
               type="button"
               onClick={() => { setDropdownOpen(false); setConfirmOpen(true); }}

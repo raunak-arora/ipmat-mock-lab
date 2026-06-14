@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth, ADMIN_EMAIL } from "@/auth";
 
 export async function GET(req: Request) {
+  const session = await auth();
+  if (!session?.user?.email)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { searchParams } = new URL(req.url);
   const profileId = searchParams.get("profileId");
   if (!profileId) {
     return NextResponse.json({ error: "profileId required" }, { status: 400 });
+  }
+
+  // Students may only fetch their own profile; admin can fetch any.
+  if (session.user.email !== ADMIN_EMAIL) {
+    const profile = await prisma.profile.findUnique({ where: { id: profileId } });
+    if (!profile || profile.email !== session.user.email)
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const attempts = await prisma.attempt.findMany({
@@ -17,7 +29,6 @@ export async function GET(req: Request) {
   });
 
   const series = attempts.map((a, i) => {
-    // Compute effective max from active sections only (fixes sectional mocks and old data stored with full-exam max).
     const sectionScores: Record<string, { correct: number; wrong: number; skipped: number; max: number }> =
       JSON.parse(a.sectionScores ?? "{}");
     const effectiveMax =

@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth, ADMIN_EMAIL } from "@/auth";
 
 // Bulk import: accepts a JSON array of questions in the seed format.
 export async function POST(req: Request) {
+  const session = await auth();
+  if (session?.user?.email !== ADMIN_EMAIL)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   let body: unknown;
   try {
     body = await req.json();

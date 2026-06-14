@@ -132,14 +132,30 @@ export default async function Home() {
       where: { profileId: profile.id, submittedAt: { not: null } },
       orderBy: { submittedAt: "desc" },
       take: 5,
+      select: {
+        id: true, exam: true, mode: true,
+        rawScore: true, maxScore: true, sectionScores: true,
+        percentile: true, clearedCutoff: true,
+      },
     }),
     prisma.attempt.count({
       where: { profileId: profile.id, submittedAt: { not: null } },
     }),
   ]);
 
-  const avgScore = recent.length > 0
-    ? Math.round(recent.reduce((s, a) => s + ((a.rawScore ?? 0) / (a.maxScore || 1)) * 100, 0) / recent.length)
+  // Compute effectiveMax from active sections (fixes sectional mocks showing full-exam max).
+  const recentWithMax = recent.map((a) => {
+    const ss: Record<string, { correct: number; wrong: number; skipped: number; max: number }> =
+      JSON.parse(a.sectionScores ?? "{}");
+    const effectiveMax =
+      Object.values(ss)
+        .filter((s) => s.correct + s.wrong + s.skipped > 0)
+        .reduce((sum, s) => sum + s.max, 0) || a.maxScore || 1;
+    return { ...a, effectiveMax };
+  });
+
+  const avgScore = recentWithMax.length > 0
+    ? Math.round(recentWithMax.reduce((s, a) => s + ((a.rawScore ?? 0) / a.effectiveMax) * 100, 0) / recentWithMax.length)
     : null;
   const avgPercentile = recent.length > 0
     ? Math.round(recent.reduce((s, a) => s + (a.percentile ?? 0), 0) / recent.length)
@@ -186,7 +202,7 @@ export default async function Home() {
                 </Link>
               </div>
               <div className="divide-y">
-                {recent.map((a) => (
+                {recentWithMax.map((a) => (
                   <Link
                     key={a.id}
                     href={`/results/${a.id}`}
@@ -197,9 +213,9 @@ export default async function Home() {
                       <span className="ml-1.5 text-xs text-muted">{a.mode}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="tabular-nums text-xs">{a.rawScore}/{a.maxScore}</span>
+                      <span className="tabular-nums text-xs">{a.rawScore}/{a.effectiveMax}</span>
                       <Badge tone={a.clearedCutoff ? "success" : "danger"}>
-                        {a.percentile?.toFixed(0)}%ile
+                        {a.percentile?.toFixed(0) ?? "—"}%ile
                       </Badge>
                     </div>
                   </Link>

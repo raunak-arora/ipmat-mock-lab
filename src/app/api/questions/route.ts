@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth, ADMIN_EMAIL } from "@/auth";
+
+async function requireAdmin() {
+  const session = await auth();
+  if (session?.user?.email !== ADMIN_EMAIL)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return null;
+}
 
 export async function GET(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const { searchParams } = new URL(req.url);
   const subject = searchParams.get("subject") ?? undefined;
   const questions = await prisma.question.findMany({
@@ -41,6 +52,9 @@ function validate(q: Record<string, unknown>): string | null {
 }
 
 export async function POST(req: Request) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const body = await req.json();
   const err = validate(body);
   if (err) return NextResponse.json({ error: err }, { status: 400 });

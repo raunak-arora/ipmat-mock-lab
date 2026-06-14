@@ -355,8 +355,9 @@ function SectionAvgCard({
   series: AttemptRow[];
   profileId: string;
 }) {
+  // When profileId is "" (all students), show full mocks from everyone.
   const fullMocks = series.filter(
-    (s) => s.mode === "FULL" && s.profileId === profileId
+    (s) => s.mode === "FULL" && (profileId === "" || s.profileId === profileId)
   );
 
   if (fullMocks.length === 0) {
@@ -400,10 +401,11 @@ function SectionAvgCard({
     ).length;
     const cutoff = fullMocks[0].sectionScores[key]?.cutoff ?? 0;
 
-    // Look up whether this exam has a sectional time limit.
-    const examCfg = EXAMS[fullMocks[0].exam as "INDORE" | "ROHTAK"];
-    const secCfg = examCfg.sections.find((s) => s.key === key);
-    const timeLimitMin = secCfg?.timeLimitMin ?? null;
+    // Look up time limit by section key across all exams (safe for mixed-exam aggregate).
+    const timeLimitMin =
+      Object.values(EXAMS)
+        .flatMap((e) => e.sections)
+        .find((s) => s.key === key)?.timeLimitMin ?? null;
 
     return {
       key,

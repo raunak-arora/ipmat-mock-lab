@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { auth, ADMIN_EMAIL } from "@/auth";
 import { scoreAttempt, type GradableQuestion } from "@/lib/scoring";
 import { estimatePercentile } from "@/lib/percentile";
 import type { Exam, SectionKey } from "@/lib/examConfig";
@@ -10,6 +11,10 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth();
+  if (!session?.user?.email)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { id } = await params;
   const body = await req.json().catch(() => ({}));
   const finalAnswers = body.answers as
@@ -22,6 +27,11 @@ export async function POST(
   });
   if (!attempt) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  if (session.user.email !== ADMIN_EMAIL) {
+    const profile = await prisma.profile.findUnique({ where: { id: attempt.profileId } });
+    if (!profile || profile.email !== session.user.email)
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (attempt.submittedAt) {
     return NextResponse.json({ attemptId: id, alreadySubmitted: true });

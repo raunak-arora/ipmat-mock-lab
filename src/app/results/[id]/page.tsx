@@ -47,11 +47,19 @@ export default async function ResultsPage({
     (a, b) => a[1].correct / a[1].total - b[1].correct / b[1].total
   );
 
-  // Use Google display name when the viewer owns this attempt; fall back to DB profile name.
-  const displayName =
-    session?.user?.email === attempt.profile.email
-      ? (session.user?.name ?? attempt.profile.name)
-      : attempt.profile.name;
+  // Use Google display name for the owner; for everyone else (admin), use AllowedStudent.name.
+  let displayName: string;
+  if (session?.user?.email === attempt.profile.email) {
+    displayName = session.user?.name ?? attempt.profile.name;
+  } else {
+    const allowed = attempt.profile.email
+      ? await prisma.allowedStudent.findFirst({
+          where: { email: attempt.profile.email },
+          select: { name: true },
+        })
+      : null;
+    displayName = allowed?.name ?? attempt.profile.name;
+  }
 
   // Filter to only sections that were actually attempted (handles old data and sectional mocks).
   const activeSectionScores = Object.fromEntries(
@@ -101,30 +109,32 @@ export default async function ResultsPage({
             </span>
           </div>
           <div className="mt-1 text-3xl font-bold tabular-nums text-primary">
-            {attempt.percentile?.toFixed(1)}
+            {attempt.percentile?.toFixed(1) ?? "—"}
           </div>
           <div className="text-xs text-muted">estimate, not official</div>
         </Card>
-        <Card className="text-center">
-          <div className="text-sm text-muted">
-            {attempt.mode === "FULL" ? "Sectional cut-offs" : "Cut-off"}
-          </div>
-          <div
-            className={cn(
-              "mt-1 text-2xl font-bold",
-              attempt.clearedCutoff ? "text-success" : "text-danger"
-            )}
-          >
-            {attempt.clearedCutoff ? "Cleared" : "Not cleared"}
-          </div>
-          <div className="text-xs text-muted">
-            {attempt.mode === "FULL"
-              ? exam === "INDORE"
-                ? "Must clear every section to qualify"
-                : "Overall merit-based"
-              : "Benchmark for this section"}
-          </div>
-        </Card>
+        {attempt.mode !== "TOPIC" && (
+          <Card className="text-center">
+            <div className="text-sm text-muted">
+              {attempt.mode === "FULL" ? "Sectional cut-offs" : "Cut-off"}
+            </div>
+            <div
+              className={cn(
+                "mt-1 text-2xl font-bold",
+                attempt.clearedCutoff ? "text-success" : "text-danger"
+              )}
+            >
+              {attempt.clearedCutoff ? "Cleared" : "Not cleared"}
+            </div>
+            <div className="text-xs text-muted">
+              {attempt.mode === "FULL"
+                ? exam === "INDORE"
+                  ? "Must clear every section to qualify"
+                  : "Overall merit-based"
+                : "Benchmark for this section"}
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Section breakdown */}
@@ -261,7 +271,14 @@ export default async function ResultsPage({
                         <div>
                           <span className="text-muted">Correct answer: </span>
                           <span className="font-medium text-success">
-                            {a.question.answer}
+                            {(() => {
+                              try {
+                                const parsed = JSON.parse(a.question.answer);
+                                if (Array.isArray(parsed) && parsed.length > 0)
+                                  return parsed[0];
+                              } catch {}
+                              return a.question.answer;
+                            })()}
                           </span>
                         </div>
                       )}

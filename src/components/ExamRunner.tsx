@@ -91,14 +91,14 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   );
 
   // ----- timing (recomputed every render; each tick re-renders) -----
-  // For non-FULL mocks only one section is in scope — use its time limit.
+  // For non-FULL mocks only one section is in scope — use its time limit if the
+  // exam has sectional timers (Indore), otherwise use the full exam duration (Rohtak).
   const effectiveTotalSec = useMemo(() => {
     if (data.mode !== "FULL") {
       const sectionKey = data.questions[0]?.section as SectionKey | undefined;
       const sec = sectionKey ? sections.find((s) => s.key === sectionKey) : null;
-      return (
-        (sec?.timeLimitMin ?? Math.round(config.durationMin / sections.length)) * 60
-      );
+      // Only use a fractional time if the exam has explicit per-section limits.
+      return (sec?.timeLimitMin != null ? sec.timeLimitMin : config.durationMin) * 60;
     }
     return config.durationMin * 60;
   }, [data.mode, data.questions, sections, config.durationMin]);
@@ -256,6 +256,17 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     const idx = viewQuestions.findIndex((q) => q.id === cid);
     if (idx >= 0 && idx < viewQuestions.length - 1) {
       selectQuestion(viewQuestions[idx + 1].id);
+      return;
+    }
+    // Last question in this section — advance to the first question of the next section
+    // only when navigation is free (no sectional timer lock).
+    const sectionsWithQs = sections.filter((s) => (bySection.get(s.key)?.length ?? 0) > 0);
+    const curSecIdx = sectionsWithQs.findIndex((s) => s.key === effectiveSection);
+    const nextSec = sectionsWithQs[curSecIdx + 1];
+    if (nextSec && !(config.sectionalTiming && data.mode === "FULL")) {
+      setViewSection(nextSec.key);
+      const firstQ = bySection.get(nextSec.key)?.[0];
+      if (firstQ) selectQuestion(firstQ.id);
     }
   };
 
