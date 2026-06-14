@@ -952,4 +952,1149 @@ export const verbal: SeedQuestion[] = [
     answer: "Shoal",
     explanation: "A group of birds is called a flock; a group of fish is called a shoal.",
   },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Main Idea",
+    difficulty: "MEDIUM",
+    passage: "Climate change is reshaping the foundations of global agriculture in ways that scientists are only beginning to fully understand. Rising temperatures, shifting precipitation patterns, and the increasing frequency of extreme weather events are altering the conditions under which crops have been cultivated for centuries. In many parts of South Asia and sub-Saharan Africa, regions already struggling with food insecurity, the window for growing staple crops such as wheat, rice, and maize is narrowing. Higher temperatures accelerate the rate at which crops mature, which might sound beneficial, but in practice this means the plants have less time to accumulate the sugars and starches that make up the caloric content of the grain. The result is smaller yields from the same amount of land.\n\nAt the same time, changing rainfall patterns are disrupting the delicate balance between drought stress and waterlogging. Farmers who have relied on monsoon rhythms passed down through generations are finding that those rhythms have become unreliable. In some regions, the rains arrive weeks late; in others, they come in brief, intense bursts that overwhelm irrigation systems and wash away topsoil rather than replenishing it.\n\nThe irony is profound: agriculture itself is a significant contributor to greenhouse gas emissions, responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in. Livestock produce methane, rice paddies release nitrous oxide, and the machinery that modern farming depends on burns fossil fuels. The sector that feeds the world is also one of the forces changing the very climate it depends on.\n\nAdaptation strategies exist but are unequally distributed. Wealthier nations can invest in drought-resistant seed varieties, precision irrigation, and crop insurance schemes. Smallholder farmers in developing nations often lack access to these tools, making them disproportionately vulnerable to a crisis they did little to create.",
+    stem: "Which of the following best captures the central argument of the passage?",
+    options: [
+      "Agriculture must be banned to prevent climate change from worsening.",
+      "Climate change threatens agricultural productivity while agriculture itself contributes to the problem, with adaptation resources distributed unequally.",
+      "South Asia and sub-Saharan Africa are the only regions affected by climate change.",
+      "Technological innovation has already solved the problem of climate-related crop failures."
+    ],
+    answer: "Climate change threatens agricultural productivity while agriculture itself contributes to the problem, with adaptation resources distributed unequally.",
+    explanation: "The passage discusses both the impact of climate change on farming and the irony that farming contributes to emissions, concluding with the unequal distribution of adaptation tools. This makes option B the most comprehensive main idea."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Inference",
+    difficulty: "HARD",
+    passage: "Climate change is reshaping the foundations of global agriculture in ways that scientists are only beginning to fully understand. Rising temperatures, shifting precipitation patterns, and the increasing frequency of extreme weather events are altering the conditions under which crops have been cultivated for centuries. In many parts of South Asia and sub-Saharan Africa, regions already struggling with food insecurity, the window for growing staple crops such as wheat, rice, and maize is narrowing. Higher temperatures accelerate the rate at which crops mature, which might sound beneficial, but in practice this means the plants have less time to accumulate the sugars and starches that make up the caloric content of the grain. The result is smaller yields from the same amount of land.\n\nAt the same time, changing rainfall patterns are disrupting the delicate balance between drought stress and waterlogging. Farmers who have relied on monsoon rhythms passed down through generations are finding that those rhythms have become unreliable. In some regions, the rains arrive weeks late; in others, they come in brief, intense bursts that overwhelm irrigation systems and wash away topsoil rather than replenishing it.\n\nThe irony is profound: agriculture itself is a significant contributor to greenhouse gas emissions, responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in. Livestock produce methane, rice paddies release nitrous oxide, and the machinery that modern farming depends on burns fossil fuels. The sector that feeds the world is also one of the forces changing the very climate it depends on.\n\nAdaptation strategies exist but are unequally distributed. Wealthier nations can invest in drought-resistant seed varieties, precision irrigation, and crop insurance schemes. Smallholder farmers in developing nations often lack access to these tools, making them disproportionately vulnerable to a crisis they did little to create.",
+    stem: "What can be inferred about smallholder farmers in developing nations from the passage?",
+    options: [
+      "They are primarily responsible for the greenhouse gas emissions causing climate change.",
+      "They suffer the most severe consequences of climate change despite having contributed least to it.",
+      "They have access to crop insurance but choose not to use it.",
+      "They are in a better position than large-scale industrial farmers to adapt."
+    ],
+    answer: "They suffer the most severe consequences of climate change despite having contributed least to it.",
+    explanation: "The passage states smallholder farmers are 'disproportionately vulnerable to a crisis they did little to create,' directly implying they bear the burden without having caused the problem."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Vocabulary in Context",
+    difficulty: "MEDIUM",
+    passage: "Climate change is reshaping the foundations of global agriculture in ways that scientists are only beginning to fully understand. Rising temperatures, shifting precipitation patterns, and the increasing frequency of extreme weather events are altering the conditions under which crops have been cultivated for centuries. In many parts of South Asia and sub-Saharan Africa, regions already struggling with food insecurity, the window for growing staple crops such as wheat, rice, and maize is narrowing. Higher temperatures accelerate the rate at which crops mature, which might sound beneficial, but in practice this means the plants have less time to accumulate the sugars and starches that make up the caloric content of the grain. The result is smaller yields from the same amount of land.\n\nAt the same time, changing rainfall patterns are disrupting the delicate balance between drought stress and waterlogging. Farmers who have relied on monsoon rhythms passed down through generations are finding that those rhythms have become unreliable. In some regions, the rains arrive weeks late; in others, they come in brief, intense bursts that overwhelm irrigation systems and wash away topsoil rather than replenishing it.\n\nThe irony is profound: agriculture itself is a significant contributor to greenhouse gas emissions, responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in. Livestock produce methane, rice paddies release nitrous oxide, and the machinery that modern farming depends on burns fossil fuels. The sector that feeds the world is also one of the forces changing the very climate it depends on.\n\nAdaptation strategies exist but are unequally distributed. Wealthier nations can invest in drought-resistant seed varieties, precision irrigation, and crop insurance schemes. Smallholder farmers in developing nations often lack access to these tools, making them disproportionately vulnerable to a crisis they did little to create.",
+    stem: "In the context of the passage, the word 'disproportionately' most nearly means:",
+    options: [
+      "equally among all parties",
+      "to an unfairly large degree relative to one's share of responsibility",
+      "in a manner that is carefully measured",
+      "without any scientific basis"
+    ],
+    answer: "to an unfairly large degree relative to one's share of responsibility",
+    explanation: "The passage uses 'disproportionately vulnerable' to indicate that smallholder farmers face far more risk than their contribution to the problem would warrant, so the word implies an imbalance relative to responsibility."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Specific Detail",
+    difficulty: "EASY",
+    passage: "Climate change is reshaping the foundations of global agriculture in ways that scientists are only beginning to fully understand. Rising temperatures, shifting precipitation patterns, and the increasing frequency of extreme weather events are altering the conditions under which crops have been cultivated for centuries. In many parts of South Asia and sub-Saharan Africa, regions already struggling with food insecurity, the window for growing staple crops such as wheat, rice, and maize is narrowing. Higher temperatures accelerate the rate at which crops mature, which might sound beneficial, but in practice this means the plants have less time to accumulate the sugars and starches that make up the caloric content of the grain. The result is smaller yields from the same amount of land.\n\nAt the same time, changing rainfall patterns are disrupting the delicate balance between drought stress and waterlogging. Farmers who have relied on monsoon rhythms passed down through generations are finding that those rhythms have become unreliable. In some regions, the rains arrive weeks late; in others, they come in brief, intense bursts that overwhelm irrigation systems and wash away topsoil rather than replenishing it.\n\nThe irony is profound: agriculture itself is a significant contributor to greenhouse gas emissions, responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in. Livestock produce methane, rice paddies release nitrous oxide, and the machinery that modern farming depends on burns fossil fuels. The sector that feeds the world is also one of the forces changing the very climate it depends on.\n\nAdaptation strategies exist but are unequally distributed. Wealthier nations can invest in drought-resistant seed varieties, precision irrigation, and crop insurance schemes. Smallholder farmers in developing nations often lack access to these tools, making them disproportionately vulnerable to a crisis they did little to create.",
+    stem: "According to the passage, what fraction of global greenhouse gas emissions is agriculture responsible for when land use changes are included?",
+    options: [
+      "One half",
+      "One third",
+      "One quarter",
+      "One fifth"
+    ],
+    answer: "One quarter",
+    explanation: "The passage explicitly states agriculture is 'responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in.'"
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Author's Tone",
+    difficulty: "MEDIUM",
+    passage: "Climate change is reshaping the foundations of global agriculture in ways that scientists are only beginning to fully understand. Rising temperatures, shifting precipitation patterns, and the increasing frequency of extreme weather events are altering the conditions under which crops have been cultivated for centuries. In many parts of South Asia and sub-Saharan Africa, regions already struggling with food insecurity, the window for growing staple crops such as wheat, rice, and maize is narrowing. Higher temperatures accelerate the rate at which crops mature, which might sound beneficial, but in practice this means the plants have less time to accumulate the sugars and starches that make up the caloric content of the grain. The result is smaller yields from the same amount of land.\n\nAt the same time, changing rainfall patterns are disrupting the delicate balance between drought stress and waterlogging. Farmers who have relied on monsoon rhythms passed down through generations are finding that those rhythms have become unreliable. In some regions, the rains arrive weeks late; in others, they come in brief, intense bursts that overwhelm irrigation systems and wash away topsoil rather than replenishing it.\n\nThe irony is profound: agriculture itself is a significant contributor to greenhouse gas emissions, responsible for roughly a quarter of global emissions when land use changes such as deforestation are factored in. Livestock produce methane, rice paddies release nitrous oxide, and the machinery that modern farming depends on burns fossil fuels. The sector that feeds the world is also one of the forces changing the very climate it depends on.\n\nAdaptation strategies exist but are unequally distributed. Wealthier nations can invest in drought-resistant seed varieties, precision irrigation, and crop insurance schemes. Smallholder farmers in developing nations often lack access to these tools, making them disproportionately vulnerable to a crisis they did little to create.",
+    stem: "The author's tone throughout the passage can best be described as:",
+    options: [
+      "optimistic and celebratory",
+      "detached and purely scientific",
+      "concerned and analytically critical",
+      "dismissive and sarcastic"
+    ],
+    answer: "concerned and analytically critical",
+    explanation: "The author presents factual data but frames it with words like 'irony is profound' and highlights injustice toward smallholder farmers, indicating both concern and critical analysis rather than detachment or optimism."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Main Idea",
+    difficulty: "MEDIUM",
+    passage: "Habits are among the most powerful forces shaping human behaviour, yet they operate largely below the level of conscious awareness. Neuroscientists have found that repeated behaviours carve neural pathways in the brain, creating what researchers call habit loops — sequences of cue, routine, and reward that, once established, require very little deliberate thought to execute. This is why brushing your teeth in the morning or taking the same route to work feels automatic: the brain has offloaded these decisions to a more efficient, low-energy processing mode.\n\nThe formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London. This wide range reflects the enormous variability in habit complexity and individual differences. Simple habits, like drinking a glass of water after waking, form quickly. Complex behavioural patterns, like establishing a daily exercise routine, take considerably longer.\n\nUnderstanding habit formation has significant implications beyond personal productivity. Public health campaigns that try to change behaviour through information alone consistently underperform, because information rarely disrupts an established habit loop. Instead, behavioural scientists recommend targeting the cue or the reward. Replacing the routine while keeping the cue and reward intact is often the most effective strategy — a technique known as habit substitution.\n\nEnvironmental design also plays a critical role. Studies show that people who move to a new city are far more likely to change their habits than those who stay in the same environment, because familiar surroundings trigger existing habit cues. This insight has been used in workplace design: removing unhealthy snacks from eye-level in office kitchens and placing fruit there instead has been shown to significantly alter snacking behaviour without requiring any conscious decision-making from employees.",
+    stem: "Which of the following best states the main idea of the passage?",
+    options: [
+      "Habits are impossible to break once they are formed in the brain.",
+      "Habits are automatic neural patterns that can be understood and deliberately reshaped through targeted strategies.",
+      "The only way to form new habits is to move to a new city.",
+      "Public health campaigns are effective because they provide information that changes habit loops."
+    ],
+    answer: "Habits are automatic neural patterns that can be understood and deliberately reshaped through targeted strategies.",
+    explanation: "The passage explains the neuroscience of habit loops and then discusses multiple strategies — substitution, environmental design — for reshaping habits, making this the most accurate summary."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Inference",
+    difficulty: "HARD",
+    passage: "Habits are among the most powerful forces shaping human behaviour, yet they operate largely below the level of conscious awareness. Neuroscientists have found that repeated behaviours carve neural pathways in the brain, creating what researchers call habit loops — sequences of cue, routine, and reward that, once established, require very little deliberate thought to execute. This is why brushing your teeth in the morning or taking the same route to work feels automatic: the brain has offloaded these decisions to a more efficient, low-energy processing mode.\n\nThe formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London. This wide range reflects the enormous variability in habit complexity and individual differences. Simple habits, like drinking a glass of water after waking, form quickly. Complex behavioural patterns, like establishing a daily exercise routine, take considerably longer.\n\nUnderstanding habit formation has significant implications beyond personal productivity. Public health campaigns that try to change behaviour through information alone consistently underperform, because information rarely disrupts an established habit loop. Instead, behavioural scientists recommend targeting the cue or the reward. Replacing the routine while keeping the cue and reward intact is often the most effective strategy — a technique known as habit substitution.\n\nEnvironmental design also plays a critical role. Studies show that people who move to a new city are far more likely to change their habits than those who stay in the same environment, because familiar surroundings trigger existing habit cues. This insight has been used in workplace design: removing unhealthy snacks from eye-level in office kitchens and placing fruit there instead has been shown to significantly alter snacking behaviour without requiring any conscious decision-making from employees.",
+    stem: "Based on the passage, what can be inferred about why public health campaigns relying only on information tend to fail?",
+    options: [
+      "People do not trust health authorities.",
+      "Information campaigns are too expensive to run effectively.",
+      "Habits are automatic and not easily overridden by knowledge alone, since the cue-routine-reward loop remains intact.",
+      "People in developing countries lack access to public health information."
+    ],
+    answer: "Habits are automatic and not easily overridden by knowledge alone, since the cue-routine-reward loop remains intact.",
+    explanation: "The passage states that 'information rarely disrupts an established habit loop' because habits operate automatically. The cue and reward still trigger the routine regardless of new knowledge, which explains campaign failures."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Vocabulary in Context",
+    difficulty: "MEDIUM",
+    passage: "Habits are among the most powerful forces shaping human behaviour, yet they operate largely below the level of conscious awareness. Neuroscientists have found that repeated behaviours carve neural pathways in the brain, creating what researchers call habit loops — sequences of cue, routine, and reward that, once established, require very little deliberate thought to execute. This is why brushing your teeth in the morning or taking the same route to work feels automatic: the brain has offloaded these decisions to a more efficient, low-energy processing mode.\n\nThe formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London. This wide range reflects the enormous variability in habit complexity and individual differences. Simple habits, like drinking a glass of water after waking, form quickly. Complex behavioural patterns, like establishing a daily exercise routine, take considerably longer.\n\nUnderstanding habit formation has significant implications beyond personal productivity. Public health campaigns that try to change behaviour through information alone consistently underperform, because information rarely disrupts an established habit loop. Instead, behavioural scientists recommend targeting the cue or the reward. Replacing the routine while keeping the cue and reward intact is often the most effective strategy — a technique known as habit substitution.\n\nEnvironmental design also plays a critical role. Studies show that people who move to a new city are far more likely to change their habits than those who stay in the same environment, because familiar surroundings trigger existing habit cues. This insight has been used in workplace design: removing unhealthy snacks from eye-level in office kitchens and placing fruit there instead has been shown to significantly alter snacking behaviour without requiring any conscious decision-making from employees.",
+    stem: "As used in the passage, 'offloaded' most nearly means:",
+    options: [
+      "ignored permanently",
+      "transferred to a more automatic, less effortful process",
+      "deleted from memory entirely",
+      "consciously rejected"
+    ],
+    answer: "transferred to a more automatic, less effortful process",
+    explanation: "The passage says the brain 'offloaded these decisions to a more efficient, low-energy processing mode,' indicating a transfer of cognitive effort to automatic processing rather than deletion or rejection."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Specific Detail",
+    difficulty: "EASY",
+    passage: "Habits are among the most powerful forces shaping human behaviour, yet they operate largely below the level of conscious awareness. Neuroscientists have found that repeated behaviours carve neural pathways in the brain, creating what researchers call habit loops — sequences of cue, routine, and reward that, once established, require very little deliberate thought to execute. This is why brushing your teeth in the morning or taking the same route to work feels automatic: the brain has offloaded these decisions to a more efficient, low-energy processing mode.\n\nThe formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London. This wide range reflects the enormous variability in habit complexity and individual differences. Simple habits, like drinking a glass of water after waking, form quickly. Complex behavioural patterns, like establishing a daily exercise routine, take considerably longer.\n\nUnderstanding habit formation has significant implications beyond personal productivity. Public health campaigns that try to change behaviour through information alone consistently underperform, because information rarely disrupts an established habit loop. Instead, behavioural scientists recommend targeting the cue or the reward. Replacing the routine while keeping the cue and reward intact is often the most effective strategy — a technique known as habit substitution.\n\nEnvironmental design also plays a critical role. Studies show that people who move to a new city are far more likely to change their habits than those who stay in the same environment, because familiar surroundings trigger existing habit cues. This insight has been used in workplace design: removing unhealthy snacks from eye-level in office kitchens and placing fruit there instead has been shown to significantly alter snacking behaviour without requiring any conscious decision-making from employees.",
+    stem: "According to the passage, what is the average number of days it takes to form a habit?",
+    options: [
+      "18 days",
+      "254 days",
+      "66 days",
+      "100 days"
+    ],
+    answer: "66 days",
+    explanation: "The passage directly states: 'The formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London.'"
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Author's Tone",
+    difficulty: "MEDIUM",
+    passage: "Habits are among the most powerful forces shaping human behaviour, yet they operate largely below the level of conscious awareness. Neuroscientists have found that repeated behaviours carve neural pathways in the brain, creating what researchers call habit loops — sequences of cue, routine, and reward that, once established, require very little deliberate thought to execute. This is why brushing your teeth in the morning or taking the same route to work feels automatic: the brain has offloaded these decisions to a more efficient, low-energy processing mode.\n\nThe formation of a habit typically takes between 18 and 254 days, with the average falling around 66 days, according to research from University College London. This wide range reflects the enormous variability in habit complexity and individual differences. Simple habits, like drinking a glass of water after waking, form quickly. Complex behavioural patterns, like establishing a daily exercise routine, take considerably longer.\n\nUnderstanding habit formation has significant implications beyond personal productivity. Public health campaigns that try to change behaviour through information alone consistently underperform, because information rarely disrupts an established habit loop. Instead, behavioural scientists recommend targeting the cue or the reward. Replacing the routine while keeping the cue and reward intact is often the most effective strategy — a technique known as habit substitution.\n\nEnvironmental design also plays a critical role. Studies show that people who move to a new city are far more likely to change their habits than those who stay in the same environment, because familiar surroundings trigger existing habit cues. This insight has been used in workplace design: removing unhealthy snacks from eye-level in office kitchens and placing fruit there instead has been shown to significantly alter snacking behaviour without requiring any conscious decision-making from employees.",
+    stem: "The author's primary purpose in writing this passage is most likely to:",
+    options: [
+      "argue that people should move cities to improve their habits",
+      "criticise public health authorities for wasting money on campaigns",
+      "explain the science of habit formation and suggest evidence-based ways to change behaviour",
+      "entertain readers with anecdotes about unusual habits"
+    ],
+    answer: "explain the science of habit formation and suggest evidence-based ways to change behaviour",
+    explanation: "The passage is informational and prescriptive: it explains the neuroscience behind habits and then presents practical, evidence-based strategies such as habit substitution and environmental design."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Main Idea",
+    difficulty: "MEDIUM",
+    passage: "The internet as we know it is the product of decades of incremental innovation, geopolitical competition, and extraordinary collaborative effort. Its origins lie in ARPANET, a project funded by the United States Department of Defense in the late 1960s. ARPANET was designed not simply as a communication network but as one that could survive a nuclear strike — packets of data could be rerouted around damaged nodes, making the network robust against physical disruption. This decentralised architecture became the defining feature of the internet.\n\nThe 1970s and 1980s saw the development of the foundational protocols that the internet still runs on today. TCP/IP, developed by Vint Cerf and Bob Kahn, provided a universal language for computers to communicate across different networks, replacing the fragmented systems that had existed before. The NSFNET, funded by the National Science Foundation, extended connectivity to universities across the United States, transforming the internet from a military tool into an academic one.\n\nThe truly revolutionary moment came in 1991 when Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web. The Web was not the internet itself but a system built on top of it — a way of publishing and linking documents through hypertext that made the underlying network accessible to ordinary users. Within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet, giving rise to the dot-com boom of the 1990s.\n\nToday, the internet connects roughly five billion people, has reshaped commerce, education, politics, and social interaction, and continues to evolve at a pace that makes long-term prediction nearly impossible. Yet its founding architecture — decentralised, open, and built on shared protocols — remains largely intact.",
+    stem: "Which of the following best summarises the main idea of the passage?",
+    options: [
+      "The internet was invented by Tim Berners-Lee in 1991 and has remained unchanged since.",
+      "The internet evolved through military, academic, and commercial phases, with its decentralised architecture as the constant thread.",
+      "ARPANET was the most important technological achievement of the twentieth century.",
+      "The dot-com boom of the 1990s was the sole driver of internet growth."
+    ],
+    answer: "The internet evolved through military, academic, and commercial phases, with its decentralised architecture as the constant thread.",
+    explanation: "The passage traces the internet from ARPANET through TCP/IP, NSFNET, the Web, and the dot-com era, consistently highlighting the decentralised architecture as its enduring foundation."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Inference",
+    difficulty: "HARD",
+    passage: "The internet as we know it is the product of decades of incremental innovation, geopolitical competition, and extraordinary collaborative effort. Its origins lie in ARPANET, a project funded by the United States Department of Defense in the late 1960s. ARPANET was designed not simply as a communication network but as one that could survive a nuclear strike — packets of data could be rerouted around damaged nodes, making the network robust against physical disruption. This decentralised architecture became the defining feature of the internet.\n\nThe 1970s and 1980s saw the development of the foundational protocols that the internet still runs on today. TCP/IP, developed by Vint Cerf and Bob Kahn, provided a universal language for computers to communicate across different networks, replacing the fragmented systems that had existed before. The NSFNET, funded by the National Science Foundation, extended connectivity to universities across the United States, transforming the internet from a military tool into an academic one.\n\nThe truly revolutionary moment came in 1991 when Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web. The Web was not the internet itself but a system built on top of it — a way of publishing and linking documents through hypertext that made the underlying network accessible to ordinary users. Within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet, giving rise to the dot-com boom of the 1990s.\n\nToday, the internet connects roughly five billion people, has reshaped commerce, education, politics, and social interaction, and continues to evolve at a pace that makes long-term prediction nearly impossible. Yet its founding architecture — decentralised, open, and built on shared protocols — remains largely intact.",
+    stem: "What can be inferred about Tim Berners-Lee's decision to release the World Wide Web freely to the public?",
+    options: [
+      "It was a commercial decision aimed at maximising his own profit.",
+      "It accelerated the internet's spread to ordinary users and enabled rapid commercial growth.",
+      "It slowed the development of the internet by removing financial incentives.",
+      "It was forced upon him by the United States Department of Defense."
+    ],
+    answer: "It accelerated the internet's spread to ordinary users and enabled rapid commercial growth.",
+    explanation: "The passage states that 'within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet,' directly implying that free release was a catalyst for rapid adoption and the dot-com boom."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Vocabulary in Context",
+    difficulty: "EASY",
+    passage: "The internet as we know it is the product of decades of incremental innovation, geopolitical competition, and extraordinary collaborative effort. Its origins lie in ARPANET, a project funded by the United States Department of Defense in the late 1960s. ARPANET was designed not simply as a communication network but as one that could survive a nuclear strike — packets of data could be rerouted around damaged nodes, making the network robust against physical disruption. This decentralised architecture became the defining feature of the internet.\n\nThe 1970s and 1980s saw the development of the foundational protocols that the internet still runs on today. TCP/IP, developed by Vint Cerf and Bob Kahn, provided a universal language for computers to communicate across different networks, replacing the fragmented systems that had existed before. The NSFNET, funded by the National Science Foundation, extended connectivity to universities across the United States, transforming the internet from a military tool into an academic one.\n\nThe truly revolutionary moment came in 1991 when Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web. The Web was not the internet itself but a system built on top of it — a way of publishing and linking documents through hypertext that made the underlying network accessible to ordinary users. Within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet, giving rise to the dot-com boom of the 1990s.\n\nToday, the internet connects roughly five billion people, has reshaped commerce, education, politics, and social interaction, and continues to evolve at a pace that makes long-term prediction nearly impossible. Yet its founding architecture — decentralised, open, and built on shared protocols — remains largely intact.",
+    stem: "In the passage, 'incremental' most nearly means:",
+    options: [
+      "sudden and dramatic",
+      "gradual and step-by-step",
+      "random and unpredictable",
+      "secretive and undocumented"
+    ],
+    answer: "gradual and step-by-step",
+    explanation: "Incremental means occurring in small, successive steps. The passage describes decades of innovation building upon earlier work, which fits the meaning of gradual and step-by-step progress."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Specific Detail",
+    difficulty: "EASY",
+    passage: "The internet as we know it is the product of decades of incremental innovation, geopolitical competition, and extraordinary collaborative effort. Its origins lie in ARPANET, a project funded by the United States Department of Defense in the late 1960s. ARPANET was designed not simply as a communication network but as one that could survive a nuclear strike — packets of data could be rerouted around damaged nodes, making the network robust against physical disruption. This decentralised architecture became the defining feature of the internet.\n\nThe 1970s and 1980s saw the development of the foundational protocols that the internet still runs on today. TCP/IP, developed by Vint Cerf and Bob Kahn, provided a universal language for computers to communicate across different networks, replacing the fragmented systems that had existed before. The NSFNET, funded by the National Science Foundation, extended connectivity to universities across the United States, transforming the internet from a military tool into an academic one.\n\nThe truly revolutionary moment came in 1991 when Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web. The Web was not the internet itself but a system built on top of it — a way of publishing and linking documents through hypertext that made the underlying network accessible to ordinary users. Within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet, giving rise to the dot-com boom of the 1990s.\n\nToday, the internet connects roughly five billion people, has reshaped commerce, education, politics, and social interaction, and continues to evolve at a pace that makes long-term prediction nearly impossible. Yet its founding architecture — decentralised, open, and built on shared protocols — remains largely intact.",
+    stem: "Where was Tim Berners-Lee working when he invented the World Wide Web?",
+    options: [
+      "The United States Department of Defense",
+      "The National Science Foundation",
+      "CERN in Switzerland",
+      "MIT in Cambridge, Massachusetts"
+    ],
+    answer: "CERN in Switzerland",
+    explanation: "The passage explicitly states: 'Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web.'"
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Author's Tone",
+    difficulty: "MEDIUM",
+    passage: "The internet as we know it is the product of decades of incremental innovation, geopolitical competition, and extraordinary collaborative effort. Its origins lie in ARPANET, a project funded by the United States Department of Defense in the late 1960s. ARPANET was designed not simply as a communication network but as one that could survive a nuclear strike — packets of data could be rerouted around damaged nodes, making the network robust against physical disruption. This decentralised architecture became the defining feature of the internet.\n\nThe 1970s and 1980s saw the development of the foundational protocols that the internet still runs on today. TCP/IP, developed by Vint Cerf and Bob Kahn, provided a universal language for computers to communicate across different networks, replacing the fragmented systems that had existed before. The NSFNET, funded by the National Science Foundation, extended connectivity to universities across the United States, transforming the internet from a military tool into an academic one.\n\nThe truly revolutionary moment came in 1991 when Tim Berners-Lee, a British scientist working at CERN in Switzerland, invented the World Wide Web. The Web was not the internet itself but a system built on top of it — a way of publishing and linking documents through hypertext that made the underlying network accessible to ordinary users. Within a few years of Berners-Lee releasing his invention freely to the public, commercial activity flooded the internet, giving rise to the dot-com boom of the 1990s.\n\nToday, the internet connects roughly five billion people, has reshaped commerce, education, politics, and social interaction, and continues to evolve at a pace that makes long-term prediction nearly impossible. Yet its founding architecture — decentralised, open, and built on shared protocols — remains largely intact.",
+    stem: "The author's tone in the passage can best be described as:",
+    options: [
+      "nostalgic and sentimental",
+      "informative and measured with a sense of historical appreciation",
+      "alarmist and cautionary",
+      "satirical and ironic"
+    ],
+    answer: "informative and measured with a sense of historical appreciation",
+    explanation: "The author narrates the history of the internet in a factual, chronological manner while using phrases like 'extraordinary collaborative effort' and 'truly revolutionary moment,' suggesting appreciation without crossing into sentimentality or alarm."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Main Idea",
+    difficulty: "MEDIUM",
+    passage: "Cities around the world are grappling with a common crisis: transportation systems built for a previous era are buckling under the weight of rapid urbanisation. As metropolitan populations swell, private car ownership has traditionally been seen as the default solution to mobility, but the environmental, social, and economic costs of this model are becoming unsustainable. Traffic congestion costs major cities billions of dollars each year in lost productivity, while vehicle emissions are a leading contributor to urban air pollution and carbon emissions.\n\nA growing number of urban planners and policymakers are turning to integrated public transport as both a practical and philosophical alternative. The concept goes beyond simply adding more buses or trains: it involves designing cities around transit hubs, ensuring that a short walk or bicycle ride can connect any resident to a high-frequency, reliable transit network. Singapore, Zurich, and Tokyo are frequently cited as benchmarks, with their systems combining metro rail, buses, and cycling infrastructure into seamless journeys.\n\nCritical to this model is the idea of transit-oriented development (TOD): concentrating housing, employment, and commercial activity within walking distance of transit stations. TOD reduces the average distance people need to travel and makes car ownership optional rather than essential. Research consistently shows that cities with high transit use have lower per-capita carbon footprints, less inequality in mobility access, and healthier residents who walk more as part of their daily commute.\n\nThe political challenges, however, are formidable. Existing road infrastructure represents enormous sunk costs, car-dependent suburbs are deeply embedded in many cultures, and public transport investment requires patient, long-term capital commitments that can be difficult to sustain across electoral cycles. The cities that have succeeded have typically combined strong political will with consistent investment over decades.",
+    stem: "What is the central argument of the passage?",
+    options: [
+      "Private car ownership should be completely banned in all major cities.",
+      "Integrated public transport and transit-oriented development offer a sustainable alternative to car-centric urban models, though implementation faces political challenges.",
+      "Singapore, Zurich, and Tokyo are the only cities with functional transport systems.",
+      "Public transport is only viable in dense Asian cities."
+    ],
+    answer: "Integrated public transport and transit-oriented development offer a sustainable alternative to car-centric urban models, though implementation faces political challenges.",
+    explanation: "The passage presents the problem of car-centric cities, proposes integrated transit and TOD as solutions, cites evidence of their benefits, and then acknowledges the political obstacles — making this a balanced central argument."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Inference",
+    difficulty: "HARD",
+    passage: "Cities around the world are grappling with a common crisis: transportation systems built for a previous era are buckling under the weight of rapid urbanisation. As metropolitan populations swell, private car ownership has traditionally been seen as the default solution to mobility, but the environmental, social, and economic costs of this model are becoming unsustainable. Traffic congestion costs major cities billions of dollars each year in lost productivity, while vehicle emissions are a leading contributor to urban air pollution and carbon emissions.\n\nA growing number of urban planners and policymakers are turning to integrated public transport as both a practical and philosophical alternative. The concept goes beyond simply adding more buses or trains: it involves designing cities around transit hubs, ensuring that a short walk or bicycle ride can connect any resident to a high-frequency, reliable transit network. Singapore, Zurich, and Tokyo are frequently cited as benchmarks, with their systems combining metro rail, buses, and cycling infrastructure into seamless journeys.\n\nCritical to this model is the idea of transit-oriented development (TOD): concentrating housing, employment, and commercial activity within walking distance of transit stations. TOD reduces the average distance people need to travel and makes car ownership optional rather than essential. Research consistently shows that cities with high transit use have lower per-capita carbon footprints, less inequality in mobility access, and healthier residents who walk more as part of their daily commute.\n\nThe political challenges, however, are formidable. Existing road infrastructure represents enormous sunk costs, car-dependent suburbs are deeply embedded in many cultures, and public transport investment requires patient, long-term capital commitments that can be difficult to sustain across electoral cycles. The cities that have succeeded have typically combined strong political will with consistent investment over decades.",
+    stem: "What can be inferred about why transit reform is difficult to sustain across electoral cycles?",
+    options: [
+      "Politicians do not understand public transport.",
+      "The benefits of transit investment take years to materialise, making it harder for politicians to demonstrate quick wins to voters.",
+      "Voters universally oppose public transport.",
+      "Public transport investment is always unprofitable."
+    ],
+    answer: "The benefits of transit investment take years to materialise, making it harder for politicians to demonstrate quick wins to voters.",
+    explanation: "The passage states that success requires 'consistent investment over decades' and notes that short electoral cycles make this difficult. This implies the mismatch between long-term investment horizons and short-term political incentives."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Vocabulary in Context",
+    difficulty: "MEDIUM",
+    passage: "Cities around the world are grappling with a common crisis: transportation systems built for a previous era are buckling under the weight of rapid urbanisation. As metropolitan populations swell, private car ownership has traditionally been seen as the default solution to mobility, but the environmental, social, and economic costs of this model are becoming unsustainable. Traffic congestion costs major cities billions of dollars each year in lost productivity, while vehicle emissions are a leading contributor to urban air pollution and carbon emissions.\n\nA growing number of urban planners and policymakers are turning to integrated public transport as both a practical and philosophical alternative. The concept goes beyond simply adding more buses or trains: it involves designing cities around transit hubs, ensuring that a short walk or bicycle ride can connect any resident to a high-frequency, reliable transit network. Singapore, Zurich, and Tokyo are frequently cited as benchmarks, with their systems combining metro rail, buses, and cycling infrastructure into seamless journeys.\n\nCritical to this model is the idea of transit-oriented development (TOD): concentrating housing, employment, and commercial activity within walking distance of transit stations. TOD reduces the average distance people need to travel and makes car ownership optional rather than essential. Research consistently shows that cities with high transit use have lower per-capita carbon footprints, less inequality in mobility access, and healthier residents who walk more as part of their daily commute.\n\nThe political challenges, however, are formidable. Existing road infrastructure represents enormous sunk costs, car-dependent suburbs are deeply embedded in many cultures, and public transport investment requires patient, long-term capital commitments that can be difficult to sustain across electoral cycles. The cities that have succeeded have typically combined strong political will with consistent investment over decades.",
+    stem: "As used in the passage, 'formidable' most nearly means:",
+    options: [
+      "trivial and easily overcome",
+      "inspiring admiration",
+      "imposing and difficult to overcome",
+      "unexpected and surprising"
+    ],
+    answer: "imposing and difficult to overcome",
+    explanation: "Formidable means inspiring fear or respect through being impressively large or capable; in context it means the political challenges are serious and hard to surmount, not trivial or merely admirable."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Specific Detail",
+    difficulty: "EASY",
+    passage: "Cities around the world are grappling with a common crisis: transportation systems built for a previous era are buckling under the weight of rapid urbanisation. As metropolitan populations swell, private car ownership has traditionally been seen as the default solution to mobility, but the environmental, social, and economic costs of this model are becoming unsustainable. Traffic congestion costs major cities billions of dollars each year in lost productivity, while vehicle emissions are a leading contributor to urban air pollution and carbon emissions.\n\nA growing number of urban planners and policymakers are turning to integrated public transport as both a practical and philosophical alternative. The concept goes beyond simply adding more buses or trains: it involves designing cities around transit hubs, ensuring that a short walk or bicycle ride can connect any resident to a high-frequency, reliable transit network. Singapore, Zurich, and Tokyo are frequently cited as benchmarks, with their systems combining metro rail, buses, and cycling infrastructure into seamless journeys.\n\nCritical to this model is the idea of transit-oriented development (TOD): concentrating housing, employment, and commercial activity within walking distance of transit stations. TOD reduces the average distance people need to travel and makes car ownership optional rather than essential. Research consistently shows that cities with high transit use have lower per-capita carbon footprints, less inequality in mobility access, and healthier residents who walk more as part of their daily commute.\n\nThe political challenges, however, are formidable. Existing road infrastructure represents enormous sunk costs, car-dependent suburbs are deeply embedded in many cultures, and public transport investment requires patient, long-term capital commitments that can be difficult to sustain across electoral cycles. The cities that have succeeded have typically combined strong political will with consistent investment over decades.",
+    stem: "According to the passage, which three cities are cited as benchmarks for integrated public transport?",
+    options: [
+      "London, New York, and Paris",
+      "Singapore, Zurich, and Tokyo",
+      "Mumbai, Beijing, and Dubai",
+      "Berlin, Amsterdam, and Seoul"
+    ],
+    answer: "Singapore, Zurich, and Tokyo",
+    explanation: "The passage explicitly names Singapore, Zurich, and Tokyo as cities 'frequently cited as benchmarks' for systems combining metro rail, buses, and cycling infrastructure."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Reading Comprehension",
+    subTopic: "Author's Tone",
+    difficulty: "MEDIUM",
+    passage: "Cities around the world are grappling with a common crisis: transportation systems built for a previous era are buckling under the weight of rapid urbanisation. As metropolitan populations swell, private car ownership has traditionally been seen as the default solution to mobility, but the environmental, social, and economic costs of this model are becoming unsustainable. Traffic congestion costs major cities billions of dollars each year in lost productivity, while vehicle emissions are a leading contributor to urban air pollution and carbon emissions.\n\nA growing number of urban planners and policymakers are turning to integrated public transport as both a practical and philosophical alternative. The concept goes beyond simply adding more buses or trains: it involves designing cities around transit hubs, ensuring that a short walk or bicycle ride can connect any resident to a high-frequency, reliable transit network. Singapore, Zurich, and Tokyo are frequently cited as benchmarks, with their systems combining metro rail, buses, and cycling infrastructure into seamless journeys.\n\nCritical to this model is the idea of transit-oriented development (TOD): concentrating housing, employment, and commercial activity within walking distance of transit stations. TOD reduces the average distance people need to travel and makes car ownership optional rather than essential. Research consistently shows that cities with high transit use have lower per-capita carbon footprints, less inequality in mobility access, and healthier residents who walk more as part of their daily commute.\n\nThe political challenges, however, are formidable. Existing road infrastructure represents enormous sunk costs, car-dependent suburbs are deeply embedded in many cultures, and public transport investment requires patient, long-term capital commitments that can be difficult to sustain across electoral cycles. The cities that have succeeded have typically combined strong political will with consistent investment over decades.",
+    stem: "The author's attitude toward integrated public transport can best be described as:",
+    options: [
+      "enthusiastic advocacy without acknowledging any drawbacks",
+      "supportive but realistic, acknowledging both benefits and political obstacles",
+      "deeply sceptical of its feasibility in any city",
+      "indifferent and purely descriptive"
+    ],
+    answer: "supportive but realistic, acknowledging both benefits and political obstacles",
+    explanation: "The author presents research-backed benefits of transit and TOD but dedicates the final paragraph to political challenges, demonstrating a balanced, realistic support rather than uncritical enthusiasm."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Synonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word closest in meaning to TENACIOUS:",
+    options: ["timid", "persistent", "volatile", "indifferent"],
+    answer: "persistent",
+    explanation: "Tenacious means holding firmly to something or someone; persistent is the closest synonym, implying continuing steadfastly despite obstacles."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Synonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word closest in meaning to SAGACIOUS:",
+    options: ["reckless", "wise", "boastful", "frugal"],
+    answer: "wise",
+    explanation: "Sagacious means having or showing keen mental discernment and good judgement. Wise is the closest synonym."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Synonyms",
+    difficulty: "HARD",
+    stem: "Choose the word closest in meaning to AMELIORATE:",
+    options: ["worsen", "ignore", "improve", "postpone"],
+    answer: "improve",
+    explanation: "Ameliorate means to make something bad or unsatisfactory better. Its closest synonym is improve."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Synonyms",
+    difficulty: "HARD",
+    stem: "Choose the word closest in meaning to OBFUSCATE:",
+    options: ["clarify", "confuse", "simplify", "magnify"],
+    answer: "confuse",
+    explanation: "Obfuscate means to make something unclear, obscure, or unintelligible. Confuse is the closest synonym."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Synonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word closest in meaning to LOQUACIOUS:",
+    options: ["silent", "talkative", "aggressive", "lazy"],
+    answer: "talkative",
+    explanation: "Loquacious means tending to talk a great deal; garrulous. Talkative is the closest synonym."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Antonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word most OPPOSITE in meaning to EPHEMERAL:",
+    options: ["temporary", "fleeting", "enduring", "fragile"],
+    answer: "enduring",
+    explanation: "Ephemeral means lasting for a very short time. Its antonym is enduring, which means lasting for a long time."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Antonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word most OPPOSITE in meaning to PERNICIOUS:",
+    options: ["harmful", "destructive", "beneficial", "slow"],
+    answer: "beneficial",
+    explanation: "Pernicious means having a harmful effect, especially in a gradual or subtle way. Its antonym is beneficial."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Antonyms",
+    difficulty: "HARD",
+    stem: "Choose the word most OPPOSITE in meaning to FRUGAL:",
+    options: ["thrifty", "economical", "extravagant", "careful"],
+    answer: "extravagant",
+    explanation: "Frugal means sparing or economical with regard to money or food. Its antonym is extravagant, meaning excessive spending."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Antonyms",
+    difficulty: "MEDIUM",
+    stem: "Choose the word most OPPOSITE in meaning to INSOLENT:",
+    options: ["rude", "disrespectful", "deferential", "aggressive"],
+    answer: "deferential",
+    explanation: "Insolent means showing a rude and arrogant lack of respect. Its antonym is deferential, meaning showing humble respect."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "Antonyms",
+    difficulty: "HARD",
+    stem: "Choose the word most OPPOSITE in meaning to VACUOUS:",
+    options: ["empty", "hollow", "substantive", "idle"],
+    answer: "substantive",
+    explanation: "Vacuous means having or showing a lack of thought or intelligence; empty. Its antonym is substantive, meaning having real substance or significance."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "One-Word Substitution",
+    difficulty: "MEDIUM",
+    stem: "A person who is present everywhere at the same time is called:",
+    options: ["omnipotent", "omniscient", "omnipresent", "omnivore"],
+    answer: "omnipresent",
+    explanation: "Omnipresent means present everywhere at the same time. Omnipotent means all-powerful, omniscient means all-knowing."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "One-Word Substitution",
+    difficulty: "MEDIUM",
+    stem: "A speech delivered without prior preparation is called:",
+    options: ["soliloquy", "extempore", "monologue", "eulogy"],
+    answer: "extempore",
+    explanation: "Extempore refers to a speech or performance given without prior preparation. A soliloquy is a speech made by a character alone on stage; a eulogy is a speech praising someone who has died."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "One-Word Substitution",
+    difficulty: "HARD",
+    stem: "The practice of having more than one husband at the same time is called:",
+    options: ["polygamy", "polyandry", "bigamy", "celibacy"],
+    answer: "polyandry",
+    explanation: "Polyandry specifically refers to a woman having more than one husband simultaneously. Polygamy is the broader term for having multiple spouses; bigamy is the crime of marrying again while still legally married."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "One-Word Substitution",
+    difficulty: "MEDIUM",
+    stem: "A person who deliberately sets fire to property is called a:",
+    options: ["pyromaniac", "arsonist", "vandal", "anarchist"],
+    answer: "arsonist",
+    explanation: "An arsonist is someone who deliberately sets fire to property. A pyromaniac has an obsessive desire to set things on fire but the clinical term differs; arsonist is the precise legal and common-usage one-word substitution."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Vocabulary",
+    subTopic: "One-Word Substitution",
+    difficulty: "HARD",
+    stem: "A person who is indifferent to pain or pleasure and exercises self-restraint is called a:",
+    options: ["hedonist", "narcissist", "stoic", "ascetic"],
+    answer: "stoic",
+    explanation: "A stoic is a person who endures pain or hardship without showing feelings or complaining, remaining indifferent to pleasure and pain. An ascetic practises severe self-discipline, which is related but distinct."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Subject-Verb Agreement",
+    difficulty: "MEDIUM",
+    stem: "Choose the correct sentence:",
+    options: [
+      "The committee have reached their decision unanimously.",
+      "The committee has reached its decision unanimously.",
+      "The committee have reached its decision unanimously.",
+      "The committee has reached their decision unanimously."
+    ],
+    answer: "The committee has reached its decision unanimously.",
+    explanation: "In formal written English, collective nouns like 'committee' take a singular verb and singular pronoun when acting as a single unit. 'Has reached its decision' is correct."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Subject-Verb Agreement",
+    difficulty: "HARD",
+    stem: "Choose the sentence with correct subject-verb agreement:",
+    options: [
+      "Neither the manager nor the employees was informed about the merger.",
+      "Neither the manager nor the employees were informed about the merger.",
+      "Neither the manager nor the employees has been informed about the merger.",
+      "Neither the manager nor the employees is informed about the merger."
+    ],
+    answer: "Neither the manager nor the employees were informed about the merger.",
+    explanation: "When 'neither...nor' connects two subjects, the verb agrees with the subject closer to it. Since 'employees' is plural and closest to the verb, 'were' is correct."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Tenses",
+    difficulty: "MEDIUM",
+    stem: "Choose the sentence with the correct tense usage:",
+    options: [
+      "By the time she arrived at the station, the train already left.",
+      "By the time she arrived at the station, the train had already left.",
+      "By the time she arrives at the station, the train had already left.",
+      "By the time she arrived at the station, the train has already left."
+    ],
+    answer: "By the time she arrived at the station, the train had already left.",
+    explanation: "When two past actions are described, the action that happened earlier uses the past perfect tense ('had left'). The train's departure preceded her arrival, so 'had already left' is correct."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Tenses",
+    difficulty: "HARD",
+    stem: "Select the grammatically correct sentence:",
+    options: [
+      "She is working at this firm since 2018.",
+      "She has been working at this firm since 2018.",
+      "She was working at this firm since 2018.",
+      "She works at this firm since 2018."
+    ],
+    answer: "She has been working at this firm since 2018.",
+    explanation: "For an action that began in the past and continues to the present, the present perfect continuous tense is used with 'since'. 'Has been working since 2018' is the correct form."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Prepositions",
+    difficulty: "EASY",
+    stem: "Fill in the blank with the correct preposition: 'She has been waiting ___ the results for three weeks.'",
+    options: ["on", "at", "for", "with"],
+    answer: "for",
+    explanation: "'Wait for' is the correct prepositional phrase when expressing anticipation of something. 'Wait on' means to serve someone, which is a different meaning."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Prepositions",
+    difficulty: "MEDIUM",
+    stem: "Choose the correct sentence:",
+    options: [
+      "He was accused for committing fraud.",
+      "He was accused of committing fraud.",
+      "He was accused with committing fraud.",
+      "He was accused by committing fraud."
+    ],
+    answer: "He was accused of committing fraud.",
+    explanation: "'Accuse of' is the correct prepositional phrase in English. One is accused of a crime, not for, with, or by a crime."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Articles",
+    difficulty: "EASY",
+    stem: "Choose the correct sentence:",
+    options: [
+      "She is best student in the class.",
+      "She is the best student in the class.",
+      "She is a best student in the class.",
+      "She is an best student in the class."
+    ],
+    answer: "She is the best student in the class.",
+    explanation: "The definite article 'the' is used with superlatives ('best') to indicate a unique, specific entity. 'A/an' is used with indefinite references, not superlatives."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Articles",
+    difficulty: "MEDIUM",
+    stem: "Fill in the blank: '___ honest person always speaks the truth.'",
+    options: ["A", "An", "The", "No article needed"],
+    answer: "An",
+    explanation: "'An' is used before words beginning with a vowel sound. 'Honest' begins with a silent 'h', making the first sound a vowel sound ('on-est'). Therefore 'an honest person' is correct."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Reported Speech",
+    difficulty: "MEDIUM",
+    stem: "Convert to reported speech: He said, 'I will finish the project tomorrow.'",
+    options: [
+      "He said that he will finish the project tomorrow.",
+      "He said that he would finish the project the next day.",
+      "He said that he would finish the project tomorrow.",
+      "He said that he will finish the project the next day."
+    ],
+    answer: "He said that he would finish the project the next day.",
+    explanation: "In reported speech, 'will' changes to 'would' (backshift of tense), and 'tomorrow' changes to 'the next day' (change in time expression). Both changes are required simultaneously."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Grammar",
+    subTopic: "Reported Speech",
+    difficulty: "HARD",
+    stem: "Convert to reported speech: She asked, 'Have you submitted the assignment?'",
+    options: [
+      "She asked if I have submitted the assignment.",
+      "She asked if I had submitted the assignment.",
+      "She asked whether I submitted the assignment.",
+      "She asked that had I submitted the assignment."
+    ],
+    answer: "She asked if I had submitted the assignment.",
+    explanation: "In reported questions, the present perfect 'have submitted' shifts to the past perfect 'had submitted'. The auxiliary inverts back to standard order, and 'if' introduces the indirect question."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "MEDIUM",
+    stem: "Arrange the following sentences in the correct logical order:\nP: This process, called photosynthesis, is fundamental to nearly all life on Earth.\nQ: Plants absorb carbon dioxide from the air and water from the soil.\nR: The energy stored in glucose is then transferred to animals when they eat plants.\nS: Using sunlight, they convert these raw materials into glucose and oxygen.",
+    options: ["QSPR", "PQSR", "QSRP", "SQRP"],
+    answer: "QSPR",
+    explanation: "Q introduces the inputs (CO2 and water). S describes the conversion using sunlight. P names and contextualises the process (photosynthesis). R explains the broader ecological consequence (energy transfer to animals). The logical sequence is Q → S → P → R."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "MEDIUM",
+    stem: "Arrange the following sentences in the correct logical order:\nP: Over time, these small deposits accumulate into a substantial emergency fund.\nQ: Financial advisors consistently recommend building an emergency fund before investing.\nR: Even saving a modest amount each month contributes meaningfully to this goal.\nS: The fund should ideally cover three to six months of living expenses.",
+    options: ["QSRP", "SRQP", "QRSP", "PQRS"],
+    answer: "QSRP",
+    explanation: "Q introduces the recommendation. S defines what the emergency fund should contain. R offers practical advice on how to build it. P describes the long-term outcome. The sequence Q → S → R → P is logically coherent."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "HARD",
+    stem: "Arrange the following sentences in the correct logical order:\nP: However, excessive social media use has been linked to anxiety and diminished attention spans.\nQ: Social media platforms have transformed how people communicate and share information globally.\nR: Moderation and digital literacy are therefore essential skills for the modern user.\nS: These benefits come with significant psychological costs that researchers are only beginning to document.",
+    options: ["QPSR", "QSPR", "PQRS", "SQRP"],
+    answer: "QSPR",
+    explanation: "Q introduces social media and its positive transformation. S acknowledges the costs with a pivot word 'however' implied. P specifies a particular psychological cost. R concludes with a prescriptive solution. The sequence Q → S → P → R flows logically."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "HARD",
+    stem: "Arrange the following sentences in the correct logical order:\nP: The printing press, invented by Gutenberg in the 15th century, democratised access to knowledge.\nQ: Before its invention, books were painstakingly hand-copied by scribes and available only to the elite.\nR: Mass literacy became a realistic societal goal for the first time in history.\nS: Suddenly, ideas could be reproduced cheaply and distributed across Europe at unprecedented speed.",
+    options: ["PQSR", "QPSR", "PSQR", "QSPR"],
+    answer: "PQSR",
+    explanation: "P introduces the printing press and its significance. Q provides the pre-press context for contrast. S describes the immediate effect of the invention. R gives the broader long-term societal implication. The sequence P → Q → S → R is historically and logically sound."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "MEDIUM",
+    stem: "Arrange the following sentences in the correct logical order:\nP: Sleep deprivation impairs cognitive function as severely as alcohol intoxication in some studies.\nQ: Modern lifestyles have led to a global epidemic of insufficient sleep.\nR: Addressing this crisis requires both individual behavioural change and systemic workplace reforms.\nS: The consequences extend beyond fatigue to include elevated risk of cardiovascular disease and mental illness.",
+    options: ["QPSR", "PQRS", "QSPR", "RQPS"],
+    answer: "QPSR",
+    explanation: "Q establishes the problem of insufficient sleep. P gives a striking, specific example of its cognitive impact. S broadens the consequences beyond cognition. R concludes with proposed solutions. The sequence Q → P → S → R is logical."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "HARD",
+    stem: "Arrange the following sentences in the correct logical order:\nP: Critics argue that the gig economy exploits workers by denying them employment benefits and job security.\nQ: Platforms like Uber and Deliveroo have redefined what it means to be a worker in the digital age.\nR: Regulators across the world are struggling to apply labour laws written for a previous century.\nS: These workers occupy an ambiguous legal category between employee and independent contractor.",
+    options: ["QSPR", "PQRS", "QPSR", "RQSP"],
+    answer: "QSPR",
+    explanation: "Q introduces the gig economy platforms. S defines the legal ambiguity of gig workers. P voices the critical perspective arising from that ambiguity. R addresses the regulatory challenge created by this tension. The sequence Q → S → P → R is logically structured."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "MEDIUM",
+    stem: "Arrange the following sentences in the correct logical order:\nP: Ancient Rome, at its peak, housed over a million inhabitants within its city walls.\nQ: Managing such a population required sophisticated systems of aqueducts, roads, and grain distribution.\nR: The collapse of these systems contributed directly to Rome's eventual decline.\nS: When the infrastructure failed, the population dispersed and urban life across the empire deteriorated.",
+    options: ["PQRS", "QPSR", "PRQS", "RQPS"],
+    answer: "PQRS",
+    explanation: "P establishes Rome's scale. Q explains the infrastructure required to sustain it. R links the failure of that infrastructure to decline. S describes the concrete consequences of that failure. The sequence P → Q → R → S flows in a clear cause-and-effect chain."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Jumbles",
+    subTopic: "Sentence Ordering",
+    difficulty: "MEDIUM",
+    stem: "Arrange the following sentences in the correct logical order:\nP: These antibodies remain in the body and can respond rapidly if the same pathogen appears again.\nQ: When a vaccine is administered, it introduces a weakened or inactivated form of a pathogen.\nR: This process forms the biological basis of immunological memory.\nS: The immune system recognises this as a threat and produces antibodies to neutralise it.",
+    options: ["QSPR", "SQPR", "QRSP", "PSQR"],
+    answer: "QSPR",
+    explanation: "Q explains what a vaccine does. S describes the immune response it triggers. P describes the outcome of that response (antibodies remaining). R names the broader biological principle. The sequence Q → S → P → R is scientifically and logically ordered."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Double Negatives",
+    difficulty: "MEDIUM",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "I don't know nothing about the accident.",
+      "I don't know anything about the accident.",
+      "I know nothing not about the accident.",
+      "I don't know no nothing about the accident."
+    ],
+    answer: "I don't know anything about the accident.",
+    explanation: "Standard English does not permit double negatives. 'Don't' and 'nothing' cannot both appear in the same clause. The correct form uses 'anything' with 'don't' or 'nothing' without 'don't'."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Comparative Forms",
+    difficulty: "MEDIUM",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "She is more smarter than her classmates.",
+      "She is smarter than her classmates.",
+      "She is more smart than her classmates.",
+      "She is smartest than her classmates."
+    ],
+    answer: "She is smarter than her classmates.",
+    explanation: "One-syllable adjectives form comparatives by adding '-er', not by using 'more'. 'More smarter' is a double comparative and is incorrect. 'Smarter than' is the correct form."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Dangling Modifiers",
+    difficulty: "HARD",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "Walking through the park, the trees were beautiful.",
+      "Walking through the park, she found the trees beautiful.",
+      "The trees were beautiful, walking through the park.",
+      "Walking through the park, beautiful trees were found."
+    ],
+    answer: "Walking through the park, she found the trees beautiful.",
+    explanation: "A dangling modifier occurs when the phrase 'walking through the park' has no clear subject in the main clause. Only the sentence with 'she' as the subject of the main clause correctly connects the modifier to the person doing the walking."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Misplaced Modifiers",
+    difficulty: "HARD",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "He almost drove his children to school every day.",
+      "He drove his children to almost school every day.",
+      "He drove his children to school almost every day.",
+      "Almost he drove his children to school every day."
+    ],
+    answer: "He drove his children to school almost every day.",
+    explanation: "'Almost' modifies 'every day' and must be placed directly before it. In the first option, 'almost drove' implies he nearly drove but didn't, which changes the meaning. The correct placement is 'almost every day'."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Redundancy",
+    difficulty: "MEDIUM",
+    stem: "Identify the grammatically correct and non-redundant sentence:",
+    options: [
+      "Please revert back to me with your response.",
+      "Please revert to me with your response.",
+      "Please revert back again to me with your response.",
+      "Please revert back to me with your reply response."
+    ],
+    answer: "Please revert to me with your response.",
+    explanation: "'Revert' already means to go back; adding 'back' is redundant. The correct sentence is 'Please revert to me,' eliminating the unnecessary 'back'."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Comparative Forms",
+    difficulty: "MEDIUM",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "Between the two proposals, Arjun's plan is the best.",
+      "Between the two proposals, Arjun's plan is better.",
+      "Between the two proposals, Arjun's plan is most better.",
+      "Between the two proposals, Arjun's plan is more best."
+    ],
+    answer: "Between the two proposals, Arjun's plan is better.",
+    explanation: "When comparing two items, the comparative form ('better') is used, not the superlative ('best'). The superlative is reserved for comparisons among three or more items."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Sentence Correction",
+    subTopic: "Dangling Modifiers",
+    difficulty: "HARD",
+    stem: "Identify the grammatically correct sentence:",
+    options: [
+      "Having completed the report, the meeting was adjourned.",
+      "Having completed the report, the team adjourned the meeting.",
+      "The meeting was adjourned, having completed the report.",
+      "Completed the report, the meeting was adjourned by the team."
+    ],
+    answer: "Having completed the report, the team adjourned the meeting.",
+    explanation: "The participial phrase 'having completed the report' must be followed by the subject who performed the action. 'The team' completed the report and adjourned the meeting; 'the meeting' cannot complete a report."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "EASY",
+    stem: "What does the idiom 'spill the beans' mean?",
+    options: [
+      "To make a mess while cooking",
+      "To reveal secret information unintentionally",
+      "To exaggerate a story",
+      "To distribute resources fairly"
+    ],
+    answer: "To reveal secret information unintentionally",
+    explanation: "'Spill the beans' means to disclose secret or confidential information, often accidentally or prematurely."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "EASY",
+    stem: "What does the idiom 'burn bridges' mean?",
+    options: [
+      "To commit arson on infrastructure",
+      "To permanently damage a relationship making reconciliation impossible",
+      "To work very hard under pressure",
+      "To cross a difficult obstacle"
+    ],
+    answer: "To permanently damage a relationship making reconciliation impossible",
+    explanation: "'Burn bridges' means to do something that permanently destroys a relationship or opportunity, leaving no way to return or reconcile."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Correct Usage",
+    difficulty: "MEDIUM",
+    stem: "Which sentence uses 'the ball is in your court' correctly?",
+    options: [
+      "The ball is in your court, so the score is now level.",
+      "After I submitted my proposal, the ball is in your court to accept or reject it.",
+      "The ball is in your court means you lost the game.",
+      "He played so well that the ball was always in your court."
+    ],
+    answer: "After I submitted my proposal, the ball is in your court to accept or reject it.",
+    explanation: "'The ball is in your court' means it is now someone else's turn to take action or make a decision. The sentence correctly implies that after one party has acted, the responsibility to respond lies with the other."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "EASY",
+    stem: "What does the idiom 'a fish out of water' mean?",
+    options: [
+      "A person who is an expert swimmer",
+      "Someone who is in an unfamiliar or uncomfortable situation",
+      "A person who is very skilled at fishing",
+      "Something that is extremely rare"
+    ],
+    answer: "Someone who is in an unfamiliar or uncomfortable situation",
+    explanation: "'A fish out of water' describes someone who is in a situation where they feel awkward, uncomfortable, or out of place, just as a fish cannot survive outside water."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "EASY",
+    stem: "What does 'break the ice' mean?",
+    options: [
+      "To destroy frozen water",
+      "To initiate conversation or ease tension in an awkward social situation",
+      "To interrupt someone rudely",
+      "To fail at an important task"
+    ],
+    answer: "To initiate conversation or ease tension in an awkward social situation",
+    explanation: "'Break the ice' means to do or say something to relieve tension or awkwardness and establish communication in a social setting."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Correct Usage",
+    difficulty: "MEDIUM",
+    stem: "Which sentence uses 'bite off more than you can chew' correctly?",
+    options: [
+      "He bit off more than he could chew at dinner last night.",
+      "She took on five major projects simultaneously and bit off more than she could chew.",
+      "The dog bit off more than it could chew when it found a large bone.",
+      "He bit off more than he could chew because the food was too spicy."
+    ],
+    answer: "She took on five major projects simultaneously and bit off more than she could chew.",
+    explanation: "'Bite off more than you can chew' means to take on a task that is too large or a responsibility beyond one's capacity. Only the second sentence uses it idiomatically rather than literally."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "MEDIUM",
+    stem: "What does 'the last straw' refer to?",
+    options: [
+      "The final piece of evidence in a legal case",
+      "The final problem in a series that causes someone to lose patience completely",
+      "A drinking straw made of natural material",
+      "An attempt to solve a problem by any available means"
+    ],
+    answer: "The final problem in a series that causes someone to lose patience completely",
+    explanation: "'The last straw' (from 'the straw that broke the camel's back') refers to a final, seemingly minor problem that, coming after a series of problems, causes total exasperation or breakdown."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Idioms & Phrases",
+    subTopic: "Meaning",
+    difficulty: "EASY",
+    stem: "What does 'under the weather' mean?",
+    options: [
+      "Standing outside in the rain",
+      "Feeling slightly ill or unwell",
+      "Being very cold",
+      "Experiencing financial difficulty"
+    ],
+    answer: "Feeling slightly ill or unwell",
+    explanation: "'Under the weather' is an idiom meaning feeling slightly sick or not in good health. It does not literally refer to weather conditions."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "MEDIUM",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nArtificial intelligence is increasingly being used in hiring processes to screen resumes and rank candidates. Proponents argue that AI removes human bias, speeds up the process, and allows companies to handle large volumes of applications efficiently. Critics, however, note that AI systems are trained on historical data that may itself reflect systemic biases, potentially encoding discrimination into automated decisions. Several lawsuits in the United States have challenged AI-driven hiring tools on the grounds of racial and gender bias.",
+    options: [
+      "AI has made companies more profitable than ever before.",
+      "Clearly, all AI hiring tools should be permanently banned by law.",
+      "The debate highlights the need for regulatory frameworks that ensure AI hiring tools are auditable, transparent, and regularly tested for discriminatory outcomes.",
+      "Companies should avoid using computers in the hiring process altogether."
+    ],
+    answer: "The debate highlights the need for regulatory frameworks that ensure AI hiring tools are auditable, transparent, and regularly tested for discriminatory outcomes.",
+    explanation: "The paragraph presents both sides of the AI hiring debate and ends with legal challenges. The best conclusion synthesises the tension by calling for regulation and oversight, which logically follows without taking an extreme position."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "HARD",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nThe concept of universal basic income (UBI) — a regular, unconditional cash payment to every citizen regardless of employment status — has gained renewed interest as automation threatens to displace large numbers of workers. Pilot programmes in Finland, Kenya, and Stockton, California, have shown promising results: recipients reported lower stress, better health outcomes, and did not, contrary to fears, reduce their work effort significantly. Critics remain concerned about the cost of scaling such programmes and the inflationary pressures a universal payment might generate.",
+    options: [
+      "Therefore, UBI has been proven to be completely effective and should be immediately implemented worldwide.",
+      "The evidence so far is encouraging but insufficient to resolve the fundamental questions of fiscal sustainability and macroeconomic impact at scale.",
+      "UBI is a communist idea that would destroy the economy.",
+      "Finland is clearly the best country in which to live."
+    ],
+    answer: "The evidence so far is encouraging but insufficient to resolve the fundamental questions of fiscal sustainability and macroeconomic impact at scale.",
+    explanation: "The paragraph presents both positive pilot results and ongoing critic concerns. The best conclusion acknowledges both: the evidence is promising but scaling questions remain unresolved, maintaining the balanced tone of the paragraph."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "MEDIUM",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nMeditation and mindfulness practices, once confined to spiritual traditions, have entered the mainstream through apps, corporate wellness programmes, and clinical settings. Neuroscientific research has demonstrated measurable changes in brain structure among long-term meditators, particularly in areas associated with attention and emotional regulation. Mindfulness-based cognitive therapy (MBCT) has been approved by health authorities in several countries as a treatment for recurrent depression. Despite this, some researchers caution that the quality of mindfulness research is uneven and that commercial promotion has outpaced the scientific evidence.",
+    options: [
+      "Meditation is a waste of time and corporations exploit it purely for profit.",
+      "Mindfulness is the single most effective treatment ever discovered for all mental health conditions.",
+      "As the field matures, rigorous research and honest communication about its limitations will be essential to realising its genuine therapeutic potential.",
+      "Anyone who does not meditate daily is making a mistake."
+    ],
+    answer: "As the field matures, rigorous research and honest communication about its limitations will be essential to realising its genuine therapeutic potential.",
+    explanation: "The paragraph presents both the growing evidence base and the caution about research quality. The best conclusion calls for rigorous science and honesty about limitations, naturally continuing the balanced perspective established in the paragraph."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "HARD",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nOceans cover over seventy percent of the Earth's surface and absorb roughly a third of the carbon dioxide humans emit. This absorption is creating a chemical imbalance known as ocean acidification, in which rising carbon concentrations lower the pH of seawater. Coral reefs and shellfish are particularly vulnerable: acidic water dissolves the calcium carbonate structures that corals and molluscs rely on for their skeletons and shells. Entire ecosystems that support hundreds of millions of people through fisheries and coastal protection are at risk.",
+    options: [
+      "The oceans are very large and contain many interesting creatures.",
+      "Reducing carbon emissions is therefore not only a matter of atmospheric science but a prerequisite for the survival of marine ecosystems on which human civilisation depends.",
+      "People should stop eating fish immediately to protect the oceans.",
+      "Ocean acidification has no real impact on human beings."
+    ],
+    answer: "Reducing carbon emissions is therefore not only a matter of atmospheric science but a prerequisite for the survival of marine ecosystems on which human civilisation depends.",
+    explanation: "The paragraph traces the chain from CO2 emissions to acidification to ecosystem collapse and human impact. The best conclusion draws together all these threads by linking emission reduction to marine ecosystem survival and human dependency."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "MEDIUM",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nThe rise of e-commerce has fundamentally altered the retail landscape. Traditional brick-and-mortar stores have faced mounting pressure from online competitors that offer lower prices, greater variety, and the convenience of home delivery. Many iconic retail chains that survived for decades have filed for bankruptcy in the past ten years. Simultaneously, however, some physical retailers have adapted by creating experiential stores where the emphasis is on engagement rather than transaction.",
+    options: [
+      "Online shopping is always cheaper and better than physical shopping in every way.",
+      "All physical stores will close within the next five years.",
+      "The future of retail will likely be a hybrid model where physical stores serve as experiential hubs complementing a robust digital presence.",
+      "People should buy everything from local markets to support their communities."
+    ],
+    answer: "The future of retail will likely be a hybrid model where physical stores serve as experiential hubs complementing a robust digital presence.",
+    explanation: "The paragraph presents both the decline of traditional retail and the adaptive evolution of some physical stores. The best conclusion synthesises these two trends into a forward-looking hybrid model, which is the natural resolution of the tension described."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Para Completion",
+    subTopic: "Concluding Sentence",
+    difficulty: "HARD",
+    stem: "Read the paragraph and choose the best concluding sentence:\n\nLanguage is not merely a tool for communication; it actively shapes how we perceive reality. The Sapir-Whorf hypothesis, in its strong form, proposes that the language one speaks determines the thoughts one can think. Research among the Pirahã people of the Amazon, who lack linguistic terms for specific numbers and colours, suggests that their perception of quantity and hue differs from that of speakers of European languages. Weaker versions of the hypothesis, which enjoy broader scientific acceptance, propose that language influences rather than determines thought.",
+    options: [
+      "All languages are equally complex and sophisticated.",
+      "English is the best language for scientific thinking.",
+      "The evidence suggests a nuanced picture: language does not imprison thought, but it does provide the grooves along which thinking most naturally flows.",
+      "The Pirahã people are an isolated community with no contact with the outside world."
+    ],
+    answer: "The evidence suggests a nuanced picture: language does not imprison thought, but it does provide the grooves along which thinking most naturally flows.",
+    explanation: "The paragraph presents the strong and weak forms of the Sapir-Whorf hypothesis and evidence for each. The best conclusion captures this nuance: language is neither a prison (strong form) nor irrelevant, but an influential channel (weak form)."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Tool and User",
+    difficulty: "EASY",
+    stem: "SCALPEL : SURGEON :: _____ : ARCHITECT",
+    options: ["brick : builder", "blueprint : engineer", "drafting compass : architect", "T-square : carpenter"],
+    answer: "drafting compass : architect",
+    explanation: "A scalpel is the primary precision tool used by a surgeon. A drafting compass is the primary precision drawing tool used by an architect. Both relationships are tool-to-primary-user."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Part and Whole",
+    difficulty: "EASY",
+    stem: "CHAPTER : NOVEL :: _____ : SYMPHONY",
+    options: ["verse : poem", "movement : symphony", "act : play", "stanza : ballad"],
+    answer: "movement : symphony",
+    explanation: "A chapter is a distinct, named section that is part of a novel. A movement is a distinct section that is part of a symphony. Both are part-to-whole relationships within their respective art forms."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Cause and Effect",
+    difficulty: "MEDIUM",
+    stem: "DROUGHT : FAMINE :: POLLUTION : _____",
+    options: ["industry", "disease", "regulation", "economy"],
+    answer: "disease",
+    explanation: "Drought causes famine; pollution causes disease. Both are cause-and-effect relationships where an environmental condition leads to a health or survival crisis."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Worker and Product",
+    difficulty: "EASY",
+    stem: "AUTHOR : NOVEL :: COMPOSER : _____",
+    options: ["concert", "instrument", "symphony", "musician"],
+    answer: "symphony",
+    explanation: "An author creates a novel as their primary work product. A composer creates a symphony as their primary work product. Both are worker-to-product relationships."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Animal and Habitat",
+    difficulty: "EASY",
+    stem: "EAGLE : EYRIE :: BEAR : _____",
+    options: ["burrow", "warren", "den", "lair"],
+    answer: "den",
+    explanation: "An eyrie is the nest/home of an eagle. A den is the shelter/home of a bear. Both are animal-to-habitat relationships using the specific technical term for the dwelling."
+  },
+  {
+    subject: "VERBAL",
+    type: "MCQ",
+    topic: "Verbal Analogies",
+    subTopic: "Cause and Effect",
+    difficulty: "MEDIUM",
+    stem: "NEGLIGENCE : ACCIDENT :: GREED : _____",
+    options: ["wealth", "generosity", "corruption", "ambition"],
+    answer: "corruption",
+    explanation: "Negligence (a negative trait or action) causes accidents (a negative consequence). Greed (a negative trait) causes corruption (a negative consequence). Both follow the same cause-to-negative-effect pattern."
+  }
 ];

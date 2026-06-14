@@ -300,4 +300,495 @@ export const quantShortAnswer: SeedQuestion[] = [
     answer: "17",
     explanation: "f(7) = 2(7) + 3 = 14 + 3 = 17.",
   },
+
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "HCF & LCM",
+    difficulty: "EASY",
+    stem: "Find the HCF of 36 and 48.",
+    answer: "12",
+    explanation: "36 = 2² × 3², 48 = 2⁴ × 3. HCF = 2² × 3 = 12."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "HCF & LCM",
+    difficulty: "MEDIUM",
+    stem: "The LCM of two numbers is 180 and their HCF is 12. If one of the numbers is 36, find the other number.",
+    answer: "60",
+    explanation: "Product of two numbers = LCM × HCF = 180 × 12 = 2160. Other number = 2160 / 36 = 60."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "Remainders",
+    difficulty: "EASY",
+    stem: "What is the remainder when 2^10 is divided by 7?",
+    answer: "2",
+    explanation: "2^1=2, 2^2=4, 2^3=1 (mod 7), cycle length 3. 10 = 3×3+1, so 2^10 ≡ 2^1 = 2 (mod 7)."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "Unit Digit",
+    difficulty: "EASY",
+    stem: "Find the unit digit of 7^53.",
+    answer: "7",
+    explanation: "Unit digits of powers of 7 cycle with period 4: 7,9,3,1. 53 mod 4 = 1, so unit digit = 7."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "Prime Factorization",
+    difficulty: "MEDIUM",
+    stem: "How many factors does 360 have?",
+    answer: "24",
+    explanation: "360 = 2³ × 3² × 5¹. Number of factors = (3+1)(2+1)(1+1) = 4×3×2 = 24."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Number System",
+    subTopic: "Digit Sum",
+    difficulty: "HARD",
+    stem: "What is the remainder when 123456789 is divided by 9?",
+    answer: "0",
+    explanation: "Digit sum = 1+2+3+4+5+6+7+8+9 = 45, which is divisible by 9. So remainder = 0."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Linear Equations",
+    difficulty: "EASY",
+    stem: "If 3x + 7 = 22, find x.",
+    answer: "5",
+    explanation: "3x = 22 - 7 = 15, x = 5."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Quadratic Equations",
+    difficulty: "MEDIUM",
+    stem: "Find the sum of the roots of the equation 2x² - 8x + 6 = 0.",
+    answer: "4",
+    explanation: "For ax² + bx + c = 0, sum of roots = -b/a = 8/2 = 4."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Quadratic Equations",
+    difficulty: "MEDIUM",
+    stem: "Find the product of the roots of 3x² + 9x - 12 = 0.",
+    answer: "-4",
+    explanation: "Product of roots = c/a = -12/3 = -4."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Inequalities",
+    difficulty: "MEDIUM",
+    stem: "Find the smallest integer x satisfying 5x - 3 > 17.",
+    answer: "5",
+    explanation: "5x > 20, x > 4. Smallest integer x = 5."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Age Problems",
+    difficulty: "EASY",
+    stem: "The ratio of ages of A and B is 3:5. After 4 years the ratio becomes 5:7. Find the current age of A.",
+    answer: "6",
+    explanation: "Let ages be 3k and 5k. (3k+4)/(5k+4) = 5/7 → 21k+28 = 25k+20 → 4k = 8 → k = 2. A's age = 3×2 = 6."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Polynomials",
+    difficulty: "HARD",
+    stem: "If p(x) = x³ - 6x² + 11x - 6, find p(3).",
+    answer: "0",
+    explanation: "p(3) = 27 - 54 + 33 - 6 = 0."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Algebra",
+    subTopic: "Modulus",
+    difficulty: "MEDIUM",
+    stem: "How many integer values of x satisfy |2x - 5| ≤ 3?",
+    answer: "4",
+    explanation: "-3 ≤ 2x-5 ≤ 3 → 2 ≤ 2x ≤ 8 → 1 ≤ x ≤ 4. Integer values: 1,2,3,4 → 4 values."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Percentages",
+    difficulty: "EASY",
+    stem: "A number is increased by 20% and then decreased by 20%. What is the net percentage change?",
+    answer: "-4",
+    explanation: "Net multiplier = 1.2 × 0.8 = 0.96, so net change = -4%."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Profit & Loss",
+    difficulty: "EASY",
+    stem: "A shopkeeper buys an article for ₹240 and sells it for ₹300. Find the profit percentage.",
+    answer: "25",
+    explanation: "Profit = 300 - 240 = 60. Profit% = (60/240) × 100 = 25%."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "SI & CI",
+    difficulty: "MEDIUM",
+    stem: "Find the compound interest on ₹5000 at 10% per annum for 2 years, compounded annually.",
+    answer: "1050",
+    explanation: "A = 5000(1.1)² = 5000 × 1.21 = 6050. CI = 6050 - 5000 = 1050."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Ratio & Proportion",
+    difficulty: "EASY",
+    stem: "If A:B = 3:4 and B:C = 6:5, find A:C.",
+    answer: "9/10",
+    explanation: "A:B:C = 3:4:_ . B=4 maps to 6 in B:C, scale factor 4/6=2/3. C = 5×(2/3)... Better: A:B=3:4, B:C=6:5. A:B:C = 18:24:20 = 9:12:10. A:C = 9:10."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Averages",
+    difficulty: "EASY",
+    stem: "The average of 5 numbers is 18. If one number is removed the average becomes 16. What is the removed number?",
+    answer: "26",
+    explanation: "Sum of 5 numbers = 90. Sum of remaining 4 = 64. Removed number = 90 - 64 = 26."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Mixtures & Alligation",
+    difficulty: "MEDIUM",
+    stem: "In what ratio must water be mixed with milk at ₹30/litre to get a mixture worth ₹20/litre?",
+    answer: "1/2",
+    explanation: "By alligation: milk at 30, water at 0, mean 20. Ratio water:milk = (30-20):(20-0) = 10:20 = 1:2."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Time & Work",
+    difficulty: "MEDIUM",
+    stem: "A can complete a work in 12 days and B in 18 days. In how many days will they together complete the work?",
+    answer: "36/5",
+    explanation: "Combined rate = 1/12 + 1/18 = 3/36 + 2/36 = 5/36. Days = 36/5."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Arithmetic",
+    subTopic: "Time Speed Distance",
+    difficulty: "HARD",
+    stem: "A train 200m long crosses a platform 300m long at 72 km/h. How many seconds does it take?",
+    answer: "25",
+    explanation: "Total distance = 200+300 = 500m. Speed = 72 km/h = 20 m/s. Time = 500/20 = 25 seconds."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Area & Perimeter",
+    difficulty: "EASY",
+    stem: "Find the area of a triangle with base 12 cm and height 8 cm.",
+    answer: "48",
+    explanation: "Area = (1/2) × base × height = (1/2) × 12 × 8 = 48 cm²."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Area & Perimeter",
+    difficulty: "EASY",
+    stem: "The circumference of a circle is 44 cm. Find its radius. (Use π = 22/7)",
+    answer: "7",
+    explanation: "2πr = 44 → r = 44/(2 × 22/7) = 44 × 7/44 = 7 cm."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Pythagoras Theorem",
+    difficulty: "MEDIUM",
+    stem: "In a right triangle, the two legs are 9 cm and 12 cm. Find the hypotenuse.",
+    answer: "15",
+    explanation: "h = √(9² + 12²) = √(81+144) = √225 = 15 cm."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Volume of Solids",
+    difficulty: "MEDIUM",
+    stem: "Find the volume of a cylinder with radius 7 cm and height 10 cm. (Use π = 22/7)",
+    answer: "1540",
+    explanation: "V = πr²h = (22/7) × 49 × 10 = 22 × 7 × 10 = 1540 cm³."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Coordinate Geometry",
+    difficulty: "MEDIUM",
+    stem: "Find the distance between points (3, 4) and (7, 1).",
+    answer: "5",
+    explanation: "d = √((7-3)² + (1-4)²) = √(16+9) = √25 = 5."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "EASY",
+    stem: "What is the value of sin²30° + cos²30°?",
+    answer: "1",
+    explanation: "By Pythagorean identity, sin²θ + cos²θ = 1 for all θ."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "EASY",
+    stem: "Find the value of tan 45° + sin 90°.",
+    answer: "2",
+    explanation: "tan 45° = 1, sin 90° = 1. Sum = 1 + 1 = 2."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "MEDIUM",
+    stem: "A ladder of length 10 m leans against a wall making an angle of 30° with the wall. How high up the wall does the ladder reach?",
+    answer: "5",
+    explanation: "The ladder makes 30° with the ground. Height reached = 10 × sin30° = 10 × 1/2 = 5 m."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "MEDIUM",
+    stem: "From a point on the ground, the angle of elevation of the top of a tower is 45°. If the tower is 50 m tall, find the horizontal distance from the point to the base of the tower.",
+    answer: "50",
+    explanation: "tan45° = height/distance → 1 = 50/distance → distance = 50 m."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "HARD",
+    stem: "From the top of a cliff 30 m high, the angle of depression of a boat is 45°. Find the horizontal distance of the boat from the base of the cliff.",
+    answer: "30",
+    explanation: "tan45° = 1 = 30/d → d = 30 m."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Geometry & Mensuration",
+    subTopic: "Trigonometry",
+    difficulty: "MEDIUM",
+    stem: "If sin θ = 3/5, find cos θ (where θ is acute).",
+    answer: "4/5",
+    explanation: "cos θ = √(1 - sin²θ) = √(1 - 9/25) = √(16/25) = 4/5."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Modern Maths",
+    subTopic: "AP nth Term",
+    difficulty: "EASY",
+    stem: "Find the 15th term of the AP: 3, 7, 11, 15, ...",
+    answer: "59",
+    explanation: "a = 3, d = 4. T₁₅ = 3 + 14×4 = 3 + 56 = 59."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Modern Maths",
+    subTopic: "AP Sum",
+    difficulty: "MEDIUM",
+    stem: "Find the sum of the first 20 terms of the AP: 5, 8, 11, ...",
+    answer: "670",
+    explanation: "a = 5, d = 3. S₂₀ = (20/2)[2×5 + 19×3] = 10[10+57] = 10×67 = 670."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Modern Maths",
+    subTopic: "GP nth Term",
+    difficulty: "MEDIUM",
+    stem: "Find the 6th term of the GP: 2, 6, 18, 54, ...",
+    answer: "486",
+    explanation: "a = 2, r = 3. T₆ = 2 × 3⁵ = 2 × 243 = 486."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Modern Maths",
+    subTopic: "Permutations",
+    difficulty: "HARD",
+    stem: "In how many ways can 5 students be seated in a row of 5 chairs?",
+    answer: "120",
+    explanation: "5! = 5 × 4 × 3 × 2 × 1 = 120."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Statistics",
+    subTopic: "Mean",
+    difficulty: "EASY",
+    stem: "Find the mean of the data: 8, 12, 15, 9, 6.",
+    answer: "10",
+    explanation: "Mean = (8+12+15+9+6)/5 = 50/5 = 10."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Statistics",
+    subTopic: "Median",
+    difficulty: "EASY",
+    stem: "Find the median of: 13, 7, 5, 21, 9, 3, 17.",
+    answer: "9",
+    explanation: "Arranged in order: 3, 5, 7, 9, 13, 17, 21. Middle value (4th) = 9."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Statistics",
+    subTopic: "Mode & Range",
+    difficulty: "EASY",
+    stem: "Find the range of the data set: 4, 17, 3, 9, 22, 11, 8.",
+    answer: "19",
+    explanation: "Range = Max - Min = 22 - 3 = 19."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Statistics",
+    subTopic: "Weighted Mean",
+    difficulty: "MEDIUM",
+    stem: "A student scores 70 in a subject worth 3 credits and 80 in a subject worth 2 credits. Find the weighted mean score.",
+    answer: "74",
+    explanation: "Weighted mean = (70×3 + 80×2)/(3+2) = (210+160)/5 = 370/5 = 74."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Logarithms & Surds",
+    subTopic: "Log Base Evaluation",
+    difficulty: "EASY",
+    stem: "Find the value of log₂ 64.",
+    answer: "6",
+    explanation: "2⁶ = 64, so log₂ 64 = 6."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Logarithms & Surds",
+    subTopic: "Log Laws Simplification",
+    difficulty: "MEDIUM",
+    stem: "Simplify: log 6 + log 5 - log 3. (All logs base 10)",
+    answer: "1",
+    explanation: "log 6 + log 5 - log 3 = log(6×5/3) = log(10) = 1."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Logarithms & Surds",
+    subTopic: "Surd Simplification",
+    difficulty: "MEDIUM",
+    stem: "Simplify: √75 - √48 + √12.",
+    answer: "3√3",
+    explanation: "√75 = 5√3, √48 = 4√3, √12 = 2√3. Expression = (5-4+2)√3 = 3√3."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Logarithms & Surds",
+    subTopic: "Rationalisation",
+    difficulty: "HARD",
+    stem: "Rationalise and simplify: 1/(√5 + √3). Express the answer in the form (√5 - √3)/k, find k.",
+    answer: "2",
+    explanation: "Multiply by (√5-√3)/(√5-√3): = (√5-√3)/(5-3) = (√5-√3)/2. So k = 2."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Functions & Progressions",
+    subTopic: "AP/GP",
+    difficulty: "MEDIUM",
+    stem: "The sum of first n terms of an AP is given by Sₙ = 3n² + 2n. Find the common difference.",
+    answer: "6",
+    explanation: "Tₙ = Sₙ - Sₙ₋₁ = 3n²+2n - 3(n-1)²-2(n-1) = 3(2n-1)+2 = 6n-1. T₁ = 5, T₂ = 11, d = 11-5 = 6."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Functions & Progressions",
+    subTopic: "nth Term from Sum Formula",
+    difficulty: "MEDIUM",
+    stem: "The sum of n terms of a series is Sₙ = n² + 3n. Find the 5th term.",
+    answer: "12",
+    explanation: "Tₙ = Sₙ - Sₙ₋₁ = (n²+3n) - ((n-1)²+3(n-1)) = 2n+2. T₅ = 2(5)+2 = 12."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Functions & Progressions",
+    subTopic: "Function Evaluation",
+    difficulty: "EASY",
+    stem: "If f(x) = 2x² - 3x + 1, find f(2).",
+    answer: "3",
+    explanation: "f(2) = 2(4) - 3(2) + 1 = 8 - 6 + 1 = 3."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Functions & Progressions",
+    subTopic: "Composite Function",
+    difficulty: "MEDIUM",
+    stem: "If f(x) = 3x + 1 and g(x) = x - 2, find f(g(4)).",
+    answer: "7",
+    explanation: "g(4) = 4-2 = 2. f(g(4)) = f(2) = 3(2)+1 = 7."
+  },
+  {
+    subject: "QUANT",
+    type: "SHORT_ANSWER",
+    topic: "Functions & Progressions",
+    subTopic: "Inverse Function",
+    difficulty: "HARD",
+    stem: "If f(x) = (x + 3)/2, find f⁻¹(5).",
+    answer: "7",
+    explanation: "Let y = (x+3)/2 → x = 2y-3. So f⁻¹(x) = 2x-3. f⁻¹(5) = 2(5)-3 = 7."
+  }
 ];
