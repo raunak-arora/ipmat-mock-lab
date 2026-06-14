@@ -120,10 +120,10 @@ export default async function Home() {
   const email = session.user.email ?? "";
   const isAdmin = email === ADMIN_EMAIL;
 
-  if (!isAdmin) {
-    const allowed = await isStudentAllowed(email);
-    if (!allowed) redirect("/denied");
-  }
+  if (isAdmin) redirect("/admin");
+
+  const allowed = await isStudentAllowed(email);
+  if (!allowed) redirect("/denied");
 
   const profile = await getOrCreateProfile(email, session.user.name ?? "");
 
