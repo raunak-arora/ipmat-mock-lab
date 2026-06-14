@@ -407,6 +407,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
 
           <div className="mb-3 flex flex-wrap gap-1.5">
             {sections.map((s, i) => {
+              if ((bySection.get(s.key)?.length ?? 0) === 0) return null;
               const locked = sectionLocked(i);
               const isActive = effectiveSection === s.key;
               return (
