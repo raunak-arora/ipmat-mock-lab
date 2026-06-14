@@ -49,6 +49,10 @@ export const QA_TOPICS = [
   "Arithmetic",
   "Geometry & Mensuration",
   "Modern Maths",
+  "Statistics",
+  "Data Interpretation",
+  "Logarithms & Surds",
+  "Functions & Progressions",
 ] as const;
 
 export const VA_TOPICS = [
@@ -57,6 +61,9 @@ export const VA_TOPICS = [
   "Grammar",
   "Para Jumbles",
   "Sentence Correction",
+  "Idioms & Phrases",
+  "Para Completion",
+  "Verbal Analogies",
 ] as const;
 
 export const LR_TOPICS = [
@@ -66,6 +73,10 @@ export const LR_TOPICS = [
   "Coding-Decoding",
   "Series & Patterns",
   "Puzzles",
+  "Directions & Distances",
+  "Clocks & Calendars",
+  "Statement Reasoning",
+  "Venn Diagrams",
 ] as const;
 
 export const EXAMS: Record<Exam, ExamConfig> = {
