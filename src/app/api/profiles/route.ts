@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { ADMIN_EMAIL } from "@/auth";
 
 export async function GET() {
   const profiles = await prisma.profile.findMany({
+    where: { email: { not: ADMIN_EMAIL } },
     orderBy: { createdAt: "asc" },
   });
   return NextResponse.json(profiles);

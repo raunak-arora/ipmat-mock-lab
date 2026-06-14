@@ -78,32 +78,30 @@ function fmtDate(iso: string | null): string {
 
 export default function AdminPerformance() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  // "" = all students (aggregate); a profile id = filter to that student
   const [profileId, setProfileId] = useState("");
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  // Load profiles once on mount.
+  // Load profiles once on mount, then immediately load aggregate data.
   useEffect(() => {
     let cancelled = false;
     fetch("/api/profiles")
       .then((r) => r.json())
-      .then((ps: Profile[]) => {
-        if (!cancelled) {
-          setProfiles(ps);
-          if (ps.length > 0) setProfileId(ps[0].id);
-        }
-      });
+      .then((ps: Profile[]) => { if (!cancelled) setProfiles(ps); });
     return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
-    if (!profileId) return;
     let cancelled = false;
     const load = async () => {
       setLoading(true);
       try {
-        const r = await fetch(`/api/admin/performance?profileId=${profileId}`);
+        const url = profileId
+          ? `/api/admin/performance?profileId=${profileId}`
+          : "/api/admin/performance";
+        const r = await fetch(url);
         const d = await r.json();
         if (!cancelled) { setData(d); setExpanded(null); }
       } finally {
@@ -114,34 +112,27 @@ export default function AdminPerformance() {
     return () => { cancelled = true; };
   }, [profileId]);
 
-  if (profiles.length === 0) {
-    return (
-      <Card>
-        <p className="text-sm text-muted">
-          No profiles yet. Have the student take a mock from the{" "}
-          <Link href="/" className="text-primary hover:underline">
-            home page
-          </Link>{" "}
-          first.
-        </p>
-      </Card>
-    );
-  }
-
   return (
     <div className="space-y-5">
-      {/* Profile selector */}
+      {/* Student filter */}
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm text-muted">Student:</span>
+        <span className="text-sm text-muted">Showing:</span>
+        <button
+          onClick={() => setProfileId("")}
+          className={cn(
+            "rounded-lg border px-3 py-1.5 text-sm",
+            profileId === "" ? "border-primary bg-primary/5 font-medium" : "hover:bg-card"
+          )}
+        >
+          All students
+        </button>
         {profiles.map((p) => (
           <button
             key={p.id}
             onClick={() => setProfileId(p.id)}
             className={cn(
               "rounded-lg border px-3 py-1.5 text-sm",
-              profileId === p.id
-                ? "border-primary bg-primary/5 font-medium"
-                : "hover:bg-card"
+              profileId === p.id ? "border-primary bg-primary/5 font-medium" : "hover:bg-card"
             )}
           >
             {p.name}
@@ -154,7 +145,9 @@ export default function AdminPerformance() {
       {data && data.summary.completed === 0 && (
         <Card>
           <p className="text-sm text-muted">
-            No completed mocks for this profile yet.
+            {profileId
+              ? "No completed mocks for this student yet."
+              : "No completed mocks yet — have a student take a mock first."}
           </p>
         </Card>
       )}
@@ -256,6 +249,7 @@ export default function AdminPerformance() {
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
                       )}
                       <span className="text-muted">
+                        {!profileId && <span className="font-medium text-foreground">{row.profileName} · </span>}
                         #{row.index} · {EXAMS[row.exam as "INDORE" | "ROHTAK"].label} ·{" "}
                         {row.mode}
                       </span>
