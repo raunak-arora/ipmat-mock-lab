@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       : { submittedAt: { not: null } },
     orderBy: { submittedAt: "asc" },
     include: {
-      profile: { select: { id: true, name: true } },
+      profile: { select: { id: true, name: true, email: true } },
       answers: {
         select: {
           section: true,
@@ -25,6 +25,14 @@ export async function GET(req: Request) {
     },
   });
 
+  // Build email→AllowedStudent.name map for display name overlay.
+  const profileEmails = [...new Set(attempts.map((a) => a.profile.email).filter(Boolean))] as string[];
+  const allowedStudents = await prisma.allowedStudent.findMany({
+    where: { email: { in: profileEmails } },
+    select: { email: true, name: true },
+  });
+  const nameByEmail = new Map(allowedStudents.map((s) => [s.email, s.name]));
+
   const series = attempts.map((a, i) => {
     // Aggregate time per section from individual question times.
     const sectionTimes: Record<string, number> = {};
@@ -32,10 +40,12 @@ export async function GET(req: Request) {
       sectionTimes[ans.section] =
         (sectionTimes[ans.section] ?? 0) + ans.timeSpentSec;
     }
+    const displayName =
+      (a.profile.email && nameByEmail.get(a.profile.email)) || a.profile.name;
     return {
       id: a.id,
       index: i + 1,
-      profileName: a.profile.name,
+      profileName: displayName,
       profileId: a.profileId,
       exam: a.exam,
       mode: a.mode,
