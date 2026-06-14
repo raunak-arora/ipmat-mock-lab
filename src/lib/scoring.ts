@@ -130,16 +130,24 @@ export function scoreAttempt(
   const graded = gradeAnswers(exam, questions, submitted);
   const config = getExam(exam);
 
+  // Count actual questions per section in this attempt (handles sectional/topic mocks).
+  const questionCountBySection = new Map<string, number>();
+  for (const q of questions) {
+    questionCountBySection.set(q.section, (questionCountBySection.get(q.section) ?? 0) + 1);
+  }
+
   const sectionScores: Record<string, SectionScore> = {};
   for (const section of config.sections) {
+    const count = questionCountBySection.get(section.key);
+    if (!count) continue; // section not part of this attempt
     sectionScores[section.key] = {
       section: section.key,
       score: 0,
-      max: section.count * section.marksCorrect,
+      max: count * section.marksCorrect,
       correct: 0,
       wrong: 0,
       skipped: 0,
-      total: section.count,
+      total: count,
       cutoff: section.sectionalCutoff,
       clearedCutoff: false,
     };
@@ -168,10 +176,12 @@ export function scoreAttempt(
     skipped += s.skipped;
   }
 
+  const maxScore = Object.values(sectionScores).reduce((s, ss) => s + ss.max, 0);
+
   return {
     result: {
       rawScore,
-      maxScore: config.totalMarks,
+      maxScore,
       sectionScores,
       clearedAllCutoffs,
       correct,

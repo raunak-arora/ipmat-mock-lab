@@ -89,19 +89,23 @@ export default async function ResultsPage({
           <div className="text-xs text-muted">estimate, not official</div>
         </Card>
         <Card className="text-center">
-          <div className="text-sm text-muted">Sectional cut-offs</div>
+          <div className="text-sm text-muted">
+            {attempt.mode === "FULL" ? "Sectional cut-offs" : "Cut-off"}
+          </div>
           <div
             className={cn(
               "mt-1 text-2xl font-bold",
               attempt.clearedCutoff ? "text-success" : "text-danger"
             )}
           >
-            {attempt.clearedCutoff ? "All cleared" : "Not cleared"}
+            {attempt.clearedCutoff ? "Cleared" : "Not cleared"}
           </div>
           <div className="text-xs text-muted">
-            {exam === "INDORE"
-              ? "Must clear every section to qualify"
-              : "Overall merit-based"}
+            {attempt.mode === "FULL"
+              ? exam === "INDORE"
+                ? "Must clear every section to qualify"
+                : "Overall merit-based"
+              : "Benchmark for this section"}
           </div>
         </Card>
       </div>
