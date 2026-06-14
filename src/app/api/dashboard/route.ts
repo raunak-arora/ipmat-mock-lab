@@ -16,18 +16,29 @@ export async function GET(req: Request) {
     },
   });
 
-  const series = attempts.map((a, i) => ({
-    id: a.id,
-    index: i + 1,
-    date: a.submittedAt?.toISOString() ?? null,
-    exam: a.exam,
-    mode: a.mode,
-    rawScore: a.rawScore ?? 0,
-    maxScore: a.maxScore ?? 0,
-    scorePct: Math.round(((a.rawScore ?? 0) / (a.maxScore || 1)) * 100),
-    percentile: a.percentile ?? 0,
-    clearedCutoff: a.clearedCutoff ?? false,
-  }));
+  const series = attempts.map((a, i) => {
+    // Compute effective max from active sections only (fixes sectional mocks and old data stored with full-exam max).
+    const sectionScores: Record<string, { correct: number; wrong: number; skipped: number; max: number }> =
+      JSON.parse(a.sectionScores ?? "{}");
+    const effectiveMax =
+      Object.values(sectionScores)
+        .filter((ss) => ss.correct + ss.wrong + ss.skipped > 0)
+        .reduce((sum, ss) => sum + ss.max, 0) ||
+      a.maxScore ||
+      1;
+    return {
+      id: a.id,
+      index: i + 1,
+      date: a.submittedAt?.toISOString() ?? null,
+      exam: a.exam,
+      mode: a.mode,
+      rawScore: a.rawScore ?? 0,
+      maxScore: effectiveMax,
+      scorePct: Math.round(((a.rawScore ?? 0) / effectiveMax) * 100),
+      percentile: a.percentile ?? 0,
+      clearedCutoff: a.clearedCutoff ?? false,
+    };
+  });
 
   // Topic accuracy across all of this profile's attempts.
   const topicMap = new Map<string, { correct: number; total: number }>();
