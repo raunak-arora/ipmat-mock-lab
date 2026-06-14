@@ -54,7 +54,7 @@ export default async function RootLayout({
                     className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted hover:bg-background hover:text-foreground"
                   >
                     <LayoutDashboard className="h-4 w-4" />
-                    Dashboard
+                    <span className="hidden sm:inline">Dashboard</span>
                   </Link>
                   <SignOutButton
                     action={async () => {

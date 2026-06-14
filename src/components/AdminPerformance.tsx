@@ -497,7 +497,7 @@ function TopicCard({
       <div className="space-y-1.5 overflow-y-auto" style={{ maxHeight: 260 }}>
         {topics.map((t) => (
           <div key={t.topic} className="flex items-center gap-3 text-sm">
-            <span className="w-44 shrink-0 truncate text-xs">{t.topic}</span>
+            <span className="w-28 shrink-0 truncate text-xs sm:w-44">{t.topic}</span>
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-background">
               <div
                 className={cn(

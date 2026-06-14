@@ -295,25 +295,25 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             </span>
             <span className="text-muted">{data.mode} mock</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {data.mode === "FULL" && timing.sectionRemaining != null && (
               <div
                 className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-semibold tabular-nums",
+                  "flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold tabular-nums sm:gap-1.5 sm:px-2.5 sm:text-sm",
                   sectionLow ? "bg-danger/10 text-danger" : "bg-background"
                 )}
               >
-                <Clock className="h-4 w-4" />
-                Section: {formatClock(timing.sectionRemaining)}
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Section: </span>{formatClock(timing.sectionRemaining)}
               </div>
             )}
             <div
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-semibold tabular-nums",
+                "flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold tabular-nums sm:gap-1.5 sm:px-2.5 sm:text-sm",
                 globalLow ? "bg-danger/10 text-danger" : "bg-background"
               )}
             >
-              <Clock className="h-4 w-4" />
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               {data.mode === "FULL" ? "Total" : "Time"}: {formatClock(timing.globalRemaining)}
             </div>
           </div>
@@ -444,7 +444,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             </p>
           )}
 
-          <div className="grid grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-5 gap-1.5 sm:grid-cols-6">
             {viewQuestions.map((q, i) => {
               const st = answers[q.id]?.status ?? "unseen";
               const isCurrent = q.id === cid;

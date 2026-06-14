@@ -27,7 +27,7 @@ export default function AdminPage() {
         </p>
       </div>
 
-      <div className="flex gap-1 rounded-xl border bg-card p-1 w-fit">
+      <div className="flex w-full gap-1 rounded-xl border bg-card p-1 sm:w-fit">
         {TABS.map((t) => {
           const Icon = t.icon;
           return (
@@ -35,7 +35,7 @@ export default function AdminPage() {
               key={t.key}
               onClick={() => setTab(t.key)}
               className={cn(
-                "flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors sm:flex-none sm:px-4",
                 tab === t.key
                   ? "bg-background shadow-sm text-foreground"
                   : "text-muted hover:text-foreground"

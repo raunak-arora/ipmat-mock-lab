@@ -170,7 +170,7 @@ export default async function ResultsPage({
             const pct = Math.round((s.correct / s.total) * 100);
             return (
               <div key={topic} className="flex items-center gap-3 text-sm">
-                <span className="w-48 shrink-0 truncate">{topic}</span>
+                <span className="w-28 shrink-0 truncate sm:w-44">{topic}</span>
                 <div className="h-2 flex-1 overflow-hidden rounded-full bg-background">
                   <div
                     className={cn(
