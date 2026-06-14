@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CheckCircle2, XCircle, MinusCircle, Info } from "lucide-react";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { EXAMS, SECTION_LABELS, SectionKey, Exam } from "@/lib/examConfig";
 import { PERCENTILE_DISCLAIMER } from "@/lib/percentile";
@@ -16,6 +17,7 @@ export default async function ResultsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const session = await auth();
   const attempt = await prisma.attempt.findUnique({
     where: { id },
     include: {
@@ -45,9 +47,24 @@ export default async function ResultsPage({
     (a, b) => a[1].correct / a[1].total - b[1].correct / b[1].total
   );
 
-  const scorePct = Math.round(
-    ((attempt.rawScore ?? 0) / (attempt.maxScore || 1)) * 100
+  // Use Google display name when the viewer owns this attempt; fall back to DB profile name.
+  const displayName =
+    session?.user?.email === attempt.profile.email
+      ? (session.user?.name ?? attempt.profile.name)
+      : attempt.profile.name;
+
+  // Filter to only sections that were actually attempted (handles old data and sectional mocks).
+  const activeSectionScores = Object.fromEntries(
+    Object.entries(sectionScores).filter(
+      ([, ss]) => ss.correct + ss.wrong + ss.skipped > 0
+    )
   );
+  // Recompute effective maxScore from active sections (fixes old attempts stored with full-exam max).
+  const effectiveMax =
+    Object.values(activeSectionScores).reduce((s, ss) => s + ss.max, 0) ||
+    attempt.maxScore ||
+    1;
+  const scorePct = Math.round(((attempt.rawScore ?? 0) / effectiveMax) * 100);
 
   return (
     <div className="space-y-6">
@@ -55,7 +72,7 @@ export default async function ResultsPage({
         <div>
           <h1 className="text-2xl font-bold">Result</h1>
           <p className="text-sm text-muted">
-            {attempt.profile.name} · {config.label} · {attempt.mode} mock
+            {displayName} · {config.label} · {attempt.mode} mock
           </p>
         </div>
         <Link
@@ -72,7 +89,7 @@ export default async function ResultsPage({
           <div className="text-sm text-muted">Score</div>
           <div className="mt-1 text-3xl font-bold tabular-nums">
             {attempt.rawScore}
-            <span className="text-lg text-muted">/{attempt.maxScore}</span>
+            <span className="text-lg text-muted">/{effectiveMax}</span>
           </div>
           <div className="text-xs text-muted">{scorePct}% of maximum</div>
         </Card>
@@ -115,7 +132,7 @@ export default async function ResultsPage({
         <h3 className="mb-3 font-semibold">Section breakdown</h3>
         <div className="space-y-2">
           {config.sections.map((s) => {
-            const ss = sectionScores[s.key];
+            const ss = activeSectionScores[s.key];
             if (!ss) return null;
             return (
               <div
