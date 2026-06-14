@@ -503,9 +503,15 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
           <Card className="w-full max-w-md">
             <h3 className="text-lg font-semibold">Submit the exam?</h3>
             <p className="mt-2 text-sm text-muted">
-              You have answered {counts.answered} of {data.questions.length}{" "}
-              questions. Once submitted, you&apos;ll see your score, percentile
-              estimate and a full solution review.
+              {counts.answered} answered
+              {counts.marked > 0 && `, ${counts.marked} marked for review`}
+              {" "}out of {data.questions.length} questions.{" "}
+              {data.questions.length - counts.answered - counts.marked > 0 && (
+                <span className="text-danger">
+                  {data.questions.length - counts.answered - counts.marked} unattempted.{" "}
+                </span>
+              )}
+              Once submitted, you&apos;ll see your score and full solution review.
             </p>
             <div className="mt-5 flex justify-end gap-2">
               <Button variant="outline" onClick={() => setConfirmOpen(false)}>
