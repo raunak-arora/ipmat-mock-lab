@@ -10,11 +10,30 @@ export default async function DashboardPage() {
   const isAdmin = email === ADMIN_EMAIL;
 
   // Admin sees all profiles; students see only their own
-  const profiles = await prisma.profile.findMany({
+  const rawProfiles = await prisma.profile.findMany({
     where: isAdmin ? undefined : { email },
     orderBy: { createdAt: "asc" },
-    select: { id: true, name: true },
+    select: { id: true, name: true, email: true },
   });
+
+  // Overlay AllowedStudent.name (admin-set or Google-synced) for display
+  const emails = rawProfiles.map((p) => p.email).filter(Boolean) as string[];
+  const allowed = await prisma.allowedStudent.findMany({
+    where: { email: { in: emails } },
+    select: { email: true, name: true },
+  });
+  const nameByEmail = new Map(allowed.map((s) => [s.email, s.name]));
+
+  // For the student's own profile, Google session name takes highest priority
+  const googleName = !isAdmin ? (session?.user?.name ?? null) : null;
+
+  const profiles = rawProfiles.map((p) => ({
+    id: p.id,
+    name:
+      (p.email === email && googleName) ||
+      (p.email && nameByEmail.get(p.email)) ||
+      p.name,
+  }));
 
   return (
     <div className="space-y-5">
