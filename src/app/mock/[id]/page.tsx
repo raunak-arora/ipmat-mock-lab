@@ -49,6 +49,7 @@ export default async function MockPage({
         serverNow: new Date().toISOString(),
         questions,
         saved,
+        lockedSections: attempt.lockedSections ? JSON.parse(attempt.lockedSections) : [],
       }}
     />
   );

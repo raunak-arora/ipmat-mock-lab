@@ -77,6 +77,8 @@ model Attempt {
   sectionScores String?
   percentile    Float?
   clearedCutoff Boolean?
+  // JSON array of SectionKey strings manually submitted by the user mid-exam.
+  lockedSections String?
 
   answers AttemptAnswer[]
 

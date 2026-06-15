@@ -23,6 +23,7 @@ interface AttemptData {
   serverNow: string;
   questions: RunnerQuestion[];
   saved: SavedAnswer[];
+  lockedSections: string[];
 }
 
 type Status = "unseen" | "seen" | "answered" | "marked";
@@ -82,15 +83,24 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
 
   const [, setTick] = useState(0);
   // For SECTIONAL/TOPIC mocks all questions belong to one section; start there.
-  const initialSection = (data.questions[0]?.section ?? sections[0].key) as SectionKey;
+  // On reload after manual section submission, start at the first non-locked section.
+  const initialSection = (() => {
+    const locked = new Set(data.lockedSections);
+    const first = sections.find(
+      (s) => !locked.has(s.key) && data.questions.some((q) => q.section === s.key)
+    );
+    return (first?.key ?? data.questions[0]?.section ?? sections[0].key) as SectionKey;
+  })();
   const [viewSection, setViewSection] = useState<SectionKey>(initialSection);
   // The user's last explicit question selection; the *displayed* question is
   // derived from it so a time-driven section change can't strand the view.
   const [selectedQId, setSelectedQId] = useState<string>(
     data.questions[0]?.id ?? ""
   );
-  const [manualSectionFloor, setManualSectionFloor] = useState(0);
-  const [manuallyLockedSections, setManuallyLockedSections] = useState<Set<SectionKey>>(new Set());
+  const [manualSectionFloor, setManualSectionFloor] = useState(data.lockedSections.length);
+  const [manuallyLockedSections, setManuallyLockedSections] = useState<Set<SectionKey>>(
+    () => new Set(data.lockedSections as SectionKey[])
+  );
   const [sectionConfirmOpen, setSectionConfirmOpen] = useState(false);
 
   // ----- timing (recomputed every render; each tick re-renders) -----
@@ -315,10 +325,19 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   const handleSectionSubmit = () => {
     setSectionConfirmOpen(false);
     if (!nextSec) return;
+    const newLockedSections = config.sectionalTiming
+      ? sectionsWithQs.slice(0, curSecIdx + 1).map((s) => s.key)
+      : [...manuallyLockedSections, effectiveSection];
+    // Persist immediately so a page reload restores the locked state.
+    fetch(`/api/attempts/${data.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lockedSections: newLockedSections }),
+    }).catch(() => {});
     if (config.sectionalTiming) {
       setManualSectionFloor(curSecIdx + 1);
     } else {
-      setManuallyLockedSections((prev) => new Set([...prev, effectiveSection]));
+      setManuallyLockedSections(new Set(newLockedSections as SectionKey[]));
       setViewSection(nextSec.key);
     }
     const firstQ = bySection.get(nextSec.key)?.[0];
