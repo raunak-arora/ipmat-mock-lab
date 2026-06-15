@@ -89,6 +89,9 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   const [selectedQId, setSelectedQId] = useState<string>(
     data.questions[0]?.id ?? ""
   );
+  const [manualSectionFloor, setManualSectionFloor] = useState(0);
+  const [manuallyLockedSections, setManuallyLockedSections] = useState<Set<SectionKey>>(new Set());
+  const [sectionConfirmOpen, setSectionConfirmOpen] = useState(false);
 
   // ----- timing (recomputed every render; each tick re-renders) -----
   // For non-FULL mocks only one section is in scope — use its time limit if the
@@ -132,10 +135,15 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     };
   };
   const timing = computeTiming();
+  // For Indore: manual early submission can advance the active section ahead of the timer floor.
+  const effectiveActiveIndex =
+    config.sectionalTiming && data.mode === "FULL" && timing.activeIndex != null
+      ? Math.max(timing.activeIndex, manualSectionFloor)
+      : timing.activeIndex;
   const activeSectionKey =
-    timing.activeIndex != null ? sections[timing.activeIndex].key : null;
+    effectiveActiveIndex != null ? sections[effectiveActiveIndex]?.key ?? null : null;
 
-  // For Indore the viewable section is forced to the timer's active section;
+  // For Indore the viewable section is forced to the timer's active section (or manual advance);
   // for Rohtak the user picks freely.
   // Sectional locking only applies to FULL mocks — SECTIONAL/TOPIC have one fixed section.
   const effectiveSection =
@@ -252,6 +260,10 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     });
   };
 
+  const sectionsWithQs = sections.filter((s) => (bySection.get(s.key)?.length ?? 0) > 0);
+  const curSecIdx = sectionsWithQs.findIndex((s) => s.key === effectiveSection);
+  const nextSec = sectionsWithQs[curSecIdx + 1];
+
   const goNext = () => {
     const idx = viewQuestions.findIndex((q) => q.id === cid);
     if (idx >= 0 && idx < viewQuestions.length - 1) {
@@ -259,22 +271,21 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
       return;
     }
     // Last question in this section — advance to the first question of the next section
-    // only when navigation is free (no sectional timer lock).
-    const sectionsWithQs = sections.filter((s) => (bySection.get(s.key)?.length ?? 0) > 0);
-    const curSecIdx = sectionsWithQs.findIndex((s) => s.key === effectiveSection);
-    const nextSec = sectionsWithQs[curSecIdx + 1];
-    if (nextSec && !(config.sectionalTiming && data.mode === "FULL")) {
+    // only when navigation is free (no sectional timer lock, and not already manually locked).
+    if (nextSec && !(config.sectionalTiming && data.mode === "FULL") && !manuallyLockedSections.has(effectiveSection)) {
       setViewSection(nextSec.key);
       const firstQ = bySection.get(nextSec.key)?.[0];
       if (firstQ) selectQuestion(firstQ.id);
     }
   };
 
-  const sectionLocked = (index: number) =>
-    data.mode === "FULL" &&
-    config.sectionalTiming &&
-    timing.activeIndex != null &&
-    index !== timing.activeIndex;
+  const sectionLocked = (index: number) => {
+    if (data.mode !== "FULL") return false;
+    if (config.sectionalTiming) {
+      return effectiveActiveIndex != null && index !== effectiveActiveIndex;
+    }
+    return manuallyLockedSections.has(sections[index].key);
+  };
 
   const counts = useMemo(() => {
     let answered = 0;
@@ -286,6 +297,33 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     }
     return { answered, marked };
   }, [answers, data.questions]);
+
+  const sectionCounts = useMemo(() => {
+    const qs = bySection.get(effectiveSection) ?? [];
+    let answered = 0;
+    let marked = 0;
+    for (const q of qs) {
+      const a = answers[q.id];
+      if (a?.status === "answered") answered++;
+      else if (a?.status === "marked") marked++;
+    }
+    return { answered, marked, total: qs.length };
+  }, [answers, bySection, effectiveSection]);
+
+  const canSubmitSection = data.mode === "FULL" && !!nextSec;
+
+  const handleSectionSubmit = () => {
+    setSectionConfirmOpen(false);
+    if (!nextSec) return;
+    if (config.sectionalTiming) {
+      setManualSectionFloor(curSecIdx + 1);
+    } else {
+      setManuallyLockedSections((prev) => new Set([...prev, effectiveSection]));
+      setViewSection(nextSec.key);
+    }
+    const firstQ = bySection.get(nextSec.key)?.[0];
+    if (firstQ) selectQuestion(firstQ.id);
+  };
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -454,6 +492,12 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
               finished section.
             </p>
           )}
+          {data.mode === "FULL" && !config.sectionalTiming && (
+            <p className="mb-3 flex items-start gap-1.5 rounded-md bg-warning/10 p-2 text-xs text-warning">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Submitting a section locks it permanently.
+            </p>
+          )}
 
           <div className="grid grid-cols-5 gap-1.5 sm:grid-cols-6">
             {viewQuestions.map((q, i) => {
@@ -498,8 +542,17 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             </span>
           </div>
 
+          {canSubmitSection && (
+            <Button
+              className="mt-4 w-full"
+              variant="outline"
+              onClick={() => setSectionConfirmOpen(true)}
+            >
+              Submit section &amp; continue →
+            </Button>
+          )}
           <Button
-            className="mt-4 w-full"
+            className="mt-2 w-full"
             variant="danger"
             onClick={() => setConfirmOpen(true)}
           >
@@ -508,6 +561,37 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
           </Button>
         </Card>
       </aside>
+
+      {sectionConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <Card className="w-full max-w-md">
+            <h3 className="text-lg font-semibold">
+              Submit {sections.find((s) => s.key === effectiveSection)?.label ?? effectiveSection}?
+            </h3>
+            <p className="mt-2 text-sm text-muted">
+              {sectionCounts.answered} answered
+              {sectionCounts.marked > 0 && `, ${sectionCounts.marked} marked for review`}
+              {" "}out of {sectionCounts.total} questions.{" "}
+              {sectionCounts.total - sectionCounts.answered - sectionCounts.marked > 0 && (
+                <span className="text-danger">
+                  {sectionCounts.total - sectionCounts.answered - sectionCounts.marked} unattempted.{" "}
+                </span>
+              )}
+            </p>
+            <p className="mt-1 text-sm font-medium text-warning">
+              You cannot return to this section once submitted.
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setSectionConfirmOpen(false)}>
+                Keep going
+              </Button>
+              <Button variant="danger" onClick={handleSectionSubmit}>
+                Submit section
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
 
       {confirmOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
