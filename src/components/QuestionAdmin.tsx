@@ -207,7 +207,14 @@ export default function QuestionAdmin() {
       {/* Coverage */}
       <Card className="p-4">
         <div className="mb-2 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold">Bank coverage</h3>
+          <h3 className="text-sm font-semibold">
+            Bank coverage
+            {counts.length > 0 && (
+              <span className="ml-2 font-normal text-muted">
+                ({counts.reduce((s, c) => s + c._count, 0)} total)
+              </span>
+            )}
+          </h3>
           <div className="flex items-center gap-2">
             {dedupMsg && <span className="text-xs text-muted">{dedupMsg}</span>}
             <Button variant="outline" size="sm" onClick={runDedup} disabled={dedupRunning}>
