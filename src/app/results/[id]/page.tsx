@@ -8,6 +8,7 @@ import { PERCENTILE_DISCLAIMER } from "@/lib/percentile";
 import type { SectionScore } from "@/lib/scoring";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { FORMULAS_BY_TOPIC } from "@/lib/formulas";
 
 export const dynamic = "force-dynamic";
 
@@ -175,28 +176,64 @@ export default async function ResultsPage({
       {/* Topic strengths / weaknesses */}
       <Card>
         <h3 className="mb-3 font-semibold">Topic accuracy</h3>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {topicRows.map(([topic, s]) => {
             const pct = Math.round((s.correct / s.total) * 100);
+            const formulas = FORMULAS_BY_TOPIC[topic];
+            const isWeak = pct < 40;
             return (
-              <div key={topic} className="flex items-center gap-3 text-sm">
-                <span className="w-28 shrink-0 truncate sm:w-44">{topic}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-background">
-                  <div
-                    className={cn(
-                      "h-full rounded-full",
-                      pct >= 70
-                        ? "bg-success"
-                        : pct >= 40
-                          ? "bg-warning"
-                          : "bg-danger"
-                    )}
-                    style={{ width: `${pct}%` }}
-                  />
+              <div key={topic}>
+                <div className="flex items-center gap-3 text-sm">
+                  <span className="w-28 shrink-0 truncate sm:w-44">{topic}</span>
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-background">
+                    <div
+                      className={cn(
+                        "h-full rounded-full",
+                        pct >= 70
+                          ? "bg-success"
+                          : pct >= 40
+                            ? "bg-warning"
+                            : "bg-danger"
+                      )}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="w-20 shrink-0 text-right text-xs tabular-nums text-muted">
+                    {s.correct}/{s.total} ({pct}%)
+                  </span>
                 </div>
-                <span className="w-20 shrink-0 text-right text-xs tabular-nums text-muted">
-                  {s.correct}/{s.total} ({pct}%)
-                </span>
+                {isWeak && formulas && formulas.length > 0 && (
+                  <details className="mt-1 ml-0">
+                    <summary className="cursor-pointer text-xs text-danger hover:text-foreground ml-[7.5rem] sm:ml-44 select-none">
+                      Key formulas for {topic} ▾
+                    </summary>
+                    <div className="mt-1.5 ml-[7.5rem] sm:ml-44 space-y-1">
+                      {formulas.map((entry, i) => (
+                        <div key={i} className="rounded-lg bg-background px-3 py-2">
+                          <div className="text-xs font-semibold text-foreground/90">
+                            {entry.label}
+                          </div>
+                          {entry.formula && (
+                            <div className="mt-0.5 font-mono text-xs text-primary">
+                              {entry.formula}
+                            </div>
+                          )}
+                          {entry.note && (
+                            <div className="mt-0.5 text-xs text-muted leading-relaxed">
+                              {entry.note}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <Link
+                        href="/formulas"
+                        className="block text-xs text-primary hover:underline pt-0.5"
+                      >
+                        See full formula sheet →
+                      </Link>
+                    </div>
+                  </details>
+                )}
               </div>
             );
           })}

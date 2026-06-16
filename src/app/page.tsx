@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, Clock, BarChart2, Target, Trophy, BookOpen } from "lucide-react";
+import { ArrowRight, Clock, BarChart2, Target, Trophy, BookOpen, FileText } from "lucide-react";
 import { auth, signIn, ADMIN_EMAIL } from "@/auth";
 import { prisma } from "@/lib/db";
 import { EXAMS } from "@/lib/examConfig";
@@ -255,6 +255,18 @@ export default async function Home() {
               </Card>
             ))
           )}
+          {/* Formula sheet quick-link */}
+          <Link
+            href="/formulas"
+            className="flex items-center gap-3 rounded-xl border bg-card px-4 py-3 text-sm hover:bg-background transition"
+          >
+            <FileText className="h-4 w-4 shrink-0 text-primary" />
+            <div>
+              <div className="font-medium">Formula Sheet</div>
+              <div className="text-xs text-muted">Key formulas &amp; rules, topic-wise</div>
+            </div>
+            <ArrowRight className="ml-auto h-4 w-4 text-muted" />
+          </Link>
         </div>
       </div>
     </div>
