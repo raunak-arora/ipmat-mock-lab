@@ -56,10 +56,25 @@ function normalize(value: string): string {
   return value
     .trim()
     .toLowerCase()
-    .replace(/,/g, "")
-    .replace(/\s+/g, " ")
-    .replace(/^rs\.?\s*/i, "")
-    .replace(/%$/, "");
+    .replace(/^rs\.?\s*/i, "")   // strip Rs. / Rs prefix
+    .replace(/,/g, "")           // remove thousands separators
+    .replace(/\s+/g, "")         // strip all whitespace (handles "9 : 10")
+    .replace(/%$/, "")           // strip trailing %
+    .replace(/:/g, "/");         // unify ratio notation: 9:10 → 9/10
+}
+
+/**
+ * Evaluate a simple fraction or integer string to a number.
+ * Returns null for anything that can't be reduced to a number (e.g. "3/4/5").
+ */
+function evalFraction(s: string): number | null {
+  const m = s.match(/^(-?\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/);
+  if (m) {
+    const den = parseFloat(m[2]);
+    if (den !== 0) return parseFloat(m[1]) / den;
+  }
+  const n = Number(s);
+  return Number.isNaN(n) ? null : n;
 }
 
 function parseAcceptable(answer: string): string[] {
@@ -82,14 +97,13 @@ export function checkAnswer(
   if (question.type === "SHORT_ANSWER") {
     const candidates = parseAcceptable(question.answer);
     const g = normalize(given);
-    const gNum = Number(g);
     return candidates.some((c) => {
       const n = normalize(c);
       if (n === g) return true;
-      const cNum = Number(n);
-      if (!Number.isNaN(cNum) && !Number.isNaN(gNum)) {
-        return Math.abs(cNum - gNum) < 1e-6;
-      }
+      // Numeric / fraction comparison: 9/10 == 0.9 == 9:10 (after normalize)
+      const gVal = evalFraction(g);
+      const cVal = evalFraction(n);
+      if (gVal !== null && cVal !== null) return Math.abs(cVal - gVal) < 1e-6;
       return false;
     });
   }
