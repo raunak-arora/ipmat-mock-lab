@@ -86,23 +86,21 @@ export async function PATCH(
   const answers: SavedAnswer[] = body.answers ?? [];
   const lockedSections: string[] | undefined = body.lockedSections;
 
-  const ops: Parameters<typeof prisma.$transaction>[0] = answers.map((a) =>
-    prisma.attemptAnswer.updateMany({
-      where: { attemptId: id, questionId: a.questionId },
-      data: { given: a.given, status: a.status, timeSpentSec: a.timeSpentSec },
-    })
+  await prisma.$transaction(
+    answers.map((a) =>
+      prisma.attemptAnswer.updateMany({
+        where: { attemptId: id, questionId: a.questionId },
+        data: { given: a.given, status: a.status, timeSpentSec: a.timeSpentSec },
+      })
+    )
   );
 
   if (lockedSections !== undefined) {
-    ops.push(
-      prisma.attempt.update({
-        where: { id },
-        data: { lockedSections: JSON.stringify(lockedSections) },
-      })
-    );
+    await prisma.attempt.update({
+      where: { id },
+      data: { lockedSections: JSON.stringify(lockedSections) },
+    });
   }
-
-  await prisma.$transaction(ops);
 
   return NextResponse.json({ ok: true });
 }
