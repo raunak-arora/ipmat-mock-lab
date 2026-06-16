@@ -55,6 +55,8 @@ export interface GenerateOptions {
   mode: Mode;
   scopeSection?: SectionKey;
   scopeTopic?: string;
+  /** Multiple topics for weak-topic drill — overrides scopeTopic when set. */
+  scopeTopics?: string[];
   /** Questions per section for TOPIC practice mode. */
   practiceSize?: number;
 }
@@ -73,10 +75,14 @@ export async function generateMock(
   const shortfalls: GeneratedMock["shortfalls"] = [];
   let order = 0;
 
+  const isWeakDrill = opts.scopeTopics && opts.scopeTopics.length > 0;
+
   const targetSections =
     opts.mode === "FULL"
       ? config.sections
-      : config.sections.filter((s) => s.key === opts.scopeSection);
+      : isWeakDrill
+        ? config.sections  // all sections — empty pools get skipped below
+        : config.sections.filter((s) => s.key === opts.scopeSection);
 
   for (const section of targetSections) {
     const want =
@@ -84,15 +90,17 @@ export async function generateMock(
         ? opts.practiceSize ?? 15
         : section.count;
 
+    const topicFilter = isWeakDrill
+      ? { topic: { in: opts.scopeTopics! } }
+      : opts.mode === "TOPIC" && opts.scopeTopic
+        ? { topic: opts.scopeTopic }
+        : {};
+
     const pool = await prisma.question.findMany({
-      where: {
-        subject: section.subject,
-        type: section.type,
-        ...(opts.mode === "TOPIC" && opts.scopeTopic
-          ? { topic: opts.scopeTopic }
-          : {}),
-      },
+      where: { subject: section.subject, type: section.type, ...topicFilter },
     });
+
+    if (pool.length === 0) continue;  // topic doesn't map to this section
 
     const picked = pickWithTopicSpread(pool, want);
     if (picked.length < want) {

@@ -16,6 +16,7 @@ export async function POST(req: Request) {
   const mode = (body.mode as Mode) ?? "FULL";
   const scopeSection = body.scopeSection as SectionKey | undefined;
   const scopeTopic = body.scopeTopic as string | undefined;
+  const scopeTopics = Array.isArray(body.scopeTopics) ? (body.scopeTopics as string[]) : undefined;
 
   const profileId: string | undefined = body.profileId;
   if (!profileId) {
@@ -38,6 +39,7 @@ export async function POST(req: Request) {
     mode,
     scopeSection,
     scopeTopic,
+    scopeTopics,
   });
 
   if (planned.length === 0) {

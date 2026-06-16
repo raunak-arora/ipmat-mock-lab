@@ -9,6 +9,7 @@ import {
   Eraser,
   Lock,
   Send,
+  PenLine,
 } from "lucide-react";
 import { Exam, SectionKey, getExam } from "@/lib/examConfig";
 import type { RunnerQuestion, SavedAnswer } from "@/lib/types";
@@ -102,6 +103,14 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     () => new Set(data.lockedSections as SectionKey[])
   );
   const [sectionConfirmOpen, setSectionConfirmOpen] = useState(false);
+  const [scratchpad, setScratchpad] = useState("");
+  useEffect(() => {
+    setScratchpad(localStorage.getItem(`scratch-${data.id}`) ?? "");
+  }, [data.id]);
+  const saveScratch = useCallback((val: string) => {
+    setScratchpad(val);
+    localStorage.setItem(`scratch-${data.id}`, val);
+  }, [data.id]);
 
   // ----- timing (recomputed every render; each tick re-renders) -----
   // For non-FULL mocks only one section is in scope — use its time limit if the
@@ -579,6 +588,37 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             Submit exam
           </Button>
         </Card>
+
+        {/* Scratch pad */}
+        <details className="group rounded-xl border bg-card">
+          <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium select-none hover:bg-background rounded-xl">
+            <PenLine className="h-4 w-4 text-muted" />
+            Rough work
+            <svg
+              className="ml-auto h-4 w-4 text-muted transition-transform group-open:rotate-180"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="px-3 pb-3 pt-1">
+            <textarea
+              value={scratchpad}
+              onChange={(e) => saveScratch(e.target.value)}
+              placeholder="Jot calculations here…"
+              rows={8}
+              className="w-full resize-y rounded-lg border bg-background px-3 py-2 text-sm font-mono text-foreground placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            {scratchpad && (
+              <button
+                onClick={() => saveScratch("")}
+                className="mt-1 text-xs text-muted hover:text-danger"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </details>
       </aside>
 
       {sectionConfirmOpen && (

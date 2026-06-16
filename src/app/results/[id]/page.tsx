@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { CheckCircle2, XCircle, MinusCircle, Info } from "lucide-react";
+import { CheckCircle2, XCircle, MinusCircle, Info, Clock } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { EXAMS, SECTION_LABELS, SectionKey, Exam } from "@/lib/examConfig";
@@ -9,6 +9,7 @@ import type { SectionScore } from "@/lib/scoring";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { FORMULAS_BY_TOPIC } from "@/lib/formulas";
+import DrillButton from "@/components/DrillButton";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,31 @@ export default async function ResultsPage({
   const topicRows = [...topicStats.entries()].sort(
     (a, b) => a[1].correct / a[1].total - b[1].correct / b[1].total
   );
+
+  // Weak topics for drill (< 50% accuracy, min 2 questions attempted).
+  const weakTopics = topicRows
+    .filter(([, s]) => s.total >= 2 && s.correct / s.total < 0.5)
+    .map(([t]) => t);
+
+  // Time analysis.
+  const answered = attempt.answers.filter((a) => a.given && a.given.trim() !== "");
+  const totalTimeSec = attempt.answers.reduce((s, a) => s + (a.timeSpentSec ?? 0), 0);
+  const avgTimeSec = answered.length > 0
+    ? Math.round(attempt.answers.reduce((s, a) => s + (a.timeSpentSec ?? 0), 0) / answered.length)
+    : 0;
+  const correctAnswers = attempt.answers.filter((a) => a.isCorrect === true);
+  const wrongAnswers = attempt.answers.filter((a) => a.isCorrect === false && a.given && a.given.trim() !== "");
+  const avgTimeCorrect = correctAnswers.length > 0
+    ? Math.round(correctAnswers.reduce((s, a) => s + (a.timeSpentSec ?? 0), 0) / correctAnswers.length)
+    : null;
+  const avgTimeWrong = wrongAnswers.length > 0
+    ? Math.round(wrongAnswers.reduce((s, a) => s + (a.timeSpentSec ?? 0), 0) / wrongAnswers.length)
+    : null;
+  // Slow & wrong: spent > 90s but got it wrong.
+  const slowAndWrong = attempt.answers
+    .filter((a) => a.isCorrect === false && (a.timeSpentSec ?? 0) > 90 && a.given && a.given.trim() !== "")
+    .sort((a, b) => (b.timeSpentSec ?? 0) - (a.timeSpentSec ?? 0))
+    .slice(0, 5);
 
   // Use Google display name for the owner; for everyone else (admin), use AllowedStudent.name.
   let displayName: string;
@@ -173,9 +199,67 @@ export default async function ResultsPage({
         </div>
       </Card>
 
+      {/* Time analysis */}
+      {totalTimeSec > 0 && (
+        <Card>
+          <h3 className="mb-3 font-semibold">Time analysis</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-center text-sm mb-4">
+            <div className="rounded-lg bg-background p-3">
+              <div className="text-lg font-bold tabular-nums">
+                {Math.floor(totalTimeSec / 60)}m {totalTimeSec % 60}s
+              </div>
+              <div className="text-xs text-muted mt-0.5">Total time used</div>
+            </div>
+            <div className="rounded-lg bg-background p-3">
+              <div className="text-lg font-bold tabular-nums">{avgTimeSec}s</div>
+              <div className="text-xs text-muted mt-0.5">Avg per question</div>
+            </div>
+            {avgTimeCorrect !== null && (
+              <div className="rounded-lg bg-background p-3">
+                <div className="text-lg font-bold tabular-nums text-success">{avgTimeCorrect}s</div>
+                <div className="text-xs text-muted mt-0.5">Avg on correct</div>
+              </div>
+            )}
+            {avgTimeWrong !== null && (
+              <div className="rounded-lg bg-background p-3">
+                <div className="text-lg font-bold tabular-nums text-danger">{avgTimeWrong}s</div>
+                <div className="text-xs text-muted mt-0.5">Avg on wrong</div>
+              </div>
+            )}
+          </div>
+          {slowAndWrong.length > 0 && (
+            <div>
+              <p className="mb-2 text-xs font-medium text-warning">
+                Slow &amp; wrong — spent &gt;90s but got wrong:
+              </p>
+              <div className="space-y-1.5">
+                {slowAndWrong.map((a, i) => (
+                  <div key={a.id} className="flex items-start gap-2 rounded-lg bg-background px-3 py-2 text-xs">
+                    <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+                    <span className="flex-1 text-muted line-clamp-1">{a.question.stem}</span>
+                    <span className="shrink-0 tabular-nums text-danger font-medium">
+                      {a.timeSpentSec}s
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </Card>
+      )}
+
       {/* Topic strengths / weaknesses */}
       <Card>
-        <h3 className="mb-3 font-semibold">Topic accuracy</h3>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 className="font-semibold">Topic accuracy</h3>
+          {weakTopics.length > 0 && (
+            <DrillButton
+              exam={attempt.exam}
+              profileId={attempt.profileId}
+              weakTopics={weakTopics}
+            />
+          )}
+        </div>
         <div className="space-y-2">
           {topicRows.map(([topic, s]) => {
             const pct = Math.round((s.correct / s.total) * 100);
@@ -269,6 +353,18 @@ export default async function ResultsPage({
                       <span>{SECTION_LABELS[a.section as SectionKey]}</span>
                       <span>·</span>
                       <span>{a.question.topic}</span>
+                      {(a.timeSpentSec ?? 0) > 0 && (
+                        <>
+                          <span>·</span>
+                          <span className={cn(
+                            "flex items-center gap-0.5",
+                            (a.timeSpentSec ?? 0) > 120 ? "text-warning" : ""
+                          )}>
+                            <Clock className="h-3 w-3" />
+                            {a.timeSpentSec}s
+                          </span>
+                        </>
+                      )}
                       <span className="ml-auto tabular-nums">
                         {a.marks != null && a.marks !== 0
                           ? `${a.marks > 0 ? "+" : ""}${a.marks}`
