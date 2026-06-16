@@ -16,6 +16,31 @@ interface QuestionRow {
   answer: string;
 }
 
+interface Issue {
+  id: string;
+  subject: string;
+  type: string;
+  topic: string;
+  difficulty: string;
+  stem: string;
+  answer: string;
+  options: string[] | null;
+  issueType:
+    | "answer_not_in_options"
+    | "too_few_options"
+    | "duplicate_options"
+    | "answer_echoes_stem"
+    | "short_stem"
+    | "option_is_label";
+  detail: string;
+}
+
+interface AuditResult {
+  total: number;
+  issueCount: number;
+  issues: Issue[];
+}
+
 const TOPICS: Record<Subject, readonly string[]> = {
   QUANT: QA_TOPICS,
   VERBAL: VA_TOPICS,
@@ -44,7 +69,7 @@ export default function QuestionAdmin() {
   const [counts, setCounts] = useState<
     { subject: string; type: string; _count: number }[]
   >([]);
-  const [tab, setTab] = useState<"add" | "import" | "browse">("add");
+  const [tab, setTab] = useState<"add" | "import" | "browse" | "audit">("add");
 
   // Add form
   const [subject, setSubject] = useState<Subject>("QUANT");
@@ -65,6 +90,10 @@ export default function QuestionAdmin() {
   // Dedup
   const [dedupMsg, setDedupMsg] = useState<string | null>(null);
   const [dedupRunning, setDedupRunning] = useState(false);
+
+  // Audit
+  const [auditResults, setAuditResults] = useState<AuditResult | null>(null);
+  const [auditRunning, setAuditRunning] = useState(false);
 
   const load = () => {
     fetch("/api/questions")
@@ -154,6 +183,16 @@ export default function QuestionAdmin() {
     setDedupRunning(false);
   };
 
+  const runAudit = async () => {
+    setAuditRunning(true);
+    const res = await fetch("/api/admin/quality-scan", { method: "POST" });
+    const b = await res.json();
+    if (res.ok) {
+      setAuditResults(b as AuditResult);
+    }
+    setAuditRunning(false);
+  };
+
   const remove = async (id: string) => {
     const res = await fetch(`/api/questions/${id}`, { method: "DELETE" });
     if (res.ok) load();
@@ -193,6 +232,7 @@ export default function QuestionAdmin() {
             ["add", "Add question"],
             ["import", "Bulk import"],
             ["browse", "Browse / delete"],
+            ["audit", "Audit"],
           ] as const
         ).map(([t, label]) => (
           <button
@@ -403,6 +443,58 @@ export default function QuestionAdmin() {
         </Card>
       )}
 
+      {tab === "audit" && (
+        <Card className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Button onClick={runAudit} disabled={auditRunning}>
+              {auditRunning ? "Scanning…" : "Run audit"}
+            </Button>
+            {auditResults && (
+              <span className="text-sm text-muted">
+                {auditResults.issueCount} issue{auditResults.issueCount !== 1 ? "s" : ""} found across {auditResults.total} questions
+              </span>
+            )}
+          </div>
+          {auditResults && auditResults.issueCount > 0 && (
+            <div className="divide-y">
+              {auditResults.issues.map((issue) => (
+                <div
+                  key={`${issue.id}-${issue.issueType}`}
+                  className="flex items-start justify-between gap-3 py-2.5 text-sm"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-muted">
+                      <span>{issue.subject}</span>
+                      <span>·</span>
+                      <span>{issue.topic}</span>
+                      <span>·</span>
+                      <span>{issue.difficulty}</span>
+                      <span>·</span>
+                      <IssueBadge type={issue.issueType} />
+                    </div>
+                    <p className="truncate">{issue.stem.slice(0, 80)}{issue.stem.length > 80 ? "…" : ""}</p>
+                    <p className="mt-0.5 text-xs text-muted">{issue.detail}</p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      await remove(issue.id);
+                      await runAudit();
+                    }}
+                    className="shrink-0 rounded-md p-1.5 text-danger hover:bg-danger/10"
+                    title="Delete"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {auditResults && auditResults.issueCount === 0 && (
+            <p className="text-sm text-muted">No issues found.</p>
+          )}
+        </Card>
+      )}
+
       <style>{`
         .input { width: 100%; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--card); padding: 0.5rem 0.75rem; font-size: 0.875rem; }
         .input:focus { outline: none; border-color: var(--primary); }
@@ -424,5 +516,31 @@ function Field({
       <span className="mb-1 block text-xs font-medium text-muted">{label}</span>
       {children}
     </label>
+  );
+}
+
+const ISSUE_LABELS: Record<string, string> = {
+  answer_not_in_options: "answer not in options",
+  too_few_options: "too few options",
+  duplicate_options: "duplicate options",
+  answer_echoes_stem: "answer echoes stem",
+  short_stem: "short stem",
+  option_is_label: "option is label",
+};
+
+const ISSUE_TONES: Record<string, "danger" | "warning" | "muted"> = {
+  answer_not_in_options: "danger",
+  too_few_options: "danger",
+  option_is_label: "danger",
+  duplicate_options: "warning",
+  answer_echoes_stem: "warning",
+  short_stem: "muted",
+};
+
+function IssueBadge({ type }: { type: string }) {
+  return (
+    <Badge tone={ISSUE_TONES[type] ?? "muted"}>
+      {ISSUE_LABELS[type] ?? type}
+    </Badge>
   );
 }
