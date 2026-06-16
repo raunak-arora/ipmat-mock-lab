@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2, Upload, Sparkles } from "lucide-react";
 import { Button, Card, Badge } from "@/components/ui";
 import { QA_TOPICS, VA_TOPICS, LR_TOPICS, Subject } from "@/lib/examConfig";
 
@@ -61,6 +61,10 @@ export default function QuestionAdmin() {
   // Import
   const [importText, setImportText] = useState("");
   const [importMsg, setImportMsg] = useState<string | null>(null);
+
+  // Dedup
+  const [dedupMsg, setDedupMsg] = useState<string | null>(null);
+  const [dedupRunning, setDedupRunning] = useState(false);
 
   const load = () => {
     fetch("/api/questions")
@@ -136,6 +140,20 @@ export default function QuestionAdmin() {
     }
   };
 
+  const runDedup = async () => {
+    setDedupRunning(true);
+    setDedupMsg(null);
+    const res = await fetch("/api/admin/dedup", { method: "POST" });
+    const b = await res.json();
+    if (res.ok) {
+      setDedupMsg(`✓ Removed ${b.removed} duplicate${b.removed !== 1 ? "s" : ""}. ${b.remaining} questions remain.`);
+      load();
+    } else {
+      setDedupMsg(`✗ ${b.error}`);
+    }
+    setDedupRunning(false);
+  };
+
   const remove = async (id: string) => {
     const res = await fetch(`/api/questions/${id}`, { method: "DELETE" });
     if (res.ok) load();
@@ -149,7 +167,16 @@ export default function QuestionAdmin() {
     <div className="space-y-5">
       {/* Coverage */}
       <Card className="p-4">
-        <h3 className="mb-2 text-sm font-semibold">Bank coverage</h3>
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold">Bank coverage</h3>
+          <div className="flex items-center gap-2">
+            {dedupMsg && <span className="text-xs text-muted">{dedupMsg}</span>}
+            <Button variant="outline" size="sm" onClick={runDedup} disabled={dedupRunning}>
+              <Sparkles className="h-3.5 w-3.5" />
+              {dedupRunning ? "Running…" : "Remove duplicates"}
+            </Button>
+          </div>
+        </div>
         <div className="flex flex-wrap gap-2">
           {counts.map((c) => (
             <Badge key={`${c.subject}-${c.type}`} tone="primary">

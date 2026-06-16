@@ -41,8 +41,35 @@ export async function POST(req: Request) {
     valid.push(q);
   });
 
+  // Build a set of normalized stem keys already in the DB for the affected pools.
+  const pools = [...new Set(valid.map((q) => `${q.subject}|${q.type}`))];
+  const existing = await prisma.question.findMany({
+    where: {
+      OR: pools.map((p) => {
+        const [subject, type] = p.split("|");
+        return { subject, type };
+      }),
+    },
+    select: { stem: true },
+  });
+  function normStem(s: string): string {
+    return s
+      .trim()
+      .toLowerCase()
+      .replace(/\[ipmat\s+\w+\s+\d{4}\]\s*/gi, "")
+      .replace(/\(ipmat\s+\w+\s+\d{4}\)\s*/gi, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 120);
+  }
+  const existingKeys = new Set(existing.map((q) => normStem(q.stem)));
+
   let inserted = 0;
+  let skippedDup = 0;
   for (const q of valid) {
+    const key = normStem(q.stem as string);
+    if (existingKeys.has(key)) { skippedDup++; continue; }
+    existingKeys.add(key);
     await prisma.question.create({
       data: {
         subject: q.subject as string,
@@ -61,5 +88,5 @@ export async function POST(req: Request) {
     inserted++;
   }
 
-  return NextResponse.json({ inserted, skipped: errors.length, errors });
+  return NextResponse.json({ inserted, skipped: errors.length + skippedDup, errors });
 }
