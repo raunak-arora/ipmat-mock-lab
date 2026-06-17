@@ -138,7 +138,7 @@ export function SignOutButton({ action, name, image, email }: Props) {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Sign out?</p>
-                <p className="text-xs text-muted">You&apos;ll need to sign in again to access admin.</p>
+                <p className="text-xs text-muted">You&apos;ll need to sign in again to continue.</p>
               </div>
             </div>
             <div className="flex gap-2">

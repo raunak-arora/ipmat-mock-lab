@@ -74,7 +74,7 @@ export default function StartMock({ profileId, profileName }: Props) {
               onClick={() => { setExam(e); setScopeSection(""); setScopeTopic(""); }}
               className={cn(
                 "rounded-lg border p-3 text-left text-sm transition",
-                exam === e ? "border-primary bg-primary/5" : "hover:bg-background"
+                exam === e ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "hover:bg-background"
               )}
             >
               <div className="font-semibold">{EXAMS[e].label}</div>
@@ -95,8 +95,8 @@ export default function StartMock({ profileId, profileName }: Props) {
               key={m}
               onClick={() => setMode(m)}
               className={cn(
-                "rounded-lg border px-3 py-2 text-sm transition",
-                mode === m ? "border-primary bg-primary/5" : "hover:bg-background"
+                "rounded-lg border px-3 py-2 text-sm font-medium transition",
+                mode === m ? "border-primary bg-primary/10 ring-1 ring-primary/30 text-primary" : "hover:bg-background"
               )}
             >
               {label}

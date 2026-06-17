@@ -583,7 +583,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
                 >
                   {i + 1}
                   {bookmarks.has(q.id) && (
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-yellow-400 ring-1 ring-card" />
+                    <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-yellow-400 ring-2 ring-card" />
                   )}
                 </button>
               );
