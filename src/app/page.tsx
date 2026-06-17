@@ -127,7 +127,7 @@ export default async function Home() {
 
   const profile = await getOrCreateProfile(email, session.user.name ?? "");
 
-  const [recent, totalAttempts] = await Promise.all([
+  const [recent, totalAttempts, allDates] = await Promise.all([
     prisma.attempt.findMany({
       where: { profileId: profile.id, submittedAt: { not: null } },
       orderBy: { submittedAt: "desc" },
@@ -141,7 +141,31 @@ export default async function Home() {
     prisma.attempt.count({
       where: { profileId: profile.id, submittedAt: { not: null } },
     }),
+    prisma.attempt.findMany({
+      where: { profileId: profile.id, submittedAt: { not: null } },
+      select: { submittedAt: true },
+      orderBy: { submittedAt: "desc" },
+    }),
   ]);
+
+  // Streak computation (UTC dates).
+  const toDateStr = (d: Date) => d.toISOString().split("T")[0];
+  const dateset = new Set(allDates.map((a) => toDateStr(a.submittedAt!)));
+  let streak = 0;
+  const today = new Date();
+  const cursor = new Date(today);
+  if (!dateset.has(toDateStr(cursor))) cursor.setDate(cursor.getDate() - 1);
+  while (dateset.has(toDateStr(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  // Attempts this week (Mon–Sun).
+  const dayOfWeek = today.getUTCDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const monday = new Date(today);
+  monday.setUTCDate(today.getUTCDate() + mondayOffset);
+  monday.setUTCHours(0, 0, 0, 0);
+  const thisWeekCount = allDates.filter((a) => a.submittedAt! >= monday).length;
 
   // Compute effectiveMax from active sections (fixes sectional mocks showing full-exam max).
   const recentWithMax = recent.map((a) => {
@@ -174,11 +198,15 @@ export default async function Home() {
 
       {/* Stats row */}
       {totalAttempts > 0 && (
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             { label: "Attempts", value: totalAttempts },
             { label: "Avg score %", value: avgScore != null ? `${avgScore}%` : "—" },
             { label: "Avg percentile", value: avgPercentile != null ? `${avgPercentile}th` : "—" },
+            {
+              label: streak > 0 ? `${streak}-day streak` : "This week",
+              value: streak > 0 ? "🔥" : `${thisWeekCount}`,
+            },
           ].map(({ label, value }) => (
             <div key={label} className="rounded-xl border bg-card p-4 text-center">
               <div className="text-xl font-bold">{value}</div>

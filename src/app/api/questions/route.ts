@@ -23,6 +23,9 @@ export async function GET(req: Request) {
     by: ["subject", "type"],
     _count: true,
   });
+  const withExplanation = await prisma.question.count({
+    where: { explanation: { not: null } },
+  });
   return NextResponse.json({
     questions: questions.map((q) => ({
       ...q,
@@ -30,6 +33,7 @@ export async function GET(req: Request) {
       tags: q.tags ? JSON.parse(q.tags) : null,
     })),
     counts,
+    withExplanation,
   });
 }
 

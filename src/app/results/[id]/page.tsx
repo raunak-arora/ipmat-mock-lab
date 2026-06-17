@@ -54,6 +54,16 @@ export default async function ResultsPage({
     .filter(([, s]) => s.total >= 2 && s.correct / s.total < 0.5)
     .map(([t]) => t);
 
+  // Difficulty-level accuracy.
+  const difficultyStats = new Map<string, { correct: number; total: number }>();
+  for (const a of attempt.answers) {
+    const d = a.question.difficulty;
+    const s = difficultyStats.get(d) ?? { correct: 0, total: 0 };
+    s.total += 1;
+    if (a.isCorrect) s.correct += 1;
+    difficultyStats.set(d, s);
+  }
+
   // Time analysis.
   const answered = attempt.answers.filter((a) => a.given && a.given.trim() !== "");
   const totalTimeSec = attempt.answers.reduce((s, a) => s + (a.timeSpentSec ?? 0), 0);
@@ -193,6 +203,35 @@ export default async function ResultsPage({
                   <span className="text-danger">{ss.wrong} wrong</span>
                   <span>{ss.skipped} skipped</span>
                 </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Difficulty breakdown */}
+      <Card>
+        <h3 className="mb-3 font-semibold">Difficulty breakdown</h3>
+        <div className="grid grid-cols-3 gap-3 text-center text-sm">
+          {(["EASY", "MEDIUM", "HARD"] as const).map((d) => {
+            const s = difficultyStats.get(d) ?? { correct: 0, total: 0 };
+            const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : null;
+            return (
+              <div key={d} className="rounded-lg bg-background p-3">
+                <div className={cn(
+                  "mb-1 text-xs font-semibold",
+                  d === "EASY" ? "text-success" : d === "MEDIUM" ? "text-warning" : "text-danger"
+                )}>
+                  {d}
+                </div>
+                {s.total === 0 ? (
+                  <div className="text-muted">—</div>
+                ) : (
+                  <>
+                    <div className="text-xl font-bold tabular-nums">{pct}%</div>
+                    <div className="text-xs text-muted">{s.correct}/{s.total} correct</div>
+                  </>
+                )}
               </div>
             );
           })}

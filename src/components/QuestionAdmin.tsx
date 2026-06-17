@@ -69,7 +69,19 @@ export default function QuestionAdmin() {
   const [counts, setCounts] = useState<
     { subject: string; type: string; _count: number }[]
   >([]);
-  const [tab, setTab] = useState<"add" | "import" | "browse" | "audit">("add");
+  const [withExplanation, setWithExplanation] = useState<number | null>(null);
+  const [tab, setTab] = useState<"add" | "import" | "browse" | "audit" | "stats">("add");
+
+  // Stats tab
+  interface QuestionStat {
+    questionId: string;
+    total: number;
+    correct: number;
+    successRate: number;
+    question: { id: string; stem: string; topic: string; subject: string; difficulty: string };
+  }
+  const [statsData, setStatsData] = useState<QuestionStat[] | null>(null);
+  const [statsLoading, setStatsLoading] = useState(false);
 
   // Add form
   const [subject, setSubject] = useState<Subject>("QUANT");
@@ -101,7 +113,16 @@ export default function QuestionAdmin() {
       .then((d) => {
         setRows(d.questions);
         setCounts(d.counts);
+        setWithExplanation(d.withExplanation ?? null);
       });
+  };
+
+  const loadStats = () => {
+    setStatsLoading(true);
+    fetch("/api/admin/question-stats")
+      .then((r) => r.json())
+      .then((d) => setStatsData(d.stats))
+      .finally(() => setStatsLoading(false));
   };
   useEffect(load, []);
 
@@ -211,7 +232,13 @@ export default function QuestionAdmin() {
             Bank coverage
             {counts.length > 0 && (
               <span className="ml-2 font-normal text-muted">
-                ({counts.reduce((s, c) => s + c._count, 0)} total)
+                ({counts.reduce((s, c) => s + c._count, 0)} total
+                {withExplanation !== null && counts.length > 0 && (
+                  <span className={withExplanation / counts.reduce((s, c) => s + c._count, 0) < 0.5 ? " text-danger" : " text-success"}>
+                    {" · "}{Math.round((withExplanation / counts.reduce((s, c) => s + c._count, 0)) * 100)}% with explanations
+                  </span>
+                )}
+                )
               </span>
             )}
           </h3>
@@ -240,6 +267,7 @@ export default function QuestionAdmin() {
             ["import", "Bulk import"],
             ["browse", "Browse / delete"],
             ["audit", "Audit"],
+            ["stats", "Usage stats"],
           ] as const
         ).map(([t, label]) => (
           <button
@@ -498,6 +526,63 @@ export default function QuestionAdmin() {
           )}
           {auditResults && auditResults.issueCount === 0 && (
             <p className="text-sm text-muted">No issues found.</p>
+          )}
+        </Card>
+      )}
+
+      {tab === "stats" && (
+        <Card className="space-y-4">
+          {!statsData && (
+            <Button onClick={loadStats} disabled={statsLoading}>
+              {statsLoading ? "Loading…" : "Load usage stats"}
+            </Button>
+          )}
+          {statsData && statsData.length === 0 && (
+            <p className="text-sm text-muted">No attempt data yet — take a mock first.</p>
+          )}
+          {statsData && statsData.length > 0 && (
+            <>
+              <div>
+                <h4 className="mb-2 text-sm font-semibold">Most attempted</h4>
+                <div className="divide-y text-sm">
+                  {statsData.slice(0, 20).map((s) => (
+                    <div key={s.questionId} className="flex items-start gap-3 py-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs text-muted">{s.question.topic} · {s.question.difficulty}</p>
+                        <p className="mt-0.5 line-clamp-1">{s.question.stem.slice(0, 90)}{s.question.stem.length > 90 ? "…" : ""}</p>
+                      </div>
+                      <div className="shrink-0 text-right text-xs tabular-nums">
+                        <div className="font-medium">{s.total} uses</div>
+                        <div className={s.successRate < 40 ? "text-danger" : s.successRate < 70 ? "text-warning" : "text-success"}>
+                          {s.successRate}% correct
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h4 className="mb-2 text-sm font-semibold">Hardest questions <span className="font-normal text-muted">(min 3 attempts)</span></h4>
+                <div className="divide-y text-sm">
+                  {[...statsData]
+                    .filter((s) => s.total >= 3)
+                    .sort((a, b) => a.successRate - b.successRate)
+                    .slice(0, 10)
+                    .map((s) => (
+                      <div key={s.questionId} className="flex items-start gap-3 py-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs text-muted">{s.question.topic} · {s.question.difficulty}</p>
+                          <p className="mt-0.5 line-clamp-1">{s.question.stem.slice(0, 90)}{s.question.stem.length > 90 ? "…" : ""}</p>
+                        </div>
+                        <div className="shrink-0 text-right text-xs tabular-nums">
+                          <div className="font-medium text-danger">{s.successRate}% correct</div>
+                          <div className="text-muted">{s.total} uses</div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </>
           )}
         </Card>
       )}
