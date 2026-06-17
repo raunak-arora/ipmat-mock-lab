@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Trash2, Upload, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Plus, Trash2, Upload, Sparkles, Clock } from "lucide-react";
 import { Button, Card, Badge } from "@/components/ui";
 import { QA_TOPICS, VA_TOPICS, LR_TOPICS, Subject } from "@/lib/examConfig";
 
@@ -106,6 +106,42 @@ export default function QuestionAdmin() {
   // Audit
   const [auditResults, setAuditResults] = useState<AuditResult | null>(null);
   const [auditRunning, setAuditRunning] = useState(false);
+
+  // Job history
+  interface JobRecord {
+    id: string;
+    type: string;
+    status: string;
+    startedAt: string;
+    finishedAt: string | null;
+    result: string | null;
+  }
+  const [lastDedup, setLastDedup] = useState<JobRecord | null>(null);
+  const [lastAudit, setLastAudit] = useState<JobRecord | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const loadJobs = useCallback(async () => {
+    const r = await fetch("/api/admin/jobs");
+    if (!r.ok) return;
+    const d = await r.json();
+    setLastDedup(d.dedup ?? null);
+    setLastAudit(d.audit ?? null);
+    return d;
+  }, []);
+
+  useEffect(() => {
+    loadJobs().then((d) => {
+      if (d?.dedup?.status === "RUNNING" || d?.audit?.status === "RUNNING") {
+        pollRef.current = setInterval(async () => {
+          const refreshed = await loadJobs();
+          if (refreshed?.dedup?.status !== "RUNNING" && refreshed?.audit?.status !== "RUNNING") {
+            clearInterval(pollRef.current!);
+          }
+        }, 3000);
+      }
+    });
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const load = () => {
     fetch("/api/questions")
@@ -242,12 +278,12 @@ export default function QuestionAdmin() {
               </span>
             )}
           </h3>
-          <div className="flex items-center gap-2">
-            {dedupMsg && <span className="text-xs text-muted">{dedupMsg}</span>}
-            <Button variant="outline" size="sm" onClick={runDedup} disabled={dedupRunning}>
+          <div className="flex flex-col items-end gap-1">
+            <Button variant="outline" size="sm" onClick={runDedup} disabled={dedupRunning || lastDedup?.status === "RUNNING"}>
               <Sparkles className="h-3.5 w-3.5" />
-              {dedupRunning ? "Running…" : "Remove duplicates"}
+              {dedupRunning || lastDedup?.status === "RUNNING" ? "Running…" : "Remove duplicates"}
             </Button>
+            <JobTag job={lastDedup} runningMsg={dedupMsg} />
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -480,15 +516,16 @@ export default function QuestionAdmin() {
 
       {tab === "audit" && (
         <Card className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Button onClick={runAudit} disabled={auditRunning}>
-              {auditRunning ? "Scanning…" : "Run audit"}
+          <div className="flex flex-wrap items-center gap-3">
+            <Button onClick={runAudit} disabled={auditRunning || lastAudit?.status === "RUNNING"}>
+              {auditRunning || lastAudit?.status === "RUNNING" ? "Scanning…" : "Run audit"}
             </Button>
             {auditResults && (
               <span className="text-sm text-muted">
                 {auditResults.issueCount} issue{auditResults.issueCount !== 1 ? "s" : ""} found across {auditResults.total} questions
               </span>
             )}
+            <JobTag job={lastAudit} />
           </div>
           {auditResults && auditResults.issueCount > 0 && (
             <div className="divide-y">
@@ -593,6 +630,59 @@ export default function QuestionAdmin() {
         .select { width: 100%; border: 1px solid var(--border); border-radius: 0.5rem; background: var(--card); padding: 0.5rem 0.75rem; font-size: 0.875rem; }
       `}</style>
     </div>
+  );
+}
+
+function timeAgo(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+interface JobRecord {
+  id: string;
+  type: string;
+  status: string;
+  startedAt: string;
+  finishedAt: string | null;
+  result: string | null;
+}
+
+function JobTag({ job, runningMsg }: { job: JobRecord | null; runningMsg?: string | null }) {
+  if (!job) return null;
+  if (job.status === "RUNNING") {
+    return (
+      <span className="flex items-center gap-1 text-xs text-warning">
+        <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-warning" />
+        Running since {timeAgo(job.startedAt)}
+      </span>
+    );
+  }
+  if (job.status === "ERROR") {
+    return (
+      <span className="flex items-center gap-1 text-xs text-danger">
+        <Clock className="h-3 w-3" /> Failed · {timeAgo(job.finishedAt ?? job.startedAt)}
+      </span>
+    );
+  }
+  // DONE
+  let summary = "";
+  try {
+    const r = JSON.parse(job.result ?? "{}");
+    if (job.type === "DEDUP") summary = `removed ${r.removed ?? 0}`;
+    else if (job.type === "AUDIT") summary = `${r.issueCount ?? 0} issues`;
+  } catch {}
+  return (
+    <span className="flex items-center gap-1 text-xs text-muted">
+      <Clock className="h-3 w-3" />
+      Last run {timeAgo(job.finishedAt ?? job.startedAt)}
+      {summary && <> · <span className="font-medium">{summary}</span></>}
+      {runningMsg && !summary && <> · {runningMsg}</>}
+    </span>
   );
 }
 

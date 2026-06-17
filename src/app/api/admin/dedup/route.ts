@@ -27,39 +27,52 @@ export async function POST(req: Request) {
   if (session?.user?.email !== ADMIN_EMAIL)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const all = await prisma.question.findMany({
-    select: { id: true, subject: true, type: true, stem: true, explanation: true },
-    orderBy: { createdAt: "asc" }, // older entries are preferred
-  });
+  const job = await prisma.adminJob.create({ data: { type: "DEDUP" } });
 
-  // Group by subject+type (only compare within the same pool).
-  const byPool = new Map<string, typeof all>();
-  for (const q of all) {
-    const key = `${q.subject}|${q.type}`;
-    if (!byPool.has(key)) byPool.set(key, []);
-    byPool.get(key)!.push(q);
-  }
+  try {
+    const all = await prisma.question.findMany({
+      select: { id: true, subject: true, type: true, stem: true, explanation: true },
+      orderBy: { createdAt: "asc" },
+    });
 
-  const toDelete = new Set<string>();
-  for (const [, group] of byPool) {
-    const normed = group.map((q) => ({ ...q, norm: normalizeForDedup(q.stem) }));
-    for (let i = 0; i < normed.length; i++) {
-      if (toDelete.has(normed[i].id)) continue;
-      for (let j = i + 1; j < normed.length; j++) {
-        if (toDelete.has(normed[j].id)) continue;
-        if (jaccard(normed[i].norm, normed[j].norm) >= 0.65) {
-          // Keep the one with an explanation; ties go to the older record (i).
-          const keepJ = !normed[i].explanation && !!normed[j].explanation;
-          toDelete.add(keepJ ? normed[i].id : normed[j].id);
+    const byPool = new Map<string, typeof all>();
+    for (const q of all) {
+      const key = `${q.subject}|${q.type}`;
+      if (!byPool.has(key)) byPool.set(key, []);
+      byPool.get(key)!.push(q);
+    }
+
+    const toDelete = new Set<string>();
+    for (const [, group] of byPool) {
+      const normed = group.map((q) => ({ ...q, norm: normalizeForDedup(q.stem) }));
+      for (let i = 0; i < normed.length; i++) {
+        if (toDelete.has(normed[i].id)) continue;
+        for (let j = i + 1; j < normed.length; j++) {
+          if (toDelete.has(normed[j].id)) continue;
+          if (jaccard(normed[i].norm, normed[j].norm) >= 0.65) {
+            const keepJ = !normed[i].explanation && !!normed[j].explanation;
+            toDelete.add(keepJ ? normed[i].id : normed[j].id);
+          }
         }
       }
     }
-  }
 
-  const ids = [...toDelete];
-  if (ids.length > 0) {
-    await prisma.question.deleteMany({ where: { id: { in: ids } } });
-  }
+    const ids = [...toDelete];
+    if (ids.length > 0) {
+      await prisma.question.deleteMany({ where: { id: { in: ids } } });
+    }
 
-  return NextResponse.json({ removed: ids.length, remaining: all.length - ids.length });
+    const result = { removed: ids.length, remaining: all.length - ids.length };
+    await prisma.adminJob.update({
+      where: { id: job.id },
+      data: { status: "DONE", finishedAt: new Date(), result: JSON.stringify(result) },
+    });
+    return NextResponse.json(result);
+  } catch (err) {
+    await prisma.adminJob.update({
+      where: { id: job.id },
+      data: { status: "ERROR", finishedAt: new Date(), result: JSON.stringify({ error: String(err) }) },
+    });
+    throw err;
+  }
 }

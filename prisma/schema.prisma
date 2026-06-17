@@ -104,3 +104,12 @@ model AttemptAnswer {
 
   @@index([attemptId, order])
 }
+
+model AdminJob {
+  id         String    @id @default(cuid())
+  type       String    // "DEDUP" | "AUDIT"
+  status     String    @default("RUNNING") // "RUNNING" | "DONE" | "ERROR"
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  result     String?   // JSON: { removed, remaining } or { issueCount, total }
+}

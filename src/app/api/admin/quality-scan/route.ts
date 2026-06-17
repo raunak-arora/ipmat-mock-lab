@@ -40,6 +40,8 @@ export async function POST(req: Request) {
   if (session?.user?.email !== ADMIN_EMAIL)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const job = await prisma.adminJob.create({ data: { type: "AUDIT" } });
+
   const all = await prisma.question.findMany({
     select: {
       id: true,
@@ -195,9 +197,14 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({
-    total: all.length,
-    issueCount: issues.length,
-    issues,
+  const payload = { total: all.length, issueCount: issues.length, issues };
+  await prisma.adminJob.update({
+    where: { id: job.id },
+    data: {
+      status: "DONE",
+      finishedAt: new Date(),
+      result: JSON.stringify({ total: all.length, issueCount: issues.length }),
+    },
   });
+  return NextResponse.json(payload);
 }
