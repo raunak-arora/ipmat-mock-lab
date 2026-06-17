@@ -52,6 +52,7 @@ export async function GET(
     given: a.given,
     status: a.status,
     timeSpentSec: a.timeSpentSec,
+    bookmarked: a.bookmarked,
   }));
 
   return NextResponse.json({
@@ -85,15 +86,23 @@ export async function PATCH(
   const body = await req.json();
   const answers: SavedAnswer[] = body.answers ?? [];
   const lockedSections: string[] | undefined = body.lockedSections;
+  const bookmarks: { questionId: string; bookmarked: boolean }[] = body.bookmarks ?? [];
 
-  await prisma.$transaction(
-    answers.map((a) =>
+  const ops = [
+    ...answers.map((a) =>
       prisma.attemptAnswer.updateMany({
         where: { attemptId: id, questionId: a.questionId },
         data: { given: a.given, status: a.status, timeSpentSec: a.timeSpentSec },
       })
-    )
-  );
+    ),
+    ...bookmarks.map((b) =>
+      prisma.attemptAnswer.updateMany({
+        where: { attemptId: id, questionId: b.questionId },
+        data: { bookmarked: b.bookmarked },
+      })
+    ),
+  ];
+  if (ops.length > 0) await prisma.$transaction(ops);
 
   if (lockedSections !== undefined) {
     await prisma.attempt.update({

@@ -8,8 +8,9 @@ import {
   Clock,
   Eraser,
   Lock,
-  Send,
   PenLine,
+  Send,
+  Star,
 } from "lucide-react";
 import { Exam, SectionKey, getExam } from "@/lib/examConfig";
 import type { RunnerQuestion, SavedAnswer } from "@/lib/types";
@@ -103,6 +104,14 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     () => new Set(data.lockedSections as SectionKey[])
   );
   const [sectionConfirmOpen, setSectionConfirmOpen] = useState(false);
+  const [bookmarks, setBookmarks] = useState<Set<string>>(() => {
+    const s = new Set<string>();
+    for (const a of data.saved) {
+      if (a.bookmarked) s.add(a.questionId);
+    }
+    return s;
+  });
+
   const [scratchpad, setScratchpad] = useState("");
   useEffect(() => {
     setScratchpad(localStorage.getItem(`scratch-${data.id}`) ?? "");
@@ -110,6 +119,20 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   const saveScratch = useCallback((val: string) => {
     setScratchpad(val);
     localStorage.setItem(`scratch-${data.id}`, val);
+  }, [data.id]);
+
+  const toggleBookmark = useCallback((qId: string) => {
+    setBookmarks((prev) => {
+      const next = new Set(prev);
+      const nowBookmarked = !next.has(qId);
+      nowBookmarked ? next.add(qId) : next.delete(qId);
+      fetch(`/api/attempts/${data.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookmarks: [{ questionId: qId, bookmarked: nowBookmarked }] }),
+      }).catch(() => {});
+      return next;
+    });
   }, [data.id]);
 
   // ----- timing (recomputed every render; each tick re-renders) -----
@@ -465,6 +488,15 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
               <Eraser className="h-4 w-4" />
               Clear
             </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleBookmark(cid)}
+              className={bookmarks.has(cid) ? "text-yellow-500" : ""}
+            >
+              <Star className={cn("h-4 w-4", bookmarks.has(cid) ? "fill-yellow-400 text-yellow-400" : "")} />
+              {bookmarks.has(cid) ? "Bookmarked" : "Bookmark"}
+            </Button>
             <Button size="sm" onClick={goNext} className="ml-auto">
               Save &amp; Next
             </Button>
@@ -544,12 +576,15 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
                   key={q.id}
                   onClick={() => selectQuestion(q.id)}
                   className={cn(
-                    "h-8 rounded-md text-xs font-medium transition",
+                    "relative h-8 rounded-md text-xs font-medium transition",
                     tone,
                     isCurrent && "ring-2 ring-primary ring-offset-1"
                   )}
                 >
                   {i + 1}
+                  {bookmarks.has(q.id) && (
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-yellow-400 ring-1 ring-card" />
+                  )}
                 </button>
               );
             })}

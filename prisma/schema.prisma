@@ -101,6 +101,7 @@ model AttemptAnswer {
   isCorrect    Boolean?
   marks        Int?
   timeSpentSec Int      @default(0)
+  bookmarked   Boolean  @default(false)
 
   @@index([attemptId, order])
 }

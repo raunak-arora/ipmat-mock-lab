@@ -19,7 +19,8 @@ type IssueType =
   | "duplicate_options"
   | "answer_echoes_stem"
   | "short_stem"
-  | "option_is_label";
+  | "option_is_label"
+  | "missing_explanation";
 
 interface Issue {
   id: string;
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
       stem: true,
       options: true,
       answer: true,
+      explanation: true,
     },
   });
 
@@ -59,6 +61,22 @@ export async function POST(req: Request) {
 
   for (const q of all) {
     const strippedStem = stripTags(q.stem);
+
+    // Missing explanation — warning, doesn't block other checks.
+    if (!q.explanation || q.explanation.trim() === "") {
+      issues.push({
+        id: q.id,
+        subject: q.subject,
+        type: q.type,
+        topic: q.topic,
+        difficulty: q.difficulty,
+        stem: q.stem,
+        answer: q.answer,
+        options: q.options ? (JSON.parse(q.options) as string[]) : null,
+        issueType: "missing_explanation",
+        detail: "No explanation provided — students can't learn from this question",
+      });
+    }
 
     if (strippedStem.length < 15) {
       issues.push({
@@ -203,7 +221,7 @@ export async function POST(req: Request) {
     data: {
       status: "DONE",
       finishedAt: new Date(),
-      result: JSON.stringify({ total: all.length, issueCount: issues.length }),
+      result: JSON.stringify(payload),
     },
   });
   return NextResponse.json(payload);

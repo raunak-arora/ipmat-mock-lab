@@ -17,4 +17,5 @@ export interface SavedAnswer {
   given: string | null;
   status: string;
   timeSpentSec: number;
+  bookmarked?: boolean;
 }

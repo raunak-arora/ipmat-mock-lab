@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { CheckCircle2, XCircle, MinusCircle, Info, Clock } from "lucide-react";
+import { Info, Clock } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 import { EXAMS, SECTION_LABELS, SectionKey, Exam } from "@/lib/examConfig";
@@ -10,6 +10,7 @@ import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { FORMULAS_BY_TOPIC } from "@/lib/formulas";
 import DrillButton from "@/components/DrillButton";
+import SolutionReview from "@/components/SolutionReview";
 
 export const dynamic = "force-dynamic";
 
@@ -120,12 +121,20 @@ export default async function ResultsPage({
             {displayName} · {config.label} · {attempt.mode} mock
           </p>
         </div>
-        <Link
-          href="/"
-          className="rounded-lg border px-4 py-2 text-sm hover:bg-card"
-        >
-          New mock
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href={`/compare?base=${id}`}
+            className="rounded-lg border px-4 py-2 text-sm hover:bg-card"
+          >
+            Compare
+          </Link>
+          <Link
+            href="/"
+            className="rounded-lg border px-4 py-2 text-sm hover:bg-card"
+          >
+            New mock
+          </Link>
+        </div>
       </div>
 
       {/* Headline */}
@@ -365,107 +374,25 @@ export default async function ResultsPage({
 
       {/* Per-question review */}
       <Card>
-        <h3 className="mb-3 font-semibold">Solution review</h3>
-        <div className="space-y-4">
-          {attempt.answers.map((a, i) => {
-            const correct = a.isCorrect;
-            const Icon =
-              correct === true
-                ? CheckCircle2
-                : correct === false
-                  ? XCircle
-                  : MinusCircle;
-            const tone =
-              correct === true
-                ? "text-success"
-                : correct === false
-                  ? "text-danger"
-                  : "text-muted";
-            return (
-              <div key={a.id} className="border-b pb-4 last:border-0">
-                <div className="flex items-start gap-2">
-                  <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", tone)} />
-                  <div className="flex-1">
-                    <div className="mb-1 flex items-center gap-2 text-xs text-muted">
-                      <span>Q{i + 1}</span>
-                      <span>·</span>
-                      <span>{SECTION_LABELS[a.section as SectionKey]}</span>
-                      <span>·</span>
-                      <span>{a.question.topic}</span>
-                      {(a.timeSpentSec ?? 0) > 0 && (
-                        <>
-                          <span>·</span>
-                          <span className={cn(
-                            "flex items-center gap-0.5",
-                            (a.timeSpentSec ?? 0) > 120 ? "text-warning" : ""
-                          )}>
-                            <Clock className="h-3 w-3" />
-                            {a.timeSpentSec}s
-                          </span>
-                        </>
-                      )}
-                      <span className="ml-auto tabular-nums">
-                        {a.marks != null && a.marks !== 0
-                          ? `${a.marks > 0 ? "+" : ""}${a.marks}`
-                          : "0"}{" "}
-                        marks
-                      </span>
-                    </div>
-                    {a.question.passage && (
-                      <details className="mb-2 text-xs text-muted">
-                        <summary className="cursor-pointer">Show passage</summary>
-                        <p className="mt-1 whitespace-pre-line">
-                          {a.question.passage}
-                        </p>
-                      </details>
-                    )}
-                    <p className="whitespace-pre-line text-sm font-medium">
-                      {a.question.stem}
-                    </p>
-                    <div className="mt-2 grid gap-1 text-sm">
-                      <div>
-                        <span className="text-muted">Your answer: </span>
-                        <span
-                          className={
-                            correct === true
-                              ? "text-success"
-                              : correct === false
-                                ? "text-danger"
-                                : "text-muted"
-                          }
-                        >
-                          {a.given && a.given.trim() !== ""
-                            ? a.given
-                            : "— not attempted —"}
-                        </span>
-                      </div>
-                      {correct !== true && (
-                        <div>
-                          <span className="text-muted">Correct answer: </span>
-                          <span className="font-medium text-success">
-                            {(() => {
-                              try {
-                                const parsed = JSON.parse(a.question.answer);
-                                if (Array.isArray(parsed) && parsed.length > 0)
-                                  return parsed[0];
-                              } catch {}
-                              return a.question.answer;
-                            })()}
-                          </span>
-                        </div>
-                      )}
-                      {a.question.explanation && (
-                        <p className="mt-1 rounded-md bg-background p-2 text-xs text-foreground/80">
-                          {a.question.explanation}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <SolutionReview
+          answers={attempt.answers.map((a) => ({
+            id: a.id,
+            section: a.section,
+            given: a.given,
+            isCorrect: a.isCorrect,
+            marks: a.marks,
+            timeSpentSec: a.timeSpentSec,
+            bookmarked: a.bookmarked,
+            question: {
+              stem: a.question.stem,
+              passage: a.question.passage,
+              options: a.question.options,
+              answer: a.question.answer,
+              explanation: a.question.explanation,
+              topic: a.question.topic,
+            },
+          }))}
+        />
       </Card>
     </div>
   );

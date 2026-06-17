@@ -31,7 +31,8 @@ interface Issue {
     | "duplicate_options"
     | "answer_echoes_stem"
     | "short_stem"
-    | "option_is_label";
+    | "option_is_label"
+    | "missing_explanation";
   detail: string;
 }
 
@@ -126,6 +127,13 @@ export default function QuestionAdmin() {
     const d = await r.json();
     setLastDedup(d.dedup ?? null);
     setLastAudit(d.audit ?? null);
+    // Restore last audit results from the persisted job so they survive a refresh.
+    if (d.audit?.status === "DONE" && d.audit?.result) {
+      try {
+        const parsed = JSON.parse(d.audit.result) as AuditResult;
+        if (Array.isArray(parsed.issues)) setAuditResults(parsed);
+      } catch {}
+    }
     return d;
   }, []);
 
@@ -708,6 +716,7 @@ const ISSUE_LABELS: Record<string, string> = {
   answer_echoes_stem: "answer echoes stem",
   short_stem: "short stem",
   option_is_label: "option is label",
+  missing_explanation: "no explanation",
 };
 
 const ISSUE_TONES: Record<string, "danger" | "warning" | "muted"> = {
@@ -717,6 +726,7 @@ const ISSUE_TONES: Record<string, "danger" | "warning" | "muted"> = {
   duplicate_options: "warning",
   answer_echoes_stem: "warning",
   short_stem: "muted",
+  missing_explanation: "muted",
 };
 
 function IssueBadge({ type }: { type: string }) {
