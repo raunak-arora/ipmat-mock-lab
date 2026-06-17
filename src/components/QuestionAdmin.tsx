@@ -256,6 +256,7 @@ export default function QuestionAdmin() {
       setAuditResults(b as AuditResult);
     }
     setAuditRunning(false);
+    await loadJobs();
   };
 
   const remove = async (id: string) => {

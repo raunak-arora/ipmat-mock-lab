@@ -28,6 +28,7 @@ export default function SolutionReview({ answers }: { answers: ReviewAnswer[] })
   const [showBookmarked, setShowBookmarked] = useState(false);
   const bookmarkedCount = answers.filter((a) => a.bookmarked).length;
   const filtered = showBookmarked ? answers.filter((a) => a.bookmarked) : answers;
+  const indexById = new Map(answers.map((a, i) => [a.id, i]));
 
   return (
     <>
@@ -60,7 +61,7 @@ export default function SolutionReview({ answers }: { answers: ReviewAnswer[] })
             correct === true ? CheckCircle2 : correct === false ? XCircle : MinusCircle;
           const tone =
             correct === true ? "text-success" : correct === false ? "text-danger" : "text-muted";
-          const originalIndex = answers.indexOf(a);
+          const originalIndex = indexById.get(a.id) ?? 0;
 
           return (
             <div key={a.id} className="border-b pb-4 last:border-0">

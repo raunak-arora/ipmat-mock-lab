@@ -122,18 +122,18 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
   }, [data.id]);
 
   const toggleBookmark = useCallback((qId: string) => {
+    const nowBookmarked = !bookmarks.has(qId);
     setBookmarks((prev) => {
       const next = new Set(prev);
-      const nowBookmarked = !next.has(qId);
       nowBookmarked ? next.add(qId) : next.delete(qId);
-      fetch(`/api/attempts/${data.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookmarks: [{ questionId: qId, bookmarked: nowBookmarked }] }),
-      }).catch(() => {});
       return next;
     });
-  }, [data.id]);
+    fetch(`/api/attempts/${data.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookmarks: [{ questionId: qId, bookmarked: nowBookmarked }] }),
+    }).catch(() => {});
+  }, [data.id, bookmarks]);
 
   // ----- timing (recomputed every render; each tick re-renders) -----
   // For non-FULL mocks only one section is in scope — use its time limit if the

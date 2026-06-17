@@ -140,27 +140,19 @@ export default async function ComparePage({
   }
 
   // ── Comparison view ───────────────────────────────────────────────────────
-  const [a1, a2] = await Promise.all([
-    prisma.attempt.findUnique({
-      where: { id: base },
-      include: {
-        answers: {
-          select: { isCorrect: true, question: { select: { topic: true } } },
-        },
+  // Reuse the baseAttempt already fetched above — only fetch the second attempt.
+  const a1 = baseAttempt;
+  const a2 = await prisma.attempt.findUnique({
+    where: { id: other },
+    include: {
+      profile: true,
+      answers: {
+        select: { isCorrect: true, question: { select: { topic: true } } },
       },
-    }),
-    prisma.attempt.findUnique({
-      where: { id: other },
-      include: {
-        profile: true,
-        answers: {
-          select: { isCorrect: true, question: { select: { topic: true } } },
-        },
-      },
-    }),
-  ]);
+    },
+  });
 
-  if (!a1?.submittedAt || !a2?.submittedAt) redirect(`/compare?base=${base}`);
+  if (!a2?.submittedAt) redirect(`/compare?base=${base}`);
   if (
     session.user.email !== ADMIN_EMAIL &&
     a2.profile.email !== session.user.email

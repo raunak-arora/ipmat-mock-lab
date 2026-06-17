@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Info, Clock } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { EXAMS, SECTION_LABELS, SectionKey, Exam } from "@/lib/examConfig";
+import { EXAMS, Exam } from "@/lib/examConfig";
 import { PERCENTILE_DISCLAIMER } from "@/lib/percentile";
 import type { SectionScore } from "@/lib/scoring";
 import { Badge, Card } from "@/components/ui";
