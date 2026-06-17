@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin } from "@/lib/is-admin";
 import { prisma } from "@/lib/db";
 
 export async function GET() {
   const session = await auth();
-  if (session?.user?.email !== ADMIN_EMAIL)
+  if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const students = await prisma.allowedStudent.findMany({ orderBy: { addedAt: "desc" } });
@@ -13,7 +14,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const session = await auth();
-  if (session?.user?.email !== ADMIN_EMAIL)
+  if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { email, name } = await request.json();

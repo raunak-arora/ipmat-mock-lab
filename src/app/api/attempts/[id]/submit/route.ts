@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin } from "@/lib/is-admin";
 import { scoreAttempt, type GradableQuestion } from "@/lib/scoring";
 import { estimatePercentile } from "@/lib/percentile";
 import type { Exam, SectionKey } from "@/lib/examConfig";
@@ -28,7 +29,7 @@ export async function POST(
   if (!attempt) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-  if (session.user.email !== ADMIN_EMAIL) {
+  if (!await isAdmin(session.user.email)) {
     const profile = await prisma.profile.findUnique({ where: { id: attempt.profileId } });
     if (!profile || profile.email !== session.user.email)
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

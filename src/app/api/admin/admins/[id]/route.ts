@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { auth, ADMIN_EMAIL } from "@/auth";
 import { isAdmin } from "@/lib/is-admin";
 import { prisma } from "@/lib/db";
 
@@ -13,7 +13,7 @@ export async function PATCH(
 
   const { id } = await params;
   const { name } = await req.json();
-  await prisma.allowedStudent.update({ where: { id }, data: { name: name || null } });
+  await prisma.allowedAdmin.update({ where: { id }, data: { name: name || null } });
   return NextResponse.json({ ok: true });
 }
 
@@ -26,6 +26,10 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  await prisma.allowedStudent.delete({ where: { id } });
+  const record = await prisma.allowedAdmin.findUnique({ where: { id } });
+  if (record?.email === ADMIN_EMAIL)
+    return NextResponse.json({ error: "Cannot remove the owner account" }, { status: 400 });
+
+  await prisma.allowedAdmin.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

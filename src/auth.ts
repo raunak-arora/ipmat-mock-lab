@@ -14,12 +14,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authorized({ auth: session, request }) {
       const { pathname } = request.nextUrl;
 
-      // Admin routes
+      // Admin routes — only require sign-in here; the actual admin check
+      // (ADMIN_EMAIL or AllowedAdmin table) runs in src/app/admin/layout.tsx
+      // which executes in Node.js and can call Prisma safely.
       if (pathname.startsWith("/admin")) {
         if (pathname === "/admin/denied") return true;
         if (!session?.user) return false;
-        if (session.user.email !== ADMIN_EMAIL)
-          return Response.redirect(new URL("/admin/denied", request.nextUrl));
         return true;
       }
 

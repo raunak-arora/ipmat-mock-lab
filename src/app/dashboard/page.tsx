@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin as getIsAdmin } from "@/lib/is-admin";
 import Dashboard from "@/components/Dashboard";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const session = await auth();
   const email = session?.user?.email ?? "";
-  const isAdmin = email === ADMIN_EMAIL;
+  const isAdmin = await getIsAdmin(email);
 
   // Admin sees all profiles; students see only their own
   const rawProfiles = await prisma.profile.findMany({

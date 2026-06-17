@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin } from "@/lib/is-admin";
 
 async function requireAdmin() {
   const session = await auth();
-  if (session?.user?.email !== ADMIN_EMAIL)
+  if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   return null;
 }

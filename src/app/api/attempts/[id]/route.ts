@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin } from "@/lib/is-admin";
 import type { RunnerQuestion, SavedAnswer } from "@/lib/types";
 import type { SectionKey, QType } from "@/lib/examConfig";
 
 async function authorizeAttempt(attemptId: string, email: string) {
   const attempt = await prisma.attempt.findUnique({ where: { id: attemptId } });
   if (!attempt) return { attempt: null, denied: NextResponse.json({ error: "Not found" }, { status: 404 }) };
-  if (email !== ADMIN_EMAIL) {
+  if (!await isAdmin(email)) {
     const profile = await prisma.profile.findUnique({ where: { id: attempt.profileId } });
     if (!profile || profile.email !== email)
       return { attempt: null, denied: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };

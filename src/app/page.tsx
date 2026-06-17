@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, Clock, BarChart2, Target, Trophy, BookOpen, FileText } from "lucide-react";
-import { auth, signIn, ADMIN_EMAIL } from "@/auth";
+import { auth, signIn } from "@/auth";
+import { isAdmin as getIsAdmin } from "@/lib/is-admin";
 import { prisma } from "@/lib/db";
 import { EXAMS } from "@/lib/examConfig";
 import StartMock from "@/components/StartMock";
@@ -118,7 +119,7 @@ export default async function Home() {
 
   /* ── Authenticated ── */
   const email = session.user.email ?? "";
-  const isAdmin = email === ADMIN_EMAIL;
+  const isAdmin = await getIsAdmin(email);
 
   if (isAdmin) redirect("/admin");
 

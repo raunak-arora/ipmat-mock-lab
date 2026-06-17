@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin as getIsAdmin } from "@/lib/is-admin";
 import { prisma } from "@/lib/db";
 import { EXAMS, SECTION_LABELS } from "@/lib/examConfig";
 import type { Exam, SectionKey } from "@/lib/examConfig";
@@ -47,7 +48,7 @@ export default async function ComparePage({
   });
   if (!baseAttempt?.submittedAt) redirect("/");
   if (
-    session.user.email !== ADMIN_EMAIL &&
+    !await getIsAdmin(session.user.email) &&
     baseAttempt.profile.email !== session.user.email
   ) {
     redirect("/");
@@ -154,7 +155,7 @@ export default async function ComparePage({
 
   if (!a2?.submittedAt) redirect(`/compare?base=${base}`);
   if (
-    session.user.email !== ADMIN_EMAIL &&
+    !await getIsAdmin(session.user.email) &&
     a2.profile.email !== session.user.email
   ) {
     redirect("/");

@@ -106,6 +106,13 @@ model AttemptAnswer {
   @@index([attemptId, order])
 }
 
+model AllowedAdmin {
+  id      String   @id @default(cuid())
+  email   String   @unique
+  name    String?
+  addedAt DateTime @default(now())
+}
+
 model AdminJob {
   id         String    @id @default(cuid())
   type       String    // "DEDUP" | "AUDIT"

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GraduationCap, LayoutDashboard, LogIn, Settings } from "lucide-react";
-import { auth, signIn, signOut, ADMIN_EMAIL } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
+import { isAdmin as getIsAdmin } from "@/lib/is-admin";
 import { SignOutButton } from "@/components/SignOutButton";
 import "./globals.css";
 
@@ -14,7 +15,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
-  const isAdmin = session?.user?.email === ADMIN_EMAIL;
+  const isAdmin = await getIsAdmin(session?.user?.email);
 
   return (
     <html lang="en">
@@ -41,9 +42,9 @@ export default async function RootLayout({
                       "use server";
                       await signOut({ redirectTo: "/" });
                     }}
-                    name={session.user?.name}
-                    image={session.user?.image}
-                    email={session.user?.email}
+                    name={session?.user?.name}
+                    image={session?.user?.image}
+                    email={session?.user?.email}
                   />
                 </>
               ) : session?.user ? (
@@ -61,9 +62,9 @@ export default async function RootLayout({
                       "use server";
                       await signOut({ redirectTo: "/" });
                     }}
-                    name={session.user?.name}
-                    image={session.user?.image}
-                    email={session.user?.email}
+                    name={session?.user?.name}
+                    image={session?.user?.image}
+                    email={session?.user?.email}
                   />
                 </>
               ) : (

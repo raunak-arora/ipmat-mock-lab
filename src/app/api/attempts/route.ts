@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth, ADMIN_EMAIL } from "@/auth";
+import { auth } from "@/auth";
+import { isAdmin } from "@/lib/is-admin";
 import { generateMock } from "@/lib/mockGenerator";
 import { Exam, Mode, SectionKey } from "@/lib/examConfig";
 
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   }
 
   // Students may only create attempts for their own profile.
-  if (session.user.email !== ADMIN_EMAIL) {
+  if (!await isAdmin(session.user.email)) {
     const profile = await prisma.profile.findUnique({ where: { id: profileId } });
     if (!profile || profile.email !== session.user.email)
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
