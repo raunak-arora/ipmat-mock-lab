@@ -108,6 +108,7 @@ export default function QuestionAdmin() {
   // Audit
   const [auditResults, setAuditResults] = useState<AuditResult | null>(null);
   const [auditRunning, setAuditRunning] = useState(false);
+  const [auditProgress, setAuditProgress] = useState<{ scanned: number; total: number } | null>(null);
 
   // Job history
   interface JobRecord {
@@ -257,11 +258,44 @@ export default function QuestionAdmin() {
 
   const runAudit = async () => {
     setAuditRunning(true);
-    const res = await fetch("/api/admin/quality-scan", { method: "POST" });
-    const b = await res.json();
-    if (res.ok) {
-      setAuditResults(b as AuditResult);
+    setAuditProgress(null);
+    const CHUNK = 450;
+    let offset = 0;
+    let jobId: string | null = null;
+    const allIssues: Issue[] = [];
+    let total = 0;
+
+    // Scan in chunks so each call fits within the Vercel Hobby 10s limit.
+    while (true) {
+      const res = await fetch("/api/admin/quality-scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ offset, limit: CHUNK, jobId }),
+      });
+      if (!res.ok) {
+        setAuditRunning(false);
+        setAuditProgress(null);
+        await loadJobs();
+        return;
+      }
+      const b = await res.json() as { jobId: string; issues: Issue[]; total: number; done: boolean };
+      jobId = b.jobId;
+      allIssues.push(...b.issues);
+      if (offset === 0) total = b.total;
+      offset += CHUNK;
+      setAuditProgress({ scanned: Math.min(offset, total || offset), total: total || offset });
+      if (b.done) break;
     }
+
+    // Persist full results to DB so they survive a page refresh.
+    await fetch("/api/admin/quality-scan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ finalize: true, jobId, total, issues: allIssues }),
+    });
+
+    setAuditResults({ total, issueCount: allIssues.length, issues: allIssues });
+    setAuditProgress(null);
     setAuditRunning(false);
     await loadJobs();
   };
@@ -544,9 +578,14 @@ export default function QuestionAdmin() {
               const stale = lastAudit?.status === "RUNNING" &&
                 (Date.now() - new Date(lastAudit.startedAt).getTime()) > 120_000;
               const busy = auditRunning || (lastAudit?.status === "RUNNING" && !stale);
+              const label = auditRunning
+                ? auditProgress
+                  ? `Scanning ${auditProgress.scanned}/${auditProgress.total}…`
+                  : "Scanning…"
+                : "Run audit";
               return (
                 <Button onClick={runAudit} disabled={busy}>
-                  {busy ? "Scanning…" : "Run audit"}
+                  {label}
                 </Button>
               );
             })()}

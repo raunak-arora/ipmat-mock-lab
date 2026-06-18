@@ -37,55 +37,85 @@ interface Issue {
   detail: string;
 }
 
-// Increase Vercel function timeout (respected on Pro; harmless on Hobby).
+// maxDuration is respected on Pro; on Hobby the hard limit is 10s regardless.
+// The client now sends chunks of 450 so each call comfortably fits in 10s.
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  void req;
   const session = await auth();
   if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Mark any previously stuck RUNNING audit jobs as timed out so the UI clears.
-  await prisma.adminJob.updateMany({
-    where: { type: "AUDIT", status: "RUNNING" },
-    data: { status: "ERROR", finishedAt: new Date(), result: JSON.stringify({ error: "Timed out — previous run exceeded the serverless function limit." }) },
-  });
+  const body = await req.json().catch(() => ({}));
 
-  const job = await prisma.adminJob.create({ data: { type: "AUDIT" } });
+  // Finalize mode: client sends accumulated issues after all chunks complete.
+  if (body.finalize) {
+    const issues = body.issues as Issue[];
+    await prisma.adminJob.update({
+      where: { id: body.jobId as string },
+      data: {
+        status: "DONE",
+        finishedAt: new Date(),
+        result: JSON.stringify({ total: body.total, issueCount: issues.length, issues }),
+      },
+    });
+    return NextResponse.json({ ok: true });
+  }
 
-  const all = await prisma.question.findMany({
-    select: {
-      id: true,
-      subject: true,
-      type: true,
-      topic: true,
-      difficulty: true,
-      stem: true,
-      options: true,
-      answer: true,
-      explanation: true,
-    },
-  });
+  const offset: number = body.offset ?? 0;
+  const limit: number = body.limit ?? 450;
+  const existingJobId: string | null = body.jobId ?? null;
+
+  let jobId = existingJobId;
+
+  // First chunk: clear any stuck RUNNING job and create a fresh one.
+  if (!jobId) {
+    await prisma.adminJob.updateMany({
+      where: { type: "AUDIT", status: "RUNNING" },
+      data: {
+        status: "ERROR",
+        finishedAt: new Date(),
+        result: JSON.stringify({ error: "Timed out — previous run exceeded the serverless function limit." }),
+      },
+    });
+    const job = await prisma.adminJob.create({ data: { type: "AUDIT" } });
+    jobId = job.id;
+  }
+
+  const [total, questions] = await Promise.all([
+    offset === 0 ? prisma.question.count() : Promise.resolve(0),
+    prisma.question.findMany({
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        subject: true,
+        type: true,
+        topic: true,
+        difficulty: true,
+        stem: true,
+        options: true,
+        answer: true,
+        explanation: true,
+      },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
 
   const issues: Issue[] = [];
 
-  for (const q of all) {
+  for (const q of questions) {
     const strippedStem = stripTags(q.stem);
 
-    // Explanation contradicts stored answer — highest priority, runs first.
     if (q.explanation) {
       const expLower = q.explanation.toLowerCase();
 
-      // Signal 1: explicit self-correction markers in the explanation text.
       const hasCorrectionMarker =
         /\bcorrection\s*:/i.test(q.explanation) ||
         /\bwait\s*[—–-]/i.test(q.explanation) ||
         /\bshould\s+be\b/i.test(q.explanation) ||
         /\bactually\s+(?:the\s+)?(?:correct\s+)?answer\b/i.test(q.explanation);
 
-      // Signal 2: for SHORT_ANSWER, extract the final stated numeric answer and
-      // compare it to the stored answer (catches "so answer = 3" vs stored "7").
       let numericMismatch: string | null = null;
       if (q.type === "SHORT_ANSWER") {
         const m = expLower.match(
@@ -98,7 +128,6 @@ export async function POST(req: Request) {
         }
       }
 
-      // Signal 3: for MCQ, if explanation explicitly names a different answer.
       let mcqMismatch: string | null = null;
       if (q.type === "MCQ") {
         const m = expLower.match(
@@ -131,7 +160,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Missing explanation — warning, doesn't block other checks.
     if (!q.explanation || q.explanation.trim() === "") {
       issues.push({
         id: q.id,
@@ -205,10 +233,7 @@ export async function POST(req: Request) {
     const seen = new Set<string>();
     let dupFound: string | null = null;
     for (const no of normedOpts) {
-      if (seen.has(no)) {
-        dupFound = no;
-        break;
-      }
+      if (seen.has(no)) { dupFound = no; break; }
       seen.add(no);
     }
     if (dupFound) {
@@ -284,14 +309,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const payload = { total: all.length, issueCount: issues.length, issues };
-  await prisma.adminJob.update({
-    where: { id: job.id },
-    data: {
-      status: "DONE",
-      finishedAt: new Date(),
-      result: JSON.stringify(payload),
-    },
-  });
-  return NextResponse.json(payload);
+  const done = questions.length < limit;
+
+  return NextResponse.json({ jobId, issues, total, done });
 }
