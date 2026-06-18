@@ -21,7 +21,8 @@ type IssueType =
   | "answer_echoes_stem"
   | "short_stem"
   | "option_is_label"
-  | "missing_explanation";
+  | "missing_explanation"
+  | "explanation_contradicts_answer";
 
 interface Issue {
   id: string;
@@ -62,6 +63,64 @@ export async function POST(req: Request) {
 
   for (const q of all) {
     const strippedStem = stripTags(q.stem);
+
+    // Explanation contradicts stored answer — highest priority, runs first.
+    if (q.explanation) {
+      const expLower = q.explanation.toLowerCase();
+
+      // Signal 1: explicit self-correction markers in the explanation text.
+      const hasCorrectionMarker =
+        /\bcorrection\s*:/i.test(q.explanation) ||
+        /\bwait\s*[—–-]/i.test(q.explanation) ||
+        /\bshould\s+be\b/i.test(q.explanation) ||
+        /\bactually\s+(?:the\s+)?(?:correct\s+)?answer\b/i.test(q.explanation);
+
+      // Signal 2: for SHORT_ANSWER, extract the final stated numeric answer and
+      // compare it to the stored answer (catches "so answer = 3" vs stored "7").
+      let numericMismatch: string | null = null;
+      if (q.type === "SHORT_ANSWER") {
+        const m = expLower.match(
+          /(?:(?:unit\s+digit|answer)\s+(?:is|=)\s*|=\s*)(\d+(?:\.\d+)?)\s*\.?\s*$/
+        );
+        if (m) {
+          const stated = m[1];
+          const stored = q.answer.trim().toLowerCase();
+          if (stated !== stored) numericMismatch = stated;
+        }
+      }
+
+      // Signal 3: for MCQ, if explanation explicitly names a different answer.
+      let mcqMismatch: string | null = null;
+      if (q.type === "MCQ") {
+        const m = expLower.match(
+          /(?:correction[:\s]+answer\s+is\s*|correct\s+answer\s+is\s*)(\d+(?:\.\d+)?|\w+)/
+        );
+        if (m) {
+          const stated = m[1].trim();
+          if (norm(stated) !== norm(q.answer)) mcqMismatch = stated;
+        }
+      }
+
+      if (hasCorrectionMarker || numericMismatch || mcqMismatch) {
+        const detail = numericMismatch
+          ? `Explanation says answer is ${numericMismatch} but stored answer is "${q.answer}"`
+          : mcqMismatch
+          ? `Explanation says answer is "${mcqMismatch}" but stored answer is "${q.answer}"`
+          : `Explanation contains a self-correction marker — stored answer "${q.answer}" may be wrong`;
+        issues.push({
+          id: q.id,
+          subject: q.subject,
+          type: q.type,
+          topic: q.topic,
+          difficulty: q.difficulty,
+          stem: q.stem,
+          answer: q.answer,
+          options: q.options ? (JSON.parse(q.options) as string[]) : null,
+          issueType: "explanation_contradicts_answer",
+          detail,
+        });
+      }
+    }
 
     // Missing explanation — warning, doesn't block other checks.
     if (!q.explanation || q.explanation.trim() === "") {

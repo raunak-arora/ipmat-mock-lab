@@ -32,7 +32,8 @@ interface Issue {
     | "answer_echoes_stem"
     | "short_stem"
     | "option_is_label"
-    | "missing_explanation";
+    | "missing_explanation"
+    | "explanation_contradicts_answer";
   detail: string;
 }
 
@@ -718,6 +719,7 @@ const ISSUE_LABELS: Record<string, string> = {
   short_stem: "short stem",
   option_is_label: "option is label",
   missing_explanation: "no explanation",
+  explanation_contradicts_answer: "answer mismatch",
 };
 
 const ISSUE_TONES: Record<string, "danger" | "warning" | "muted"> = {
@@ -728,6 +730,7 @@ const ISSUE_TONES: Record<string, "danger" | "warning" | "muted"> = {
   answer_echoes_stem: "warning",
   short_stem: "muted",
   missing_explanation: "muted",
+  explanation_contradicts_answer: "danger",
 };
 
 function IssueBadge({ type }: { type: string }) {
