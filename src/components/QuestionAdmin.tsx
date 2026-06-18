@@ -143,7 +143,12 @@ export default function QuestionAdmin() {
       if (d?.dedup?.status === "RUNNING" || d?.audit?.status === "RUNNING") {
         pollRef.current = setInterval(async () => {
           const refreshed = await loadJobs();
-          if (refreshed?.dedup?.status !== "RUNNING" && refreshed?.audit?.status !== "RUNNING") {
+          const dedupStale = refreshed?.dedup?.status === "RUNNING" &&
+            (Date.now() - new Date(refreshed.dedup.startedAt).getTime()) > 120_000;
+          const auditStale = refreshed?.audit?.status === "RUNNING" &&
+            (Date.now() - new Date(refreshed.audit.startedAt).getTime()) > 120_000;
+          const stillRunning = refreshed?.dedup?.status === "RUNNING" || refreshed?.audit?.status === "RUNNING";
+          if (!stillRunning || dedupStale || auditStale) {
             clearInterval(pollRef.current!);
           }
         }, 3000);
@@ -665,6 +670,14 @@ interface JobRecord {
 function JobTag({ job, runningMsg }: { job: JobRecord | null; runningMsg?: string | null }) {
   if (!job) return null;
   if (job.status === "RUNNING") {
+    const staleSec = (Date.now() - new Date(job.startedAt).getTime()) / 1000;
+    if (staleSec > 120) {
+      return (
+        <span className="flex items-center gap-1 text-xs text-danger">
+          <Clock className="h-3 w-3" /> Timed out — re-run to retry
+        </span>
+      );
+    }
     return (
       <span className="flex items-center gap-1 text-xs text-warning">
         <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-warning" />

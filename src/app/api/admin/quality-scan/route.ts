@@ -37,11 +37,20 @@ interface Issue {
   detail: string;
 }
 
+// Increase Vercel function timeout (respected on Pro; harmless on Hobby).
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
   void req;
   const session = await auth();
   if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Mark any previously stuck RUNNING audit jobs as timed out so the UI clears.
+  await prisma.adminJob.updateMany({
+    where: { type: "AUDIT", status: "RUNNING" },
+    data: { status: "ERROR", finishedAt: new Date(), result: JSON.stringify({ error: "Timed out — previous run exceeded the serverless function limit." }) },
+  });
 
   const job = await prisma.adminJob.create({ data: { type: "AUDIT" } });
 

@@ -22,6 +22,8 @@ function jaccard(a: string, b: string): number {
   return intersection / new Set([...setA, ...setB]).size;
 }
 
+export const maxDuration = 60;
+
 export async function POST(req: Request) {
   void req;
   const session = await auth();
@@ -59,11 +61,28 @@ export async function POST(req: Request) {
     }
 
     const ids = [...toDelete];
+
+    // Skip questions that are referenced in AttemptAnswer — deleting them
+    // violates the FK constraint and would corrupt attempt history.
+    let safeIds = ids;
     if (ids.length > 0) {
-      await prisma.question.deleteMany({ where: { id: { in: ids } } });
+      const used = await prisma.attemptAnswer.findMany({
+        where: { questionId: { in: ids } },
+        select: { questionId: true },
+        distinct: ["questionId"],
+      });
+      const usedSet = new Set(used.map((a) => a.questionId));
+      safeIds = ids.filter((id) => !usedSet.has(id));
+      if (safeIds.length > 0) {
+        await prisma.question.deleteMany({ where: { id: { in: safeIds } } });
+      }
     }
 
-    const result = { removed: ids.length, remaining: all.length - ids.length };
+    const result = {
+      removed: safeIds.length,
+      skippedInUse: ids.length - safeIds.length,
+      remaining: all.length - safeIds.length,
+    };
     await prisma.adminJob.update({
       where: { id: job.id },
       data: { status: "DONE", finishedAt: new Date(), result: JSON.stringify(result) },
