@@ -294,10 +294,17 @@ export default function QuestionAdmin() {
             )}
           </h3>
           <div className="flex flex-col items-end gap-1">
-            <Button variant="outline" size="sm" onClick={runDedup} disabled={dedupRunning || lastDedup?.status === "RUNNING"}>
-              <Sparkles className="h-3.5 w-3.5" />
-              {dedupRunning || lastDedup?.status === "RUNNING" ? "Running…" : "Remove duplicates"}
-            </Button>
+            {(() => {
+              const stale = lastDedup?.status === "RUNNING" &&
+                (Date.now() - new Date(lastDedup.startedAt).getTime()) > 120_000;
+              const busy = dedupRunning || (lastDedup?.status === "RUNNING" && !stale);
+              return (
+                <Button variant="outline" size="sm" onClick={runDedup} disabled={busy}>
+                  <Sparkles className="h-3.5 w-3.5" />
+                  {busy ? "Running…" : "Remove duplicates"}
+                </Button>
+              );
+            })()}
             <JobTag job={lastDedup} runningMsg={dedupMsg} />
           </div>
         </div>
@@ -532,9 +539,16 @@ export default function QuestionAdmin() {
       {tab === "audit" && (
         <Card className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={runAudit} disabled={auditRunning || lastAudit?.status === "RUNNING"}>
-              {auditRunning || lastAudit?.status === "RUNNING" ? "Scanning…" : "Run audit"}
-            </Button>
+            {(() => {
+              const stale = lastAudit?.status === "RUNNING" &&
+                (Date.now() - new Date(lastAudit.startedAt).getTime()) > 120_000;
+              const busy = auditRunning || (lastAudit?.status === "RUNNING" && !stale);
+              return (
+                <Button onClick={runAudit} disabled={busy}>
+                  {busy ? "Scanning…" : "Run audit"}
+                </Button>
+              );
+            })()}
             {auditResults && (
               <span className="text-sm text-muted">
                 {auditResults.issueCount} issue{auditResults.issueCount !== 1 ? "s" : ""} found across {auditResults.total} questions
