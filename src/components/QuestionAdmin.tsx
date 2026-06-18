@@ -252,6 +252,7 @@ export default function QuestionAdmin() {
       setDedupMsg(`✗ ${b.error}`);
     }
     setDedupRunning(false);
+    await loadJobs();
   };
 
   const runAudit = async () => {
