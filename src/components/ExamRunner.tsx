@@ -466,7 +466,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             ) : (
               <div>
                 <label className="mb-1 block text-sm text-muted">
-                  Type your answer (no negative marking on this section):
+                  Short answer — no negative marking on this section
                 </label>
                 <input
                   type="text"
@@ -475,6 +475,9 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
                   placeholder="e.g. 42"
                   className="w-full max-w-xs rounded-lg border bg-card px-3 py-2 text-base focus:border-primary focus:outline-none"
                 />
+                <p className="mt-1.5 text-xs text-muted">
+                  Accept: integer (42), decimal (3.14), fraction (2/3), expression (√2). No units.
+                </p>
               </div>
             )}
           </div>

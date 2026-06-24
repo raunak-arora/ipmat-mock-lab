@@ -74,6 +74,10 @@ export default function QuestionAdmin() {
   const [withExplanation, setWithExplanation] = useState<number | null>(null);
   const [tab, setTab] = useState<"add" | "import" | "browse" | "audit" | "stats">("add");
 
+  // Browse filters
+  const [browseSubject, setBrowseSubject] = useState<Subject | "">("");
+  const [browseTopic, setBrowseTopic] = useState("");
+
   // Stats tab
   interface QuestionStat {
     questionId: string;
@@ -530,9 +534,44 @@ export default function QuestionAdmin() {
 
       {tab === "browse" && (
         <Card>
-          <p className="mb-3 text-sm text-muted">{rows.length} questions</p>
-          <div className="divide-y">
-            {rows.map((q) => (
+          {/* Filter bar */}
+          <div className="mb-3 flex flex-wrap gap-2">
+            <select
+              value={browseSubject}
+              onChange={(e) => { setBrowseSubject(e.target.value as Subject | ""); setBrowseTopic(""); }}
+              className="rounded-lg border bg-background px-2 py-1 text-sm focus:outline-none"
+            >
+              <option value="">All subjects</option>
+              {(["QUANT", "VERBAL", "LR"] as Subject[]).map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            {browseSubject && (
+              <select
+                value={browseTopic}
+                onChange={(e) => setBrowseTopic(e.target.value)}
+                className="rounded-lg border bg-background px-2 py-1 text-sm focus:outline-none"
+              >
+                <option value="">All topics</option>
+                {TOPICS[browseSubject].map((t) => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            )}
+          </div>
+          {(() => {
+            const filtered = rows.filter((q) => {
+              if (browseSubject && q.subject !== browseSubject) return false;
+              if (browseTopic && q.topic !== browseTopic) return false;
+              return true;
+            });
+            return (
+              <>
+                <p className="mb-3 text-sm text-muted">
+                  {filtered.length} of {rows.length} questions
+                </p>
+                <div className="divide-y">
+                  {filtered.map((q) => (
               <div
                 key={q.id}
                 className="flex items-start justify-between gap-3 py-2.5 text-sm"
@@ -565,9 +604,12 @@ export default function QuestionAdmin() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
-              </div>
-            ))}
-          </div>
+                  </div>
+                ))}
+                </div>
+              </>
+            );
+          })()}
         </Card>
       )}
 

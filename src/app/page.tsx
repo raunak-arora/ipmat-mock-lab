@@ -6,6 +6,7 @@ import { isAdmin as getIsAdmin } from "@/lib/is-admin";
 import { prisma } from "@/lib/db";
 import { EXAMS } from "@/lib/examConfig";
 import StartMock from "@/components/StartMock";
+import DrillButton from "@/components/DrillButton";
 import { Badge, Card } from "@/components/ui";
 import { isStudentAllowed, getOrCreateProfile } from "@/lib/allowlist";
 
@@ -128,7 +129,7 @@ export default async function Home() {
 
   const profile = await getOrCreateProfile(email, session.user.name ?? "");
 
-  const [recent, totalAttempts, allDates] = await Promise.all([
+  const [recent, totalAttempts, allDates, weakTopicAnswers] = await Promise.all([
     prisma.attempt.findMany({
       where: { profileId: profile.id, submittedAt: { not: null } },
       orderBy: { submittedAt: "desc" },
@@ -146,6 +147,11 @@ export default async function Home() {
       where: { profileId: profile.id, submittedAt: { not: null } },
       select: { submittedAt: true },
       orderBy: { submittedAt: "desc" },
+    }),
+    prisma.attemptAnswer.findMany({
+      where: { attempt: { profileId: profile.id, submittedAt: { not: null } } },
+      select: { isCorrect: true, question: { select: { topic: true } } },
+      take: 300,
     }),
   ]);
 
@@ -186,6 +192,22 @@ export default async function Home() {
     ? Math.round(recent.reduce((s, a) => s + (a.percentile ?? 0), 0) / recent.length)
     : null;
 
+  // Weak topic drill — from last 300 answers.
+  const topicMap = new Map<string, { correct: number; total: number }>();
+  for (const a of weakTopicAnswers) {
+    const t = a.question.topic;
+    const s = topicMap.get(t) ?? { correct: 0, total: 0 };
+    s.total += 1;
+    if (a.isCorrect) s.correct += 1;
+    topicMap.set(t, s);
+  }
+  const homeWeakTopics = [...topicMap.entries()]
+    .filter(([, s]) => s.total >= 3 && s.correct / s.total < 0.6)
+    .sort((a, b) => a[1].correct / a[1].total - b[1].correct / b[1].total)
+    .slice(0, 3)
+    .map(([t]) => t);
+  const lastExam = (recent[0]?.exam as string | undefined) ?? "INDORE";
+
   const displayName = session.user.name || profile.name;
   const firstName = displayName.split(" ")[0];
 
@@ -215,6 +237,20 @@ export default async function Home() {
             </div>
           ))}
         </div>
+      )}
+
+      {homeWeakTopics.length > 0 && (
+        <Card className="border-warning/40 bg-warning/5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold">Focus area this week</p>
+              <p className="mt-0.5 text-sm text-muted">
+                {homeWeakTopics.join(" · ")}
+              </p>
+            </div>
+            <DrillButton exam={lastExam} profileId={profile.id} weakTopics={homeWeakTopics} />
+          </div>
+        </Card>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">

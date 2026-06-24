@@ -81,13 +81,22 @@ export async function PATCH(
   const { id } = await params;
   const { attempt, denied } = await authorizeAttempt(id, session.user.email);
   if (denied) return denied;
-  if (attempt!.submittedAt)
-    return NextResponse.json({ error: "Already submitted" }, { status: 409 });
 
   const body = await req.json();
   const answers: SavedAnswer[] = body.answers ?? [];
   const lockedSections: string[] | undefined = body.lockedSections;
   const bookmarks: { questionId: string; bookmarked: boolean }[] = body.bookmarks ?? [];
+  const notes: string | undefined = body.notes;
+
+  // Notes can be saved even after submission; all other fields cannot.
+  if (attempt!.submittedAt && (answers.length > 0 || bookmarks.length > 0 || lockedSections !== undefined)) {
+    return NextResponse.json({ error: "Already submitted" }, { status: 409 });
+  }
+  if (notes !== undefined) {
+    await prisma.attempt.update({ where: { id }, data: { notes } });
+    if (answers.length === 0 && bookmarks.length === 0 && lockedSections === undefined)
+      return NextResponse.json({ ok: true });
+  }
 
   const ops = [
     ...answers.map((a) =>

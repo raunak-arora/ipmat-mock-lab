@@ -10,6 +10,8 @@ import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { FORMULAS_BY_TOPIC } from "@/lib/formulas";
 import DrillButton from "@/components/DrillButton";
+import SectionDrillButton from "@/components/SectionDrillButton";
+import AttemptNotes from "@/components/AttemptNotes";
 import SolutionReview from "@/components/SolutionReview";
 
 export const dynamic = "force-dynamic";
@@ -207,10 +209,18 @@ export default async function ResultsPage({
                     </Badge>
                   </div>
                 </div>
-                <div className="mt-1 flex gap-4 text-xs text-muted">
-                  <span className="text-success">{ss.correct} correct</span>
-                  <span className="text-danger">{ss.wrong} wrong</span>
-                  <span>{ss.skipped} skipped</span>
+                <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex gap-4 text-xs text-muted">
+                    <span className="text-success">{ss.correct} correct</span>
+                    <span className="text-danger">{ss.wrong} wrong</span>
+                    <span>{ss.skipped} skipped</span>
+                  </div>
+                  <SectionDrillButton
+                    profileId={attempt.profileId}
+                    exam={exam}
+                    sectionKey={s.key}
+                    sectionLabel={s.label}
+                  />
                 </div>
               </div>
             );
@@ -370,6 +380,14 @@ export default async function ResultsPage({
             );
           })}
         </div>
+      </Card>
+
+      {/* Attempt notes */}
+      <Card>
+        <AttemptNotes
+          attemptId={id}
+          initialNotes={(attempt as any).notes ?? ""}
+        />
       </Card>
 
       {/* Per-question review */}

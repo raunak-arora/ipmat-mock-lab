@@ -79,6 +79,8 @@ model Attempt {
   clearedCutoff Boolean?
   // JSON array of SectionKey strings manually submitted by the user mid-exam.
   lockedSections String?
+  // Optional student notes written after the attempt.
+  notes          String?
 
   answers AttemptAnswer[]
 

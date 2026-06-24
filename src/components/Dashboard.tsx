@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import DrillButton from "@/components/DrillButton";
 
 interface Profile {
   id: string;
@@ -110,6 +111,31 @@ export default function Dashboard({ profiles }: { profiles: Profile[] }) {
 
       {data && data.summary.completed > 0 && (
         <>
+          {/* Actionable insight */}
+          {data.topics.length > 0 && (() => {
+            const weak = data.topics.filter((t) => t.total >= 3 && t.pct < 60);
+            if (weak.length === 0) return null;
+            const top3 = weak.slice(0, 3);
+            const lastExam = data.series[data.series.length - 1]?.exam ?? "INDORE";
+            return (
+              <Card className="border-warning/40 bg-warning/5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold">Focus area this week</p>
+                    <p className="mt-0.5 text-sm text-muted">
+                      {top3.map((t) => `${t.topic} (${t.pct}%)`).join(" · ")}
+                    </p>
+                  </div>
+                  <DrillButton
+                    exam={lastExam}
+                    profileId={profileId}
+                    weakTopics={top3.map((t) => t.topic)}
+                  />
+                </div>
+              </Card>
+            );
+          })()}
+
           {/* Summary tiles */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Tile label="Mocks taken" value={String(data.summary.completed)} />
