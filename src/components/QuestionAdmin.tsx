@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Plus, Trash2, Upload, Sparkles, Clock } from "lucide-react";
 import { Button, Card, Badge } from "@/components/ui";
+import { cn } from "@/lib/utils";
 import { QA_TOPICS, VA_TOPICS, LR_TOPICS, Subject } from "@/lib/examConfig";
 
 interface QuestionRow {
@@ -14,6 +15,7 @@ interface QuestionRow {
   stem: string;
   options: string[] | null;
   answer: string;
+  aiGenerated: boolean;
 }
 
 interface Issue {
@@ -77,6 +79,7 @@ export default function QuestionAdmin() {
   // Browse filters
   const [browseSubject, setBrowseSubject] = useState<Subject | "">("");
   const [browseTopic, setBrowseTopic] = useState("");
+  const [browseAiOnly, setBrowseAiOnly] = useState(false);
 
   // Stats tab
   interface QuestionStat {
@@ -558,11 +561,21 @@ export default function QuestionAdmin() {
                 ))}
               </select>
             )}
+            <button
+              onClick={() => setBrowseAiOnly((v) => !v)}
+              className={cn(
+                "rounded-lg border px-2 py-1 text-xs",
+                browseAiOnly ? "border-primary bg-primary/10 text-primary" : "hover:bg-card"
+              )}
+            >
+              🤖 AI Generated
+            </button>
           </div>
           {(() => {
             const filtered = rows.filter((q) => {
               if (browseSubject && q.subject !== browseSubject) return false;
               if (browseTopic && q.topic !== browseTopic) return false;
+              if (browseAiOnly && !q.aiGenerated) return false;
               return true;
             });
             return (
@@ -585,6 +598,7 @@ export default function QuestionAdmin() {
                     <span>{q.difficulty}</span>
                     <span>·</span>
                     <span className="font-medium text-foreground">{q.type === "SHORT_ANSWER" ? "SA" : "MCQ"}</span>
+                    {q.aiGenerated && <span className="text-primary">🤖 AI</span>}
                   </div>
                   <p className="line-clamp-2">{q.stem}</p>
                   <p className="mt-0.5 truncate text-xs text-success">

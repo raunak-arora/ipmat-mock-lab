@@ -51,6 +51,10 @@ model Question {
   // JSON array of free-form tags.
   tags        String?
   createdAt   DateTime @default(now())
+  // AI-generated question lineage.
+  aiGenerated   Boolean  @default(false)
+  generatedFrom String?  // ID of the source question this was derived from
+  generatedAt   DateTime?
 
   answers AttemptAnswer[]
 
