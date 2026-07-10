@@ -45,7 +45,6 @@ const QUANT_RENAMES: Record<string, string> = {
   // Time Speed Distance
   "Time, Speed & Distance": "Time Speed Distance",
   "Time, Speed and Distance": "Time Speed Distance",
-  "Time, Speed & Distance": "Time Speed Distance",
   // Modern Maths
   "Sets": "Modern Maths",
   // Permutation and Combination
