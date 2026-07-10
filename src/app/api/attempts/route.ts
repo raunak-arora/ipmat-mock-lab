@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { auth } from "@/auth";
 import { isAdmin } from "@/lib/is-admin";
+import { getStudentAllowedExams } from "@/lib/allowlist";
 import { generateMock } from "@/lib/mockGenerator";
 import { Exam, Mode, SectionKey } from "@/lib/examConfig";
 
@@ -24,15 +25,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "profileId required" }, { status: 400 });
   }
 
+  const adminUser = await isAdmin(session.user.email);
+
   // Students may only create attempts for their own profile.
-  if (!await isAdmin(session.user.email)) {
+  if (!adminUser) {
     const profile = await prisma.profile.findUnique({ where: { id: profileId } });
     if (!profile || profile.email !== session.user.email)
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (exam !== "INDORE" && exam !== "ROHTAK") {
+  const validExams: Exam[] = ["INDORE", "ROHTAK", "CAT"];
+  if (!validExams.includes(exam)) {
     return NextResponse.json({ error: "Invalid exam" }, { status: 400 });
+  }
+
+  // Students can only start mocks for exams they are allowed to access.
+  if (!adminUser) {
+    const allowedExams = await getStudentAllowedExams(session.user.email);
+    if (!allowedExams.includes(exam)) {
+      return NextResponse.json({ error: "You do not have access to this exam." }, { status: 403 });
+    }
   }
 
   const { planned, shortfalls } = await generateMock({

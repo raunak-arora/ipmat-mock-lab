@@ -10,12 +10,14 @@ import { cn } from "@/lib/utils";
 interface Props {
   profileId: string;
   profileName: string;
+  allowedExams: Exam[];
 }
 
-export default function StartMock({ profileId, profileName }: Props) {
+export default function StartMock({ profileId, profileName, allowedExams }: Props) {
   const router = useRouter();
 
-  const [exam, setExam] = useState<Exam>("INDORE");
+  const availableExams = allowedExams.length > 0 ? allowedExams : (["INDORE", "ROHTAK"] as Exam[]);
+  const [exam, setExam] = useState<Exam>(availableExams[0]);
   const [mode, setMode] = useState<Mode>("FULL");
   const [scopeSection, setScopeSection] = useState<SectionKey | "">("");
   const [scopeTopic, setScopeTopic] = useState("");
@@ -67,8 +69,8 @@ export default function StartMock({ profileId, profileName }: Props) {
       {/* Exam */}
       <div>
         <label className="mb-1.5 block text-sm font-medium">Exam</label>
-        <div className="grid grid-cols-2 gap-2">
-          {(["INDORE", "ROHTAK"] as Exam[]).map((e) => (
+        <div className={`grid gap-2 ${availableExams.length === 1 ? "grid-cols-1" : availableExams.length >= 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+          {availableExams.map((e) => (
             <button
               key={e}
               onClick={() => { setExam(e); setScopeSection(""); setScopeTopic(""); }}

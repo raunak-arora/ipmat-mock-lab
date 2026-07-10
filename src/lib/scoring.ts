@@ -124,7 +124,8 @@ export function gradeAnswers(
     const section = getSection(exam, q.section);
     let marks = 0;
     if (isCorrect === true) marks = section.marksCorrect;
-    else if (isCorrect === false) marks = section.marksWrong;
+    // SHORT_ANSWER (TITA) questions never carry a penalty, even in MCQ-dominant sections.
+    else if (isCorrect === false) marks = q.type === "SHORT_ANSWER" ? 0 : section.marksWrong;
     return {
       questionId: q.id,
       section: q.section,

@@ -96,18 +96,44 @@ export async function generateMock(
         ? { topic: opts.scopeTopic }
         : {};
 
-    const pool = await prisma.question.findMany({
-      where: { subject: section.subject, type: section.type, ...topicFilter },
-    });
+    // CAT sections have a mixed MCQ + TITA (SHORT_ANSWER) quota.
+    const titaCount = section.titaCount ?? 0;
+    const mcqCount = want - titaCount;
 
-    if (pool.length === 0) continue;  // topic doesn't map to this section
+    if (titaCount > 0) {
+      // Pull MCQ and SHORT_ANSWER pools separately, then interleave.
+      const [mcqPool, titaPool] = await Promise.all([
+        prisma.question.findMany({ where: { subject: section.subject, type: "MCQ", ...topicFilter } }),
+        prisma.question.findMany({ where: { subject: section.subject, type: "SHORT_ANSWER", ...topicFilter } }),
+      ]);
 
-    const picked = pickWithTopicSpread(pool, want);
-    if (picked.length < want) {
-      shortfalls.push({ section: section.key, got: picked.length, want });
-    }
-    for (const q of picked) {
-      planned.push({ question: q, section: section.key, order: order++ });
+      if (mcqPool.length === 0 && titaPool.length === 0) continue;
+
+      const pickedMcq = pickWithTopicSpread(mcqPool, mcqCount);
+      const pickedTita = pickWithTopicSpread(titaPool, titaCount);
+
+      const combined = shuffle([...pickedMcq, ...pickedTita]);
+      const shortfall = combined.length < want;
+      if (shortfall) shortfalls.push({ section: section.key, got: combined.length, want });
+
+      for (const q of combined) {
+        planned.push({ question: q, section: section.key, order: order++ });
+      }
+    } else {
+      // Pure MCQ or pure SHORT_ANSWER section (all IPMAT sections).
+      const pool = await prisma.question.findMany({
+        where: { subject: section.subject, type: section.type, ...topicFilter },
+      });
+
+      if (pool.length === 0) continue;
+
+      const picked = pickWithTopicSpread(pool, want);
+      if (picked.length < want) {
+        shortfalls.push({ section: section.key, got: picked.length, want });
+      }
+      for (const q of picked) {
+        planned.push({ question: q, section: section.key, order: order++ });
+      }
     }
   }
 
@@ -123,9 +149,19 @@ export async function countAvailability(exam: Exam) {
     needed: number;
   }> = [];
   for (const section of config.sections) {
-    const available = await prisma.question.count({
-      where: { subject: section.subject, type: section.type },
-    });
+    const titaCount = section.titaCount ?? 0;
+    let available: number;
+    if (titaCount > 0) {
+      const [mcq, tita] = await Promise.all([
+        prisma.question.count({ where: { subject: section.subject, type: "MCQ" } }),
+        prisma.question.count({ where: { subject: section.subject, type: "SHORT_ANSWER" } }),
+      ]);
+      available = mcq + tita;
+    } else {
+      available = await prisma.question.count({
+        where: { subject: section.subject, type: section.type },
+      });
+    }
     result.push({ section: section.key, available, needed: section.count });
   }
   return result;

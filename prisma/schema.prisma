@@ -21,10 +21,12 @@ model Profile {
 }
 
 model AllowedStudent {
-  id      String   @id @default(cuid())
-  email   String   @unique
-  name    String?
-  addedAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  addedAt      DateTime @default(now())
+  // JSON array of Exam keys this student can access, e.g. ["INDORE","ROHTAK"] or ["CAT"]
+  allowedExams String   @default("[\"INDORE\",\"ROHTAK\"]")
 }
 
 model Question {

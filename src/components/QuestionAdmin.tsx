@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Plus, Trash2, Upload, Sparkles, Clock } from "lucide-react";
 import { Button, Card, Badge } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import { QA_TOPICS, VA_TOPICS, LR_TOPICS, Subject } from "@/lib/examConfig";
+import { QA_TOPICS, VA_TOPICS, LR_TOPICS, CAT_VARC_TOPICS, CAT_DILR_TOPICS, CAT_QA_TOPICS, Subject } from "@/lib/examConfig";
 
 interface QuestionRow {
   id: string;
@@ -49,6 +49,9 @@ const TOPICS: Record<Subject, readonly string[]> = {
   QUANT: QA_TOPICS,
   VERBAL: VA_TOPICS,
   LR: LR_TOPICS,
+  CAT_VARC: CAT_VARC_TOPICS,
+  CAT_DILR: CAT_DILR_TOPICS,
+  CAT_QA: CAT_QA_TOPICS,
 };
 
 const EXAMPLE = JSON.stringify(
@@ -392,13 +395,20 @@ export default function QuestionAdmin() {
                   const s = e.target.value as Subject;
                   setSubject(s);
                   setTopic(TOPICS[s][0]);
-                  if (s === "LR") setType("MCQ");
+                  if (s === "LR" || s === "CAT_VARC" || s === "CAT_DILR" || s === "CAT_QA") setType("MCQ");
                 }}
                 className="select"
               >
-                <option value="QUANT">Quant</option>
-                <option value="VERBAL">Verbal</option>
-                <option value="LR">Logical Reasoning</option>
+                <optgroup label="IPMAT">
+                  <option value="QUANT">Quant (IPMAT)</option>
+                  <option value="VERBAL">Verbal (IPMAT)</option>
+                  <option value="LR">Logical Reasoning (IPMAT)</option>
+                </optgroup>
+                <optgroup label="CAT">
+                  <option value="CAT_VARC">VARC (CAT)</option>
+                  <option value="CAT_DILR">DILR (CAT)</option>
+                  <option value="CAT_QA">Quant (CAT)</option>
+                </optgroup>
               </select>
             </Field>
             <Field label="Type">
@@ -545,7 +555,7 @@ export default function QuestionAdmin() {
               className="rounded-lg border bg-background px-2 py-1 text-sm focus:outline-none"
             >
               <option value="">All subjects</option>
-              {(["QUANT", "VERBAL", "LR"] as Subject[]).map((s) => (
+              {(["QUANT", "VERBAL", "LR", "CAT_VARC", "CAT_DILR", "CAT_QA"] as Subject[]).map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>

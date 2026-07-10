@@ -8,7 +8,7 @@ import { EXAMS } from "@/lib/examConfig";
 import StartMock from "@/components/StartMock";
 import DrillButton from "@/components/DrillButton";
 import { Badge, Card } from "@/components/ui";
-import { isStudentAllowed, getOrCreateProfile } from "@/lib/allowlist";
+import { isStudentAllowed, getStudentAllowedExams, getOrCreateProfile } from "@/lib/allowlist";
 
 export const dynamic = "force-dynamic";
 
@@ -127,7 +127,10 @@ export default async function Home() {
   const allowed = await isStudentAllowed(email);
   if (!allowed) redirect("/denied");
 
-  const profile = await getOrCreateProfile(email, session.user.name ?? "");
+  const [profile, allowedExams] = await Promise.all([
+    getOrCreateProfile(email, session.user.name ?? ""),
+    getStudentAllowedExams(email),
+  ]);
 
   const [recent, totalAttempts, allDates, weakTopicAnswers] = await Promise.all([
     prisma.attempt.findMany({
@@ -254,7 +257,7 @@ export default async function Home() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-        <StartMock profileId={profile.id} profileName={displayName} />
+        <StartMock profileId={profile.id} profileName={displayName} allowedExams={allowedExams} />
 
         <div className="space-y-4">
           {/* Recent attempts */}
@@ -274,7 +277,7 @@ export default async function Home() {
                     className="flex items-center justify-between py-2.5 text-sm hover:opacity-80"
                   >
                     <div>
-                      <span className="font-medium">{EXAMS[a.exam as "INDORE" | "ROHTAK"].label}</span>
+                      <span className="font-medium">{EXAMS[a.exam as "INDORE" | "ROHTAK" | "CAT"].label}</span>
                       <span className="ml-1.5 text-xs text-muted">{a.mode}</span>
                     </div>
                     <div className="flex items-center gap-2">

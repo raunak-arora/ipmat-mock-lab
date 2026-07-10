@@ -1,10 +1,10 @@
-// Single source of truth for IPMAT exam patterns. The runner, scorer, mock
-// generator and percentile estimator all read from here. Data is sourced from
-// the public 2025/2026 exam patterns and cutoff disclosures (see README).
+// Single source of truth for IPMAT and CAT exam patterns. The runner, scorer,
+// mock generator and percentile estimator all read from here.
 
-export type Exam = "INDORE" | "ROHTAK";
-export type SectionKey = "QA_SA" | "QA_MCQ" | "VA" | "LR" | "QA";
-export type Subject = "QUANT" | "VERBAL" | "LR";
+export type Exam = "INDORE" | "ROHTAK" | "CAT";
+export type ExamFamily = "IPMAT" | "CAT";
+export type SectionKey = "QA_SA" | "QA_MCQ" | "VA" | "LR" | "QA" | "CAT_VARC" | "CAT_DILR" | "CAT_QA";
+export type Subject = "QUANT" | "VERBAL" | "LR" | "CAT_VARC" | "CAT_DILR" | "CAT_QA";
 export type QType = "MCQ" | "SHORT_ANSWER";
 export type Difficulty = "EASY" | "MEDIUM" | "HARD";
 export type Mode = "FULL" | "SECTIONAL" | "TOPIC";
@@ -15,16 +15,20 @@ export interface SectionConfig {
   short: string;
   /** Which question-bank subject pool this section draws from. */
   subject: Subject;
+  /** Primary question type. For CAT mixed sections this is "MCQ"; titaCount gives the SHORT_ANSWER quota. */
   type: QType;
   count: number;
   marksCorrect: number;
-  marksWrong: number; // 0 means no negative marking
+  /** Penalty per wrong MCQ answer; SHORT_ANSWER questions always get 0 penalty regardless. */
+  marksWrong: number;
   /** Per-section time limit in minutes, or null when there is no sectional lock. */
   timeLimitMin: number | null;
   /** Public sectional cut-off (raw marks) used for the "cleared cutoff" verdict. */
   sectionalCutoff: number;
   /** Topics this section draws from, used by the mock generator's blueprint. */
   topics: string[];
+  /** CAT: number of TITA (SHORT_ANSWER) questions within this otherwise-MCQ section. */
+  titaCount?: number;
 }
 
 export interface ExamConfig {
@@ -34,15 +38,18 @@ export interface ExamConfig {
   totalQuestions: number;
   totalMarks: number;
   durationMin: number;
-  /** When true, sections are locked behind their own timers (IIM Indore). */
   sectionalTiming: boolean;
   sections: SectionConfig[];
-  /** A representative "good score" and the percentile it maps to. */
   goodScore: { score: number; percentile: number };
   notes: string[];
 }
 
-// Topic vocabularies (also the allowed `topic` values for the question bank).
+export function getExamFamily(exam: Exam): ExamFamily {
+  return exam === "CAT" ? "CAT" : "IPMAT";
+}
+
+// ── Topic vocabularies ──────────────────────────────────────────────────────
+
 export const QA_TOPICS = [
   "Number System",
   "Algebra",
@@ -92,6 +99,46 @@ export const LR_TOPICS = [
   "Input-Output",
 ] as const;
 
+// CAT-specific topic lists
+export const CAT_VARC_TOPICS = [
+  "Reading Comprehension",
+  "Para Summary",
+  "Para Completion",
+  "Odd One Out",
+  "Critical Reasoning",
+] as const;
+
+export const CAT_DILR_TOPICS = [
+  "Data Tables",
+  "Bar Graphs",
+  "Line Graphs",
+  "Pie Charts",
+  "Caselets",
+  "Venn Diagrams",
+  "Seating Arrangements",
+  "Grid & Matrix Puzzles",
+  "Scheduling & Sequencing",
+  "Games & Tournaments",
+  "Routes & Networks",
+  "Binary Logic",
+] as const;
+
+export const CAT_QA_TOPICS = [
+  "Number System",
+  "Algebra",
+  "Arithmetic",
+  "Geometry & Mensuration",
+  "Coordinate Geometry",
+  "Trigonometry",
+  "Functions & Progressions",
+  "Logarithms & Surds",
+  "Permutation and Combination",
+  "Probability",
+  "Modern Maths",
+] as const;
+
+// ── Exam definitions ─────────────────────────────────────────────────────────
+
 export const EXAMS: Record<Exam, ExamConfig> = {
   INDORE: {
     key: "INDORE",
@@ -111,7 +158,7 @@ export const EXAMS: Record<Exam, ExamConfig> = {
         type: "SHORT_ANSWER",
         count: 15,
         marksCorrect: 4,
-        marksWrong: 0, // no negative marking on the type-the-answer section
+        marksWrong: 0,
         timeLimitMin: 40,
         sectionalCutoff: 24,
         topics: [...QA_TOPICS],
@@ -205,6 +252,65 @@ export const EXAMS: Record<Exam, ExamConfig> = {
       "Selection is primarily on overall merit; sectional cut-offs are modest.",
     ],
   },
+  CAT: {
+    key: "CAT",
+    label: "CAT",
+    conductedBy: "IIMs",
+    totalQuestions: 68,
+    totalMarks: 204,
+    durationMin: 120,
+    sectionalTiming: true,
+    goodScore: { score: 96, percentile: 99 },
+    sections: [
+      {
+        key: "CAT_VARC",
+        label: "Verbal Ability & Reading Comprehension",
+        short: "VARC",
+        subject: "CAT_VARC",
+        type: "MCQ",
+        count: 24,
+        marksCorrect: 3,
+        marksWrong: -1,
+        timeLimitMin: 40,
+        sectionalCutoff: 18, // ~70th percentile IIM minimum qualifying
+        topics: [...CAT_VARC_TOPICS],
+        titaCount: 2, // 22 MCQ + 2 TITA (Odd One Out)
+      },
+      {
+        key: "CAT_DILR",
+        label: "Data Interpretation & Logical Reasoning",
+        short: "DILR",
+        subject: "CAT_DILR",
+        type: "MCQ",
+        count: 22,
+        marksCorrect: 3,
+        marksWrong: -1,
+        timeLimitMin: 40,
+        sectionalCutoff: 14,
+        topics: [...CAT_DILR_TOPICS],
+        titaCount: 10, // 12 MCQ + 10 TITA
+      },
+      {
+        key: "CAT_QA",
+        label: "Quantitative Aptitude",
+        short: "QA",
+        subject: "CAT_QA",
+        type: "MCQ",
+        count: 22,
+        marksCorrect: 3,
+        marksWrong: -1,
+        timeLimitMin: 40,
+        sectionalCutoff: 14,
+        topics: [...CAT_QA_TOPICS],
+        titaCount: 8, // 14 MCQ + 8 TITA
+      },
+    ],
+    notes: [
+      "Each section is locked behind a 40-minute timer — you cannot switch sections once time expires.",
+      "MCQ questions carry −1 penalty per wrong answer; TITA (type-in) questions have NO negative marking.",
+      "Percentiles are scaled across all test slots. You need 99+ overall for IIM A/B/C shortlisting.",
+    ],
+  },
 };
 
 export function getExam(exam: Exam): ExamConfig {
@@ -223,14 +329,18 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   QA: "Quantitative Ability",
   LR: "Logical Reasoning",
   VA: "Verbal Ability",
+  CAT_VARC: "VARC",
+  CAT_DILR: "DILR",
+  CAT_QA: "Quantitative Aptitude",
 };
 
 export const DIFFICULTIES: Difficulty[] = ["EASY", "MEDIUM", "HARD"];
 
 /**
- * Score → percentile anchor points per exam. The curve is piecewise-linear
- * between anchors. These are ESTIMATES calibrated from public cut-off
- * disclosures (e.g. Indore ~164/360 ≈ 95th, ~185 ≈ 99th), NOT official data.
+ * Score → percentile anchor points per exam.
+ * IPMAT anchors: calibrated from public IIM Indore/Rohtak cut-off disclosures.
+ * CAT anchors: calibrated from CAT 2024 official score-card data (IMS India / cracku).
+ * All are ESTIMATES, not official data.
  */
 export const PERCENTILE_ANCHORS: Record<Exam, Array<{ score: number; percentile: number }>> = {
   INDORE: [
@@ -258,5 +368,20 @@ export const PERCENTILE_ANCHORS: Record<Exam, Array<{ score: number; percentile:
     { score: 400, percentile: 99 },
     { score: 440, percentile: 99.7 },
     { score: 480, percentile: 99.99 },
+  ],
+  // CAT 2024 data (68Q, max 204). Score here = scaled/normalised score.
+  CAT: [
+    { score: 0, percentile: 1 },
+    { score: 10, percentile: 10 },
+    { score: 20, percentile: 30 },
+    { score: 30, percentile: 50 },
+    { score: 43, percentile: 80 },
+    { score: 49, percentile: 85 },
+    { score: 57, percentile: 90 },
+    { score: 70, percentile: 95 },
+    { score: 85, percentile: 98 },
+    { score: 96, percentile: 99 },
+    { score: 115, percentile: 99.5 },
+    { score: 204, percentile: 99.99 },
   ],
 };

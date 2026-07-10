@@ -250,7 +250,7 @@ export default function AdminPerformance() {
                       )}
                       <span className="text-muted">
                         {!profileId && <span className="font-medium text-foreground">{row.profileName} · </span>}
-                        #{row.index} · {EXAMS[row.exam as "INDORE" | "ROHTAK"].label} ·{" "}
+                        #{row.index} · {EXAMS[row.exam as "INDORE" | "ROHTAK" | "CAT"].label} ·{" "}
                         {row.mode}
                       </span>
                       <span className="hidden text-xs text-muted sm:inline">

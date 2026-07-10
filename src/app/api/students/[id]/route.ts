@@ -12,8 +12,13 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const { name } = await req.json();
-  await prisma.allowedStudent.update({ where: { id }, data: { name: name || null } });
+  const body = await req.json();
+  const updates: { name?: string | null; allowedExams?: string } = {};
+  if ("name" in body) updates.name = body.name || null;
+  if ("allowedExams" in body && Array.isArray(body.allowedExams)) {
+    updates.allowedExams = JSON.stringify(body.allowedExams);
+  }
+  await prisma.allowedStudent.update({ where: { id }, data: updates });
   return NextResponse.json({ ok: true });
 }
 

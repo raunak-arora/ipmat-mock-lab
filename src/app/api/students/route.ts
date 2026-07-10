@@ -17,13 +17,17 @@ export async function POST(request: Request) {
   if (!await isAdmin(session?.user?.email))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { email, name } = await request.json();
+  const { email, name, allowedExams } = await request.json();
   if (!email) return NextResponse.json({ error: "Email required" }, { status: 400 });
+
+  const allowedExamsJson = Array.isArray(allowedExams) && allowedExams.length > 0
+    ? JSON.stringify(allowedExams)
+    : undefined;
 
   const student = await prisma.allowedStudent.upsert({
     where: { email },
-    update: { name: name ?? null },
-    create: { email, name: name ?? null },
+    update: { name: name ?? null, ...(allowedExamsJson ? { allowedExams: allowedExamsJson } : {}) },
+    create: { email, name: name ?? null, ...(allowedExamsJson ? { allowedExams: allowedExamsJson } : {}) },
   });
   return NextResponse.json(student);
 }
