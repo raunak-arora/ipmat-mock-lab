@@ -78,6 +78,7 @@ export async function GET(req: Request) {
       ? series.reduce((sum, s) => sum + s.percentile, 0) / completed
       : 0;
   const bestScore = series.reduce((m, s) => Math.max(m, s.rawScore), 0);
+  const bestScorePct = series.reduce((m, s) => Math.max(m, s.scorePct), 0);
   const clearRate =
     completed > 0
       ? Math.round(
@@ -88,6 +89,6 @@ export async function GET(req: Request) {
   return NextResponse.json({
     series,
     topics,
-    summary: { completed, avgPercentile, bestScore, clearRate },
+    summary: { completed, avgPercentile, bestScore, bestScorePct, clearRate },
   });
 }

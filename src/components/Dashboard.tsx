@@ -23,6 +23,7 @@ interface Profile {
 interface SeriesPoint {
   id: string;
   index: number;
+  date: string | null;
   exam: string;
   mode: string;
   rawScore: number;
@@ -39,6 +40,7 @@ interface DashboardData {
     completed: number;
     avgPercentile: number;
     bestScore: number;
+    bestScorePct: number;
     clearRate: number;
   };
 }
@@ -144,7 +146,7 @@ export default function Dashboard({ profiles }: { profiles: Profile[] }) {
               value={data.summary.avgPercentile.toFixed(1)}
               accent
             />
-            <Tile label="Best score" value={String(data.summary.bestScore)} />
+            <Tile label="Best score %" value={`${data.summary.bestScorePct}%`} />
             <Tile label="Cut-off clear rate" value={`${data.summary.clearRate}%`} />
           </div>
 
@@ -234,6 +236,11 @@ export default function Dashboard({ profiles }: { profiles: Profile[] }) {
                 >
                   <span className="text-muted">
                     #{s.index} · {s.exam} · {s.mode}
+                    {s.date && (
+                      <span className="ml-2 hidden text-xs sm:inline">
+                        · {new Date(s.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      </span>
+                    )}
                   </span>
                   <div className="flex items-center gap-3">
                     <span className="font-semibold tabular-nums">

@@ -476,7 +476,7 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
                   className="w-full max-w-xs rounded-lg border bg-card px-3 py-2 text-base focus:border-primary focus:outline-none"
                 />
                 <p className="mt-1.5 text-xs text-muted">
-                  Accept: integer (42), decimal (3.14), fraction (2/3), expression (√2). No units.
+                  Accept: integer (42), decimal (3.14), fraction (2/3). No units.
                 </p>
               </div>
             )}

@@ -48,11 +48,16 @@ export const QA_TOPICS = [
   "Algebra",
   "Arithmetic",
   "Geometry & Mensuration",
+  "Coordinate Geometry",
+  "Trigonometry",
   "Modern Maths",
   "Statistics",
   "Data Interpretation",
   "Logarithms & Surds",
   "Functions & Progressions",
+  "Probability",
+  "Permutation and Combination",
+  "Time Speed Distance",
 ] as const;
 
 export const VA_TOPICS = [
@@ -64,6 +69,10 @@ export const VA_TOPICS = [
   "Idioms & Phrases",
   "Para Completion",
   "Verbal Analogies",
+  "Fill in the Blanks",
+  "Critical Reasoning",
+  "One-word Substitution",
+  "Sentence Completion",
 ] as const;
 
 export const LR_TOPICS = [
@@ -77,6 +86,10 @@ export const LR_TOPICS = [
   "Clocks & Calendars",
   "Statement Reasoning",
   "Venn Diagrams",
+  "Analogies",
+  "Data Interpretation",
+  "Data Sufficiency",
+  "Input-Output",
 ] as const;
 
 export const EXAMS: Record<Exam, ExamConfig> = {
