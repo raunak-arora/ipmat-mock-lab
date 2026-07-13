@@ -4,16 +4,19 @@ import { FORMULA_SHEETS } from "@/lib/formulas";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: "Formula Sheet — IPMAT Prep",
+  title: "Formula Sheet — IPMAT & CAT Prep",
 };
 
 const SUBJECT_META = {
-  QUANT: { label: "Quantitative Ability", color: "text-primary", bg: "bg-primary/10 text-primary" },
-  VERBAL: { label: "Verbal Ability", color: "text-success", bg: "bg-success/10 text-success" },
-  LR: { label: "Logical Reasoning", color: "text-warning", bg: "bg-warning/10 text-warning" },
+  QUANT:    { label: "Quantitative Ability (IPMAT)", color: "text-primary",  bg: "bg-primary/10 text-primary" },
+  VERBAL:   { label: "Verbal Ability (IPMAT)",        color: "text-success",  bg: "bg-success/10 text-success" },
+  LR:       { label: "Logical Reasoning (IPMAT)",     color: "text-warning",  bg: "bg-warning/10 text-warning" },
+  CAT_QA:   { label: "Quantitative Ability (CAT)",    color: "text-primary",  bg: "bg-primary/10 text-primary" },
+  CAT_VARC: { label: "Verbal Ability & RC (CAT)",     color: "text-success",  bg: "bg-success/10 text-success" },
+  CAT_DILR: { label: "Data Interpretation & LR (CAT)", color: "text-warning", bg: "bg-warning/10 text-warning" },
 } as const;
 
-const SUBJECT_ORDER = ["QUANT", "VERBAL", "LR"] as const;
+const SUBJECT_ORDER = ["QUANT", "VERBAL", "LR", "CAT_QA", "CAT_VARC", "CAT_DILR"] as const;
 
 export default function FormulasPage() {
   const bySubject = SUBJECT_ORDER.map((subj) => ({
@@ -38,7 +41,7 @@ export default function FormulasPage() {
           <h1 className="text-2xl font-bold">Formula Sheet</h1>
         </div>
         <p className="mt-1 text-sm text-muted">
-          Key formulas, rules, and patterns — topic-wise for IPMAT
+          Key formulas, rules, and patterns — topic-wise for IPMAT &amp; CAT
         </p>
       </div>
 

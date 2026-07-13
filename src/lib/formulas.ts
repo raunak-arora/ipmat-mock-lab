@@ -6,7 +6,7 @@ export interface FormulaEntry {
 
 export interface TopicSheet {
   topic: string;
-  subject: "QUANT" | "VERBAL" | "LR";
+  subject: "QUANT" | "VERBAL" | "LR" | "CAT_QA" | "CAT_VARC" | "CAT_DILR";
   entries: FormulaEntry[];
 }
 
@@ -358,6 +358,280 @@ export const FORMULA_SHEETS: TopicSheet[] = [
       { label: "Only A", formula: "Only A = n(A) − n(A∩B) − n(A∩C) + n(A∩B∩C)" },
       { label: "None of the sets", formula: "None = Total − n(A∪B∪C)" },
       { label: "Exactly two sets", formula: "= n(A∩B) + n(B∩C) + n(A∩C) − 3×n(A∩B∩C)" },
+    ],
+  },
+
+  /* ── CAT_QA ── */
+  {
+    topic: "Number System (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Remainder theorems", note: "Fermat: aᵖ⁻¹ ≡ 1 (mod p) for prime p, gcd(a,p)=1. Wilson: (p−1)! ≡ −1 (mod p)" },
+      { label: "Cyclicity of remainders", note: "Find pattern of aⁿ mod m — cycle length divides φ(m). Powers of 2 mod 10: cycle 4 (2,4,8,6)" },
+      { label: "Last non-zero digit of n!", note: "Use the recurrence: last non-zero digit of 5k! differs by a known factor from (k−1)!" },
+      { label: "Number of trailing zeros", formula: "zeros in n! = ⌊n/5⌋ + ⌊n/25⌋ + ⌊n/125⌋ + …" },
+      { label: "Euler's totient φ(n)", formula: "φ(n) = n × ∏(1 − 1/p) for each prime p dividing n" },
+      { label: "Sum of all factors", formula: "If n = aᵖbq…, sum = ((aᵖ⁺¹−1)/(a−1)) × ((b^(q+1)−1)/(b−1)) × …" },
+      { label: "Base conversion tip", note: "To convert to base b: divide repeatedly by b, remainders (bottom-to-top) give the number" },
+      { label: "LCM of fractions", formula: "LCM(a/b, c/d) = LCM(a,c) / HCF(b,d)" },
+      { label: "HCF of fractions", formula: "HCF(a/b, c/d) = HCF(a,c) / LCM(b,d)" },
+    ],
+  },
+  {
+    topic: "Algebra (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Modulus function", note: "|x| = x if x≥0, −x if x<0. |x−a| = distance from a on number line" },
+      { label: "Greatest integer [x]", note: "[x] = floor of x. [3.7]=3, [−1.2]=−2. {x} = x − [x] (fractional part)" },
+      { label: "Max/min of quadratic", formula: "ax²+bx+c: vertex at x=−b/2a. Max (a<0) or min (a>0) = c − b²/4a" },
+      { label: "AM–GM applied", note: "For a+b = const, ab is maximised when a=b. For ab = const, a+b is minimised when a=b" },
+      { label: "Cauchy-Schwarz (basic)", formula: "(a₁b₁+a₂b₂)² ≤ (a₁²+a₂²)(b₁²+b₂²)" },
+      { label: "Polynomial remainder", note: "Remainder when p(x) divided by (x−a) = p(a) [Remainder theorem]" },
+      { label: "Inequalities — flip rule", note: "Multiplying/dividing both sides by a negative flips the inequality sign" },
+      { label: "Sign chart method", note: "For (x−a)(x−b)>0: test intervals (−∞,a), (a,b), (b,∞) separately" },
+    ],
+  },
+  {
+    topic: "Arithmetic (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Weighted averages", formula: "If group A (size nₐ, avg ā) and B (nᵦ, b̄): combined avg = (nₐā + nᵦb̄)/(nₐ+nᵦ)" },
+      { label: "Mixture removal rule", formula: "After k removals of volume v from vessel of volume V: purity = (1 − v/V)^k" },
+      { label: "Boats & streams", formula: "Downstream = u+v, Upstream = u−v (u=boat speed, v=stream speed)" },
+      { label: "Pipes — net rate", formula: "Fill rates add; empty rates subtract. Time = 1 / net rate" },
+      { label: "Train crossing", formula: "Time = (L_train + L_object) / relative speed" },
+      { label: "Partnership profits", note: "Profit split = ratio of (capital × time). Equal time → split by capital alone" },
+      { label: "Population growth/decay", formula: "Final = Initial × (1 ± r/100)ⁿ" },
+      { label: "Clocks — meeting time", formula: "Minute hand gains 5.5° per minute on hour hand. They meet every 720/11 ≈ 65.45 min" },
+    ],
+  },
+  {
+    topic: "Geometry & Mensuration (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Centres of a triangle", note: "Centroid (medians, 2:1 ratio) · Circumcentre (⊥ bisectors) · Incentre (angle bisectors) · Orthocentre (altitudes)" },
+      { label: "Angle bisector length", formula: "t_a = (2bc cos(A/2)) / (b+c)  where A is angle at vertex a" },
+      { label: "Median length", formula: "m_a = ½√(2b²+2c²−a²)" },
+      { label: "Area via inradius", formula: "Area = r × s  where r=inradius, s=semi-perimeter" },
+      { label: "Circumradius", formula: "R = abc / (4 × Area)" },
+      { label: "Similar triangles", note: "Ratio of areas = square of ratio of sides. Ratio of perimeters = ratio of sides" },
+      { label: "Tangent-chord angle", formula: "Angle = ½ × intercepted arc" },
+      { label: "Power of a point", formula: "PA × PB = PC × PD  (two chords / secants through P)" },
+      { label: "Frustum volume", formula: "V = (πh/3)(R²+r²+Rr)  where R,r = radii of two bases" },
+    ],
+  },
+  {
+    topic: "Coordinate Geometry (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Section formula", formula: "Point dividing P₁P₂ in m:n = ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n))" },
+      { label: "Distance from a line", formula: "d = |ax₁+by₁+c| / √(a²+b²)  for point (x₁,y₁) from line ax+by+c=0" },
+      { label: "Reflection of point", note: "Reflect (a,b) over y=x → (b,a). Over x-axis → (a,−b). Over y-axis → (−a,b)" },
+      { label: "Angle between lines", formula: "tan θ = |(m₁−m₂)/(1+m₁m₂)|" },
+      { label: "Perpendicular from a point", note: "Foot of perpendicular from (h,k) to ax+by+c=0: use section formula with ratio a²:b²" },
+      { label: "Circle standard form", formula: "(x−h)²+(y−k)²=r²  centre (h,k), radius r" },
+      { label: "Tangent to circle", formula: "From external point (x₁,y₁): length = √(x₁²+y₁²+Dx₁+Ey₁+F)" },
+    ],
+  },
+  {
+    topic: "Trigonometry (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Compound angles", formula: "sin(A±B) = sinA cosB ± cosA sinB  |  cos(A±B) = cosA cosB ∓ sinA sinB" },
+      { label: "Double angle", formula: "sin2A = 2sinA cosA  |  cos2A = cos²A−sin²A = 1−2sin²A = 2cos²A−1" },
+      { label: "Product-to-sum", formula: "2sinA cosB = sin(A+B)+sin(A−B)  |  2cosA cosB = cos(A−B)+cos(A+B)" },
+      { label: "Key values table", note: "sin0=0, sin30=½, sin45=1/√2, sin60=√3/2, sin90=1 · cos is reverse" },
+      { label: "sinθ·sin(60°−θ)·sin(60°+θ)", formula: "= (1/4)sin3θ  [useful product identity]" },
+      { label: "Graphs", note: "sinx: period 2π, range [−1,1] · tanx: period π, undefined at π/2+nπ" },
+      { label: "Heights & distances", note: "Angle of elevation: look up from horizontal. Angle of depression: look down. Use tan for opposite/adjacent" },
+    ],
+  },
+  {
+    topic: "Functions & Progressions (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "AP sum — key trick", note: "Middle term = average. If n is odd, the median term equals the mean" },
+      { label: "GP sum — ratio 1", formula: "If r=1: Sₙ = na" },
+      { label: "AGP (Arith-Geo progression)", formula: "Sₙ has a closed form; for infinite AGP with |r|<1: S∞ = a/(1−r) + dr/(1−r)²" },
+      { label: "Domain restrictions", note: "√f(x): need f(x)≥0 · 1/f(x): need f(x)≠0 · log f(x): need f(x)>0" },
+      { label: "Composition f(g(x))", note: "Apply g first, then f. Domain: all x in domain(g) where g(x) is in domain(f)" },
+      { label: "Inverse function", note: "f⁻¹ exists iff f is bijective (one-one and onto). Graph of f⁻¹ = reflection of f over y=x" },
+      { label: "Summation identities", formula: "Σn = n(n+1)/2 · Σn² = n(n+1)(2n+1)/6 · Σn³ = [n(n+1)/2]²" },
+    ],
+  },
+  {
+    topic: "Logarithms & Surds (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "log base switching", formula: "log_a(b) = 1/log_b(a)" },
+      { label: "Characteristic & mantissa", note: "log₁₀(x): characteristic = integer part (can be −ve), mantissa = decimal part (always ≥0)" },
+      { label: "Number of digits", formula: "Digits in n = ⌊log₁₀ n⌋ + 1" },
+      { label: "log inequalities", note: "If base>1: logₐx>logₐy ⟺ x>y. If 0<base<1: logₐx>logₐy ⟺ x<y (flips!)" },
+      { label: "Common log values", note: "log2≈0.301 · log3≈0.477 · log7≈0.845 · ln2≈0.693" },
+      { label: "Surd rationalization", formula: "1/(a+b√c) = (a−b√c)/(a²−b²c)" },
+    ],
+  },
+  {
+    topic: "Permutation & Combination (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Derangements", formula: "D_n = n! × Σ(-1)^k/k! (k=0..n) ≈ n!/e for large n" },
+      { label: "Stars & bars", formula: "Non-negative integer solutions to x₁+…+xₖ=n: C(n+k−1, k−1)" },
+      { label: "Stars & bars (positive)", formula: "Positive integer solutions: C(n−1, k−1)" },
+      { label: "Inclusion-exclusion", formula: "|A∪B∪C| = |A|+|B|+|C|−|A∩B|−|B∩C|−|A∩C|+|A∩B∩C|" },
+      { label: "Multinomial", formula: "Arrangements of n things with repetitions p,q,r: n!/(p!q!r!)" },
+      { label: "Identical objects in distinct boxes", formula: "No constraint: C(n+r−1,r−1) · Each box ≥1: C(n−1,r−1)" },
+      { label: "Distinct objects in identical boxes", note: "Stirling numbers of the 2nd kind — complex; avoid unless specifically tested" },
+    ],
+  },
+  {
+    topic: "Probability (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Bayes' theorem", formula: "P(A|B) = P(B|A)·P(A) / P(B)" },
+      { label: "Total probability", formula: "P(B) = Σ P(B|Aᵢ)·P(Aᵢ) over mutually exclusive exhaustive events Aᵢ" },
+      { label: "Binomial distribution", formula: "P(X=k) = C(n,k)·pᵏ·(1−p)^(n−k)" },
+      { label: "Expected value", formula: "E(X) = Σ xᵢ·P(xᵢ)  |  E(aX+b) = aE(X)+b" },
+      { label: "Geometric probability", note: "P = favourable length (or area) / total length (or area)" },
+      { label: "Odds", note: "Odds in favour = P/(1−P). Odds against = (1−P)/P" },
+    ],
+  },
+  {
+    topic: "Modern Maths (CAT)",
+    subject: "CAT_QA",
+    entries: [
+      { label: "Set identities", formula: "De Morgan: (A∪B)ᶜ = Aᶜ∩Bᶜ · (A∩B)ᶜ = Aᶜ∪Bᶜ" },
+      { label: "Recurrence relations", note: "Write out first few terms, look for closed form: linear recurrences → characteristic equation" },
+      { label: "Matrix determinant (2×2)", formula: "det[[a,b],[c,d]] = ad − bc" },
+      { label: "Pigeonhole principle", note: "If n items in k boxes and n>k, at least one box has ≥⌈n/k⌉ items" },
+    ],
+  },
+
+  /* ── CAT_VARC ── */
+  {
+    topic: "Reading Comprehension (CAT)",
+    subject: "CAT_VARC",
+    entries: [
+      { label: "RC passage types", note: "Social sciences · Natural sciences · Humanities (philosophy, history, art) · Business/economics — each has a distinct tone" },
+      { label: "Primary purpose question", note: "Answer must cover the WHOLE passage, not just one paragraph. Eliminate too-narrow or too-broad options" },
+      { label: "Inference vs stated", note: "Inference = must be true based on the text (not assumed). Stated = directly in the passage. Don't mix them" },
+      { label: "Author's tone", note: "Positive: appreciative, supportive, laudatory · Negative: critical, sceptical, dismissive · Neutral: objective, analytical, descriptive" },
+      { label: "'Most appropriate title' trap", note: "Reject titles that cover only one paragraph or that add information not in the passage" },
+      { label: "Elimination strategy", note: "Eliminate (a) factually wrong, (b) too extreme, (c) out of scope, (d) contradicts passage. What remains is the answer" },
+      { label: "CAT RC passage length", note: "Typically 500–700 words, 4–6 questions per passage. 3 passages in VARC section" },
+      { label: "Para-level summary", note: "After each paragraph, note: what was claimed? Is it supporting or refuting? Builds your mental map for questions" },
+    ],
+  },
+  {
+    topic: "Para Summary (CAT)",
+    subject: "CAT_VARC",
+    entries: [
+      { label: "What it tests", note: "Choose the option that best captures the main idea of a 5–7 sentence paragraph. TITA — you type the answer letter (A/B/C/D)" },
+      { label: "Correct summary must", note: "Cover the ENTIRE paragraph's scope · Be accurate (no information added or distorted) · Use appropriately hedged language" },
+      { label: "Eliminate: too narrow", note: "An option focusing on a detail or example from the paragraph, not the central argument" },
+      { label: "Eliminate: too broad", note: "An option making a universal claim not supported by the paragraph" },
+      { label: "Eliminate: distortion", note: "Any option that changes 'may' to 'does', 'some' to 'all', or adds a causal claim not in the text" },
+      { label: "Watch for extreme language", note: "Words like 'always', 'never', 'all', 'none', 'completely' are almost always wrong" },
+      { label: "Strategy", note: "Read once, form your own summary in one line. Then pick the option closest to it. Don't re-read until needed" },
+    ],
+  },
+  {
+    topic: "Para Completion (CAT)",
+    subject: "CAT_VARC",
+    entries: [
+      { label: "What it tests", note: "Find the sentence that most logically follows (or occasionally precedes) a given paragraph" },
+      { label: "Match the tone", note: "If the paragraph is analytical, the completion must be analytical — not emotional or prescriptive" },
+      { label: "No new topics", note: "The best completion extends or concludes the existing argument; it does not introduce unrelated ideas" },
+      { label: "Direction clues", note: "Last sentence ending with 'however', 'but', 'yet' → completion presents a contrast. 'Therefore', 'thus' → completion draws a conclusion" },
+      { label: "Pronoun consistency", note: "If the paragraph uses 'they' for a group, the completion should do the same — inconsistent pronoun reference signals a wrong option" },
+      { label: "Tense consistency", note: "Keep the verb tense of the paragraph. Sudden switch to future tense often signals a wrong option" },
+    ],
+  },
+  {
+    topic: "Odd One Out (CAT)",
+    subject: "CAT_VARC",
+    entries: [
+      { label: "What it tests", note: "Five sentences — four form a coherent paragraph, one doesn't belong. TITA: type the sentence number (1–5)" },
+      { label: "Identify the theme first", note: "Read all five sentences and identify what 3–4 of them are clearly about before looking for the odd one" },
+      { label: "Topic mismatch", note: "The odd sentence is often about a completely different subject introduced without connection" },
+      { label: "Pronoun without antecedent", note: "If a sentence uses 'it' or 'they' but no prior sentence names the referent, it may be the odd one (or a paragraph opener)" },
+      { label: "Transition mismatch", note: "The odd sentence often uses a logical connector ('however', 'therefore') that doesn't logically follow from any of the other sentences" },
+      { label: "Time/scope jump", note: "A sentence that suddenly switches era (e.g., ancient history in a modern economics paragraph) is usually the odd one" },
+      { label: "Verify by assembling", note: "After identifying the odd sentence, check that the remaining four actually form a coherent, connected paragraph" },
+    ],
+  },
+  {
+    topic: "Critical Reasoning (CAT)",
+    subject: "CAT_VARC",
+    entries: [
+      { label: "Argument structure", note: "Premise(s) → Conclusion. Identify each before answering. The conclusion is what the author is trying to prove" },
+      { label: "Assumption", note: "An unstated premise WITHOUT which the argument collapses. Test: negate it — if the argument breaks, it's an assumption" },
+      { label: "Weaken", note: "Provide evidence that makes the conclusion less likely. Attack the link between premise and conclusion" },
+      { label: "Strengthen", note: "Provide evidence that makes the conclusion more likely. Close a gap or rule out an alternative explanation" },
+      { label: "Flaw types", note: "Correlation ≠ causation · Hasty generalisation · False dichotomy · Ad hominem · Slippery slope · Affirming the consequent" },
+      { label: "Evaluate", note: "Identify which piece of information, if known, would most help assess the argument's validity" },
+      { label: "Boldface questions", note: "Identify the role of highlighted portions: is it a premise, a conclusion, a counter-argument, or a background fact?" },
+    ],
+  },
+
+  /* ── CAT_DILR ── */
+  {
+    topic: "Data Interpretation (CAT)",
+    subject: "CAT_DILR",
+    entries: [
+      { label: "Percentage calculation shortcut", note: "10% = move decimal one left. 5% = half of 10%. 15% = 10%+5%. Build any % from these anchors" },
+      { label: "Percentage point vs percentage", note: "If X goes from 20% to 25%, it's a 5 percentage-point rise but a 25% relative increase" },
+      { label: "CAGR formula", formula: "CAGR = (End/Start)^(1/n) − 1  where n = number of years" },
+      { label: "Index number", formula: "Index = (Value / Base value) × 100. Change in index ≠ change in original value" },
+      { label: "Approximation strategy", note: "In CAT DI, exact calculation is rare. Round aggressively and check answer proximity. Most options are well-separated" },
+      { label: "Table reading", note: "Note column headers and units before computing. Row sum vs column sum confusion is the #1 error" },
+    ],
+  },
+  {
+    topic: "Logical Reasoning (CAT)",
+    subject: "CAT_DILR",
+    entries: [
+      { label: "Set-up: draw the grid", note: "For scheduling/seating/assignment puzzles, draw a grid (entities × attributes) before reading clues" },
+      { label: "Definite vs conditional clues", note: "Apply definite clues (always true) first. Hold conditional clues ('if A then B') and apply when one branch is fixed" },
+      { label: "Seating — circular vs linear", note: "Circular: fix one person, arrange rest. Opposite in circular = n/2 seats away" },
+      { label: "Blood relations tree", note: "Always draw a family tree. Assign gender as you go. Resolve one link at a time" },
+      { label: "Binary Logic (T/L puzzles)", note: "Assume one person's type (T or L), derive all others from statements, check for contradiction. Two tries max" },
+      { label: "Tournament brackets", note: "Knockout: n−1 matches to find winner. Round-robin: C(n,2) matches total" },
+      { label: "Scheduling constraints", note: "List dependencies first (A before B). Then place fixed-time items. Fill gaps with flex items" },
+      { label: "Caselet approach", note: "Read all questions before solving — later questions sometimes give data that disambiguates earlier ones" },
+    ],
+  },
+  {
+    topic: "Venn Diagrams & Sets (CAT)",
+    subject: "CAT_DILR",
+    entries: [
+      { label: "Two-set formula", formula: "n(A∪B) = n(A)+n(B)−n(A∩B)" },
+      { label: "Three-set formula", formula: "n(A∪B∪C) = n(A)+n(B)+n(C)−n(A∩B)−n(B∩C)−n(A∩C)+n(A∩B∩C)" },
+      { label: "Only A", formula: "Only A = n(A)−n(A∩B)−n(A∩C)+n(A∩B∩C)" },
+      { label: "Exactly two", formula: "= n(A∩B)+n(B∩C)+n(A∩C) − 3n(A∩B∩C)" },
+      { label: "At least two", formula: "= n(A∩B)+n(B∩C)+n(A∩C) − 2n(A∩B∩C)" },
+      { label: "None", formula: "= Total − n(A∪B∪C)" },
+    ],
+  },
+  {
+    topic: "Networks & Routes (CAT)",
+    subject: "CAT_DILR",
+    entries: [
+      { label: "Shortest path intuition", note: "For small graphs, enumerate 2–3 plausible paths; pick the shortest. Dijkstra's algorithm is overkill for CAT" },
+      { label: "Counting paths", note: "On a grid from (0,0) to (m,n) moving only right/up: C(m+n, m) paths" },
+      { label: "Flow problems", note: "Max flow = min cut (max-flow min-cut theorem). Identify the bottleneck edges" },
+      { label: "Traversal rules", note: "Euler path exists iff exactly 0 or 2 vertices have odd degree. Euler circuit: all vertices have even degree" },
+    ],
+  },
+  {
+    topic: "Games & Tournaments (CAT)",
+    subject: "CAT_DILR",
+    entries: [
+      { label: "Round-robin total matches", formula: "C(n,2) = n(n−1)/2  for n teams" },
+      { label: "Total points in round-robin", note: "Each match distributes exactly 2 points (win+loss) or 2 points (draw+draw). Total = 2×C(n,2) = n(n−1)" },
+      { label: "Knockout total matches", formula: "n−1 matches to determine winner from n teams" },
+      { label: "Points table reconstruction", note: "Use row sums and column constraints. Consistent assignment: each row sum = each team's total points" },
+      { label: "Seeding & upsets", note: "In seeded knockouts, work backward from final to first round. Label bracket positions, not teams" },
     ],
   },
 ];

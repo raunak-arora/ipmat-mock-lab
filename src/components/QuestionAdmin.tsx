@@ -121,14 +121,6 @@ export default function QuestionAdmin() {
   const [auditProgress, setAuditProgress] = useState<{ scanned: number; total: number } | null>(null);
 
   // Job history
-  interface JobRecord {
-    id: string;
-    type: string;
-    status: string;
-    startedAt: string;
-    finishedAt: string | null;
-    result: string | null;
-  }
   const [lastDedup, setLastDedup] = useState<JobRecord | null>(null);
   const [lastAudit, setLastAudit] = useState<JobRecord | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -340,9 +332,7 @@ export default function QuestionAdmin() {
           </h3>
           <div className="flex flex-col items-end gap-1">
             {(() => {
-              const stale = lastDedup?.status === "RUNNING" &&
-                (Date.now() - new Date(lastDedup.startedAt).getTime()) > 120_000;
-              const busy = dedupRunning || (lastDedup?.status === "RUNNING" && !stale);
+              const busy = isJobBusy(lastDedup, dedupRunning);
               return (
                 <Button variant="outline" size="sm" onClick={runDedup} disabled={busy}>
                   <Sparkles className="h-3.5 w-3.5" />
@@ -641,9 +631,7 @@ export default function QuestionAdmin() {
         <Card className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             {(() => {
-              const stale = lastAudit?.status === "RUNNING" &&
-                (Date.now() - new Date(lastAudit.startedAt).getTime()) > 120_000;
-              const busy = auditRunning || (lastAudit?.status === "RUNNING" && !stale);
+              const busy = isJobBusy(lastAudit, auditRunning);
               const label = auditRunning
                 ? auditProgress
                   ? `Scanning ${auditProgress.scanned}/${auditProgress.total}…`
@@ -766,6 +754,13 @@ export default function QuestionAdmin() {
       `}</style>
     </div>
   );
+}
+
+function isJobBusy(job: { status: string; startedAt?: string | null } | null, localRunning: boolean): boolean {
+  if (localRunning) return true;
+  if (!job || job.status !== "RUNNING") return false;
+  const stale = job.startedAt && Date.now() - new Date(job.startedAt).getTime() > 2 * 60 * 1000;
+  return !stale;
 }
 
 function timeAgo(iso: string): string {

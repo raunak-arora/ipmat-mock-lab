@@ -16,6 +16,7 @@ import { Exam, SectionKey, getExam } from "@/lib/examConfig";
 import type { RunnerQuestion, SavedAnswer } from "@/lib/types";
 import { formatClock, cn } from "@/lib/utils";
 import { Button, Card } from "@/components/ui";
+import ConfirmModal from "@/components/ConfirmModal";
 
 interface AttemptData {
   id: string;
@@ -659,13 +660,12 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
         </details>
       </aside>
 
-      {sectionConfirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <Card className="w-full max-w-md">
-            <h3 className="text-lg font-semibold">
-              Submit {sections.find((s) => s.key === effectiveSection)?.label ?? effectiveSection}?
-            </h3>
-            <p className="mt-2 text-sm text-muted">
+      <ConfirmModal
+        open={sectionConfirmOpen}
+        title={`Submit ${sections.find((s) => s.key === effectiveSection)?.label ?? effectiveSection}?`}
+        body={
+          <>
+            <p>
               {sectionCounts.answered} answered
               {sectionCounts.marked > 0 && `, ${sectionCounts.marked} marked for review`}
               {" "}out of {sectionCounts.total} questions.{" "}
@@ -675,47 +675,40 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
                 </span>
               )}
             </p>
-            <p className="mt-1 text-sm font-medium text-warning">
+            <p className="font-medium text-warning">
               You cannot return to this section once submitted.
             </p>
-            <div className="mt-5 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setSectionConfirmOpen(false)}>
-                Keep going
-              </Button>
-              <Button variant="danger" onClick={handleSectionSubmit}>
-                Submit section
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
+          </>
+        }
+        confirmLabel="Submit section"
+        cancelLabel="Keep going"
+        confirmTone="danger"
+        onConfirm={handleSectionSubmit}
+        onCancel={() => setSectionConfirmOpen(false)}
+      />
 
-      {confirmOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <Card className="w-full max-w-md">
-            <h3 className="text-lg font-semibold">Submit the exam?</h3>
-            <p className="mt-2 text-sm text-muted">
-              {counts.answered} answered
-              {counts.marked > 0 && `, ${counts.marked} marked for review`}
-              {" "}out of {data.questions.length} questions.{" "}
-              {data.questions.length - counts.answered - counts.marked > 0 && (
-                <span className="text-danger">
-                  {data.questions.length - counts.answered - counts.marked} unattempted.{" "}
-                </span>
-              )}
-              Once submitted, you&apos;ll see your score and full solution review.
-            </p>
-            <div className="mt-5 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setConfirmOpen(false)}>
-                Keep going
-              </Button>
-              <Button variant="danger" onClick={submit}>
-                Submit now
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
+      <ConfirmModal
+        open={confirmOpen}
+        title="Submit the exam?"
+        body={
+          <>
+            {counts.answered} answered
+            {counts.marked > 0 && `, ${counts.marked} marked for review`}
+            {" "}out of {data.questions.length} questions.{" "}
+            {data.questions.length - counts.answered - counts.marked > 0 && (
+              <span className="text-danger">
+                {data.questions.length - counts.answered - counts.marked} unattempted.{" "}
+              </span>
+            )}
+            Once submitted, you&apos;ll see your score and full solution review.
+          </>
+        }
+        confirmLabel="Submit now"
+        cancelLabel="Keep going"
+        confirmTone="danger"
+        onConfirm={submit}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

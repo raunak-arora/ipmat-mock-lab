@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { LogOut } from "lucide-react";
+import ConfirmModal from "@/components/ConfirmModal";
 
 interface Props {
   action: () => Promise<void>;
@@ -123,42 +124,15 @@ export function SignOutButton({ action, name, image, email }: Props) {
       )}
 
       {/* Confirm modal */}
-      {confirmOpen && createPortal(
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
-          onClick={() => setConfirmOpen(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-2xl border bg-card p-6 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-danger/10">
-                <ShieldCheck className="h-5 w-5 text-danger" />
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">Sign out?</p>
-                <p className="text-xs text-muted">You&apos;ll need to sign in again to continue.</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setConfirmOpen(false)}
-                className="flex-1 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-background"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirm}
-                className="flex-1 rounded-lg bg-danger px-4 py-2 text-sm font-medium text-white hover:opacity-90"
-              >
-                Sign out
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
+      <ConfirmModal
+        open={confirmOpen}
+        title="Sign out?"
+        body="You'll need to sign in again to continue."
+        confirmLabel="Sign out"
+        confirmTone="danger"
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </>
   );
 }
