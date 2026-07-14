@@ -14,7 +14,9 @@ function normalizeForDedup(stem: string): string {
 }
 
 function jaccard(a: string, b: string): number {
-  const words = (s: string) => new Set(s.split(/\s+/).filter((w) => w.length > 2));
+  // Keep numeric tokens regardless of length — template-generated questions
+  // differ only in their numbers, and dropping digits would flag them as dupes.
+  const words = (s: string) => new Set(s.split(/\s+/).filter((w) => w.length > 2 || /\d/.test(w)));
   const setA = words(a);
   const setB = words(b);
   if (setA.size === 0 || setB.size === 0) return 0;
@@ -34,7 +36,7 @@ export async function POST(req: Request) {
 
   try {
     const all = await prisma.question.findMany({
-      select: { id: true, subject: true, type: true, stem: true, explanation: true },
+      select: { id: true, subject: true, type: true, stem: true, passage: true, explanation: true },
       orderBy: { createdAt: "asc" },
     });
 
@@ -47,7 +49,9 @@ export async function POST(req: Request) {
 
     const toDelete = new Set<string>();
     for (const [, group] of byPool) {
-      const normed = group.map((q) => ({ ...q, norm: normalizeForDedup(q.stem) }));
+      // Include the passage in the comparison text: DILR/RC sets legitimately
+      // reuse identical stems ("How many matches were played?") over different data.
+      const normed = group.map((q) => ({ ...q, norm: normalizeForDedup(q.stem + " " + (q.passage ?? "")) }));
       for (let i = 0; i < normed.length; i++) {
         if (toDelete.has(normed[i].id)) continue;
         for (let j = i + 1; j < normed.length; j++) {
