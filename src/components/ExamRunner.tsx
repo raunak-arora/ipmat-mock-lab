@@ -200,6 +200,16 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
     viewQuestions.find((q) => q.id === selectedQId) ?? viewQuestions[0];
   const cid = currentQ?.id ?? "";
 
+  // Questions sharing a passage (a DILR caselet or an RC passage) are placed
+  // contiguously by the mock generator — surface that as "Set n of m" so the
+  // student knows several questions ahead share the reading they're on.
+  const setInfo = useMemo(() => {
+    if (!currentQ?.passage) return null;
+    const members = viewQuestions.filter((q) => q.passage === currentQ.passage);
+    if (members.length < 2) return null;
+    return { index: members.findIndex((q) => q.id === cid) + 1, total: members.length };
+  }, [viewQuestions, currentQ, cid]);
+
   // Keep a ref of the displayed id so the 1s tick can accrue time without
   // reading reactive state in the interval closure.
   const cidRef = useRef(cid);
@@ -424,6 +434,11 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-semibold text-muted">
               {currentQ.topic}
+              {setInfo && (
+                <span className="ml-2 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  Set {setInfo.index} of {setInfo.total}
+                </span>
+              )}
             </span>
             <span className="text-sm text-muted">
               Q{viewQuestions.findIndex((q) => q.id === cid) + 1} of{" "}

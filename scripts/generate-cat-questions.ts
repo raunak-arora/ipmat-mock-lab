@@ -20,6 +20,8 @@ interface GenQ {
   options?: string[];
   answer: string;
   explanation: string;
+  /** Groups questions from the same caselet/passage so the mock generator picks them as one unit. */
+  setId?: string;
 }
 
 // ── RNG helpers ──────────────────────────────────────────────────────────────
@@ -1342,14 +1344,19 @@ async function main() {
     console.log(`QA / ${topic}: ${added}`);
   }
 
-  // DILR
-  let dilrCount = 0;
+  // DILR — each generator call is one caselet; tag every question it returns
+  // with a shared setId so the mock generator can pick/order them as a unit.
+  let dilrCount = 0, dilrSetCount = 0;
   for (let s = 0; s < TARGETS.DILR_SETS; s++) {
     const gen = DILR_GENS[s % DILR_GENS.length];
     const qs = gen();
-    for (const q of qs) if (push(q)) dilrCount++;
+    if (qs.length < 2) continue; // solo/degenerate generator output isn't a "set"
+    const setId = `set_${Math.random().toString(36).slice(2, 11)}`;
+    let anyAdded = false;
+    for (const q of qs) if (push({ ...q, setId })) { dilrCount++; anyAdded = true; }
+    if (anyAdded) dilrSetCount++;
   }
-  console.log(`DILR total: ${dilrCount}`);
+  console.log(`DILR total: ${dilrCount} questions in ${dilrSetCount} sets`);
 
   // VARC
   let odd = 0, tries = 0;
@@ -1367,7 +1374,7 @@ async function main() {
     await prisma.question.createMany({
       data: chunk.map((q) => ({
         subject: q.subject, type: q.type, topic: q.topic, difficulty: q.difficulty,
-        stem: q.stem, passage: q.passage ?? null,
+        stem: q.stem, passage: q.passage ?? null, setId: q.setId ?? null,
         options: q.options ? JSON.stringify(q.options) : null,
         answer: q.answer, explanation: q.explanation,
       })),

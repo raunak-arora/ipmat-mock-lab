@@ -26,28 +26,54 @@ function shuffle<T>(arr: T[]): T[] {
 /**
  * Pick `count` questions from a pool, spread as evenly as possible across the
  * distinct topics present (round-robin), so a generated section isn't dominated
- * by one topic. Falls back gracefully when the pool is smaller than `count`.
+ * by one topic. Questions that share a `setId` (a DILR caselet or an RC
+ * passage generating several linked questions) are treated as one indivisible
+ * unit — picked and kept contiguous together — so a student never re-reads
+ * the same passage scattered across the section. Falls back gracefully when
+ * the pool is smaller than `count`.
  */
 function pickWithTopicSpread(pool: Question[], count: number): Question[] {
-  const byTopic = new Map<string, Question[]>();
-  for (const q of shuffle(pool)) {
-    const list = byTopic.get(q.topic) ?? [];
-    list.push(q);
-    byTopic.set(q.topic, list);
+  type Unit = { topic: string; questions: Question[] };
+
+  const bySet = new Map<string, Question[]>();
+  const loose: Question[] = [];
+  for (const q of pool) {
+    if (q.setId) {
+      const list = bySet.get(q.setId) ?? [];
+      list.push(q);
+      bySet.set(q.setId, list);
+    } else {
+      loose.push(q);
+    }
+  }
+  const units: Unit[] = [
+    ...[...bySet.values()].map((qs) => ({ topic: qs[0].topic, questions: qs })),
+    ...loose.map((q) => ({ topic: q.topic, questions: [q] })),
+  ];
+
+  const byTopic = new Map<string, Unit[]>();
+  for (const u of shuffle(units)) {
+    const list = byTopic.get(u.topic) ?? [];
+    list.push(u);
+    byTopic.set(u.topic, list);
   }
   const buckets = shuffle([...byTopic.values()]);
+
   const picked: Question[] = [];
   let progress = true;
   while (picked.length < count && progress) {
     progress = false;
     for (const bucket of buckets) {
       if (bucket.length === 0) continue;
-      picked.push(bucket.shift()!);
+      const unit = bucket.shift()!;
+      picked.push(...unit.questions);
       progress = true;
       if (picked.length >= count) break;
     }
   }
-  return picked;
+  // A picked unit can overshoot the target by a question or two (real DILR
+  // sets vary in size too); trim to the exact count so section totals hold.
+  return picked.slice(0, count);
 }
 
 export interface GenerateOptions {
@@ -96,37 +122,19 @@ export async function generateMock(
         ? { topic: opts.scopeTopic }
         : {};
 
-    // CAT sections have a mixed MCQ + TITA (SHORT_ANSWER) quota.
+    // CAT sections mix MCQ + TITA (SHORT_ANSWER) within the same caselets, so
+    // the pool spans both types and pickWithTopicSpread's set-awareness keeps
+    // each caselet's questions (of whichever types) contiguous. The section's
+    // titaCount is a target ratio, not a hard split — real DILR/VARC sets mix
+    // MCQ and TITA in whatever proportion the caselet itself has.
     const titaCount = section.titaCount ?? 0;
-    const mcqCount = want - titaCount;
 
     if (titaCount > 0) {
-      // Pull MCQ and SHORT_ANSWER pools separately, then interleave.
-      const [mcqPool, titaPool] = await Promise.all([
-        prisma.question.findMany({ where: { subject: section.subject, type: "MCQ", ...topicFilter } }),
-        prisma.question.findMany({ where: { subject: section.subject, type: "SHORT_ANSWER", ...topicFilter } }),
-      ]);
+      const pool = await prisma.question.findMany({ where: { subject: section.subject, ...topicFilter } });
+      if (pool.length === 0) continue;
 
-      if (mcqPool.length === 0 && titaPool.length === 0) continue;
-
-      const pickedMcq = pickWithTopicSpread(mcqPool, mcqCount);
-      const pickedTita = pickWithTopicSpread(titaPool, titaCount);
-
-      // Keep questions that share a passage (DILR sets, RC) adjacent: shuffle
-      // for randomness, then stable-group by passage so a student reads each
-      // caselet once instead of re-encountering it scattered through the section.
-      const shuffled = shuffle([...pickedMcq, ...pickedTita]);
-      const groupOrder = new Map<string, number>();
-      shuffled.forEach((q, i) => {
-        const g = q.passage ?? `solo-${q.id}`;
-        if (!groupOrder.has(g)) groupOrder.set(g, i);
-      });
-      const combined = [...shuffled].sort(
-        (a, b) =>
-          groupOrder.get(a.passage ?? `solo-${a.id}`)! - groupOrder.get(b.passage ?? `solo-${b.id}`)!
-      );
-      const shortfall = combined.length < want;
-      if (shortfall) shortfalls.push({ section: section.key, got: combined.length, want });
+      const combined = pickWithTopicSpread(pool, want);
+      if (combined.length < want) shortfalls.push({ section: section.key, got: combined.length, want });
 
       for (const q of combined) {
         planned.push({ question: q, section: section.key, order: order++ });

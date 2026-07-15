@@ -44,6 +44,9 @@ model Question {
   // Question text. For RC, the shared passage is stored in `passage`.
   stem        String
   passage     String?
+  // Groups questions generated from the same DILR caselet / RC passage so the
+  // mock generator can pick and order them as one set instead of scattering them.
+  setId       String?
   // JSON array of option strings for MCQ; null for short answer.
   options     String?
   // For MCQ: the correct option text. For SHORT_ANSWER: accepted answer(s) as a
@@ -61,6 +64,7 @@ model Question {
   answers AttemptAnswer[]
 
   @@index([subject, type, topic, difficulty])
+  @@index([setId])
 }
 
 model Attempt {
