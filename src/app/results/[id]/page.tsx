@@ -3,12 +3,12 @@ import { notFound, redirect } from "next/navigation";
 import { Info, Clock } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
-import { EXAMS, Exam } from "@/lib/examConfig";
+import { EXAMS, Exam, getExamFamily } from "@/lib/examConfig";
 import { PERCENTILE_DISCLAIMER } from "@/lib/percentile";
 import type { SectionScore } from "@/lib/scoring";
 import { Badge, Card } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import { FORMULAS_BY_TOPIC } from "@/lib/formulas";
+import { formulasForTopic } from "@/lib/formulas";
 import DrillButton from "@/components/DrillButton";
 import SectionDrillButton from "@/components/SectionDrillButton";
 import AttemptNotes from "@/components/AttemptNotes";
@@ -321,7 +321,7 @@ export default async function ResultsPage({
         <div className="space-y-2">
           {topicRows.map(([topic, s]) => {
             const pct = Math.round((s.correct / s.total) * 100);
-            const formulas = FORMULAS_BY_TOPIC[topic];
+            const formulas = formulasForTopic(topic, getExamFamily(attempt.exam as Exam));
             const isWeak = pct < 40;
             return (
               <div key={topic}>

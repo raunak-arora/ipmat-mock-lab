@@ -31,11 +31,25 @@ function shuffle<T>(a: T[]): T[] {
   return r;
 }
 const gcd = (a: number, b: number): number => (b === 0 ? Math.abs(a) : gcd(b, a % b));
+/** Ordinal helper: 1st, 2nd, 3rd, 4th … 11th/12th/13th. */
+const ord = (n: number) => {
+  const t = n % 100;
+  if (t >= 11 && t <= 13) return `${n}th`;
+  return `${n}${["th", "st", "nd", "rd"][n % 10 > 3 ? 0 : n % 10]}`;
+};
 /** MCQ options: correct + 3 distinct wrong values, shuffled, as bare text. */
 function opts(correct: number | string, wrong: (number | string)[]): { options: string[]; answer: string } {
   const c = String(correct);
   const uniq = [...new Set(wrong.map(String).filter((w) => w !== c))].slice(0, 3);
-  while (uniq.length < 3) uniq.push(String(Number(correct) + uniq.length + 7));
+  // Numeric padding only — a NaN base would emit "NaN" options.
+  const base = Number(correct);
+  if (uniq.length < 3 && Number.isNaN(base)) throw new Error(`opts(): non-numeric correct "${c}" needs 3 distinct wrong values`);
+  let pad = 7;
+  while (uniq.length < 3) {
+    const cand = String(base + uniq.length + pad);
+    if (cand !== c && !uniq.includes(cand)) uniq.push(cand);
+    else pad++;
+  }
   return { options: shuffle([c, ...uniq]), answer: c };
 }
 
@@ -345,6 +359,7 @@ const QA_TPLS: Record<string, Tpl[]> = {
     },
     () => { // slope / perpendicular slope
       const m1n = ri(1, 6); const m1d = ri(1, 6);
+      if (m1n === m1d) return null; // slope 1/1 → "-1/1" correct + NaN padding
       const g = gcd(m1n, m1d);
       const num = m1n / g, den = m1d / g;
       const o = opts(`-${den}/${num}`, [`${den}/${num}`, `-${num}/${den}`, `${num}/${den}`]);
@@ -380,12 +395,20 @@ const QA_TPLS: Record<string, Tpl[]> = {
       const combos = [[30, "√3", 1], [45, "1", 1], [60, "1/√3", 1]] as const;
       const [ang, , ] = pick(combos);
       const h = pick([20, 30, 40, 50, 60, 80, 100]);
+      const S3 = Math.sqrt(3);
       let ansTxt: string; let expl: string;
       if (ang === 45) { ansTxt = String(h); expl = `tan45° = 1 → distance = height = ${h} m.`; }
-      else if (ang === 30) { ansTxt = `${h}√3`; expl = `tan30° = 1/√3 = ${h}/d → d = ${h}√3 m.`; }
-      else { ansTxt = `${h}/√3`; expl = `tan60° = √3 = ${h}/d → d = ${h}/√3 m.`; }
+      else if (ang === 30) {
+        const v = h * S3;
+        ansTxt = JSON.stringify([`${h}√3`, v.toFixed(2), v.toFixed(1), String(Math.round(v))]);
+        expl = `tan30° = 1/√3 = ${h}/d → d = ${h}√3 ≈ ${v.toFixed(1)} m.`;
+      } else {
+        const v = h / S3;
+        ansTxt = JSON.stringify([`${h}/√3`, v.toFixed(2), v.toFixed(1), String(Math.round(v))]);
+        expl = `tan60° = √3 = ${h}/d → d = ${h}/√3 ≈ ${v.toFixed(1)} m.`;
+      }
       return { subject: "CAT_QA", type: "SHORT_ANSWER", topic: "Trigonometry", difficulty: "MEDIUM",
-        stem: `From a point on level ground, the angle of elevation of the top of a ${h} m tower is ${ang}°. Find the distance (in m) of the point from the tower's base. (Answers like 50√3 or 50/√3 accepted.)`,
+        stem: `From a point on level ground, the angle of elevation of the top of a ${h} m tower is ${ang}°. Find the distance (in m) of the point from the tower's base. (Surd form like 50√3 or its decimal value accepted.)`,
         answer: ansTxt, explanation: expl };
     },
     () => { // evaluate standard-angle expression
@@ -396,7 +419,7 @@ const QA_TPLS: Record<string, Tpl[]> = {
         { e: "sin60° × cos30°", v: "3/4", x: "(√3/2)(√3/2) = 3/4." },
         { e: "tan30° × tan60°", v: "1", x: "(1/√3)(√3) = 1." },
         { e: "sin²45° + cos²45°", v: "1", x: "1/2 + 1/2 = 1 (Pythagorean identity)." },
-        { e: "2sin30°cos30°", v: "√3/2", x: "= sin60° = √3/2." },
+        { e: "2sin30°cos30°", v: JSON.stringify(["√3/2", "0.87", "0.866"]), x: "= sin60° = √3/2 ≈ 0.866." },
         { e: "cos²30° − sin²30°", v: "1/2", x: "= cos60° = 1/2." },
       ];
       const it = pick(items);
@@ -409,9 +432,9 @@ const QA_TPLS: Record<string, Tpl[]> = {
     () => { // AP nth term
       const a = ri(2, 15); const d = ri(2, 9); const n = ri(10, 40);
       const t = a + (n - 1) * d;
-      const o = opts(t, [t + d, t - d, a + n * d]);
+      const o = opts(t, [t + d, t - d, t + 2 * d]);
       return { subject: "CAT_QA", type: "MCQ", topic: "Functions & Progressions", difficulty: "EASY",
-        stem: `In an AP with first term ${a} and common difference ${d}, find the ${n}th term.`, ...o,
+        stem: `In an AP with first term ${a} and common difference ${d}, find the ${ord(n)} term.`, ...o,
         explanation: `tₙ = a + (n−1)d = ${a} + ${n - 1}×${d} = ${t}.` };
     },
     () => { // AP sum
@@ -427,7 +450,7 @@ const QA_TPLS: Record<string, Tpl[]> = {
       const t1 = a * Math.pow(r, n1 - 1), t2 = a * Math.pow(r, n2 - 1);
       const o = opts(r, [r + 1, r - 1, r * 2]);
       return { subject: "CAT_QA", type: "MCQ", topic: "Functions & Progressions", difficulty: "MEDIUM",
-        stem: `In a GP, the ${n1}th term is ${t1} and the ${n2}th term is ${t2}. Find the common ratio.`, ...o,
+        stem: `In a GP, the ${ord(n1)} term is ${t1} and the ${ord(n2)} term is ${t2}. Find the common ratio.`, ...o,
         explanation: `t${n2}/t${n1} = r^${n2 - n1} = ${t2}/${t1} = ${t2 / t1} → r = ${r}.` };
     },
     () => { // infinite GP
@@ -684,8 +707,10 @@ const DILR_GENS: SetGen[] = [
     const passage = `The table shows quarterly revenue (Rs. crore) of four companies:\nCompany | Q1 | Q2 | Q3\n${comps.map((c, i) => `${c.padEnd(7)} | ${data[i][0]} | ${data[i][1]} | ${data[i][2]}`).join("\n")}`;
     const totals = data.map((d) => d[0] + d[1] + d[2]);
     const growth = data.map((d) => ((d[2] - d[0]) / d[0]) * 100);
-    const hiTotal = totals.indexOf(Math.max(...totals));
-    const hiGrowth = growth.indexOf(Math.max(...growth));
+    const tMax = Math.max(...totals), gMax = Math.max(...growth);
+    if (totals.filter((t) => t === tMax).length > 1 || growth.filter((g) => g === gMax).length > 1) return [];
+    const hiTotal = totals.indexOf(tMax);
+    const hiGrowth = growth.indexOf(gMax);
     const q2sum = data.reduce((s, d) => s + d[1], 0);
     const qs: GenQ[] = [
       { subject: "CAT_DILR", type: "MCQ", topic: "Data Tables", difficulty: "EASY", passage,
@@ -713,6 +738,8 @@ const DILR_GENS: SetGen[] = [
     const used = shares.reduce((a, b) => a + b, 0);
     if (used >= 95) return [];
     shares.push(100 - used);
+    // The "how much more Rent than Savings" question presupposes Rent > Savings.
+    if (shares[0] <= shares[4]) return [];
     const cats = ["Rent", "Food", "Education", "Transport", "Savings"];
     const total = pick([40000, 50000, 60000, 80000, 100000]);
     const passage = `A household's monthly budget of Rs.${total.toLocaleString("en-IN")} is split as:\n${cats.map((c, i) => `${c}: ${shares[i]}%`).join(", ")}.`;
@@ -896,7 +923,9 @@ const DILR_GENS: SetGen[] = [
     const avg = (i: number) => (data[i][0] + data[i][1] + data[i][2]) / 3;
     const growth = (i: number) => ((data[i][2] - data[i][0]) / data[i][0]) * 100;
     const gvals = facs.map((_, i) => growth(i));
-    const hi = gvals.indexOf(Math.max(...gvals));
+    const gmax = Math.max(...gvals);
+    if (gvals.filter((g) => g === gmax).length > 1) return []; // tie → ambiguous MCQ
+    const hi = gvals.indexOf(gmax);
     const yTotals = years.map((_, j) => data.reduce((s, d) => s + d[j], 0));
     const qs: GenQ[] = [
       { subject: "CAT_DILR", type: "SHORT_ANSWER", topic: "Bar Graphs", difficulty: "EASY", passage,
@@ -923,6 +952,8 @@ const DILR_GENS: SetGen[] = [
     const passage = `Daily maximum temperature (°C): ${days.map((d, i) => `${d}: ${vals[i]}`).join(", ")}.`;
     const diffs = vals.slice(1).map((v, i) => v - vals[i]);
     const maxRise = Math.max(...diffs);
+    // Tied max rises make "rose the most" ambiguous; no rise at all makes it unanswerable.
+    if (maxRise <= 0 || diffs.filter((d) => d === maxRise).length > 1) return [];
     const riseDay = days[diffs.indexOf(maxRise) + 1];
     const range = Math.max(...vals) - Math.min(...vals);
     const avg = vals.reduce((a, b) => a + b, 0) / 7;
@@ -1267,10 +1298,14 @@ function genCriticalReasoning(): GenQ | null {
   const correct = sc[kind];
   const wrongPool = shuffle([...sc.distractors, ...(kind !== "weaken" ? [sc.weaken] : []), ...(kind !== "strengthen" ? [sc.strengthen] : [])]).slice(0, 3);
   const options = shuffle([correct, ...wrongPool]);
-  const verb = kind === "weaken" ? "most WEAKEN" : kind === "strengthen" ? "most STRENGTHEN" : "an assumption required by";
+  const ask = kind === "weaken"
+    ? "Which of the following, if true, would most WEAKEN the argument?"
+    : kind === "strengthen"
+    ? "Which of the following, if true, would most STRENGTHEN the argument?"
+    : "Which of the following is an assumption on which the argument depends?";
   return {
     subject: "CAT_VARC", type: "MCQ", topic: "Critical Reasoning", difficulty: "HARD",
-    stem: `Argument: "${sc.claim}." Which of the following, if true, would ${kind === "assumption" ? `be ${verb} the argument` : `${verb} the argument`}?`,
+    stem: `Argument: "${sc.claim}." ${ask}`,
     options,
     answer: correct,
     explanation: kind === "weaken"

@@ -67,7 +67,9 @@ export async function POST(
 
   const { result, graded } = scoreAttempt(exam, gradable, submitted);
   const gradedById = new Map(graded.map((g) => [g.questionId, g]));
-  const percentile = estimatePercentile(exam, result.rawScore);
+  // Percentile anchors are calibrated for FULL mocks; a sectional/topic score
+  // fed into them reads absurdly low (or high) — store null instead.
+  const percentile = attempt.mode === "FULL" ? estimatePercentile(exam, result.rawScore) : null;
 
   await prisma.$transaction([
     ...fresh.map((a) => {

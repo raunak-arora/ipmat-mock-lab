@@ -641,3 +641,35 @@ export const FORMULAS_BY_TOPIC: Record<string, FormulaEntry[]> = {};
 for (const sheet of FORMULA_SHEETS) {
   FORMULAS_BY_TOPIC[sheet.topic] = sheet.entries;
 }
+
+/** CAT question topics whose sheet lives under a differently-named CAT sheet. */
+const CAT_TOPIC_ALIASES: Record<string, string> = {
+  "Data Tables": "Data Interpretation (CAT)",
+  "Bar Graphs": "Data Interpretation (CAT)",
+  "Line Graphs": "Data Interpretation (CAT)",
+  "Pie Charts": "Data Interpretation (CAT)",
+  "Caselets": "Data Interpretation (CAT)",
+  "Seating Arrangements": "Logical Reasoning (CAT)",
+  "Grid & Matrix Puzzles": "Logical Reasoning (CAT)",
+  "Scheduling & Sequencing": "Logical Reasoning (CAT)",
+  "Binary Logic": "Logical Reasoning (CAT)",
+  "Venn Diagrams": "Venn Diagrams & Sets (CAT)",
+  "Routes & Networks": "Networks & Routes (CAT)",
+  "Permutation and Combination": "Permutation & Combination (CAT)",
+};
+
+/**
+ * Exam-aware formula lookup. CAT sheets are suffixed "(CAT)", so a CAT
+ * attempt's weak topic "Number System" must resolve to "Number System (CAT)",
+ * not the IPMAT sheet — and DILR topics map onto shared CAT sheets.
+ */
+export function formulasForTopic(topic: string, family: "IPMAT" | "CAT"): FormulaEntry[] | undefined {
+  if (family === "CAT") {
+    return (
+      FORMULAS_BY_TOPIC[`${topic} (CAT)`] ??
+      FORMULAS_BY_TOPIC[CAT_TOPIC_ALIASES[topic]] ??
+      FORMULAS_BY_TOPIC[topic]
+    );
+  }
+  return FORMULAS_BY_TOPIC[topic];
+}

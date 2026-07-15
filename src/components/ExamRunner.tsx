@@ -467,7 +467,9 @@ export default function ExamRunner({ data }: { data: AttemptData }) {
             ) : (
               <div>
                 <label className="mb-1 block text-sm text-muted">
-                  Short answer — no negative marking on this section
+                  {config.key === "CAT"
+                    ? "TITA — type your answer. No negative marking on this question."
+                    : "Short answer — no negative marking on this section"}
                 </label>
                 <input
                   type="text"

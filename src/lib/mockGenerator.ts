@@ -112,7 +112,19 @@ export async function generateMock(
       const pickedMcq = pickWithTopicSpread(mcqPool, mcqCount);
       const pickedTita = pickWithTopicSpread(titaPool, titaCount);
 
-      const combined = shuffle([...pickedMcq, ...pickedTita]);
+      // Keep questions that share a passage (DILR sets, RC) adjacent: shuffle
+      // for randomness, then stable-group by passage so a student reads each
+      // caselet once instead of re-encountering it scattered through the section.
+      const shuffled = shuffle([...pickedMcq, ...pickedTita]);
+      const groupOrder = new Map<string, number>();
+      shuffled.forEach((q, i) => {
+        const g = q.passage ?? `solo-${q.id}`;
+        if (!groupOrder.has(g)) groupOrder.set(g, i);
+      });
+      const combined = [...shuffled].sort(
+        (a, b) =>
+          groupOrder.get(a.passage ?? `solo-${a.id}`)! - groupOrder.get(b.passage ?? `solo-${b.id}`)!
+      );
       const shortfall = combined.length < want;
       if (shortfall) shortfalls.push({ section: section.key, got: combined.length, want });
 
