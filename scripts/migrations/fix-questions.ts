@@ -1,4 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 const p = new PrismaClient();
 async function main() {
   // Fix Q24: answer should be 22.5%, not 23.5%

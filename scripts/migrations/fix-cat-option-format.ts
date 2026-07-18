@@ -4,7 +4,7 @@
  * This converts options to bare text and answer to the correct option's bare text.
  * Run: npx tsx scripts/fix-cat-option-format.ts
  */
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 
 const prisma = new PrismaClient();
 

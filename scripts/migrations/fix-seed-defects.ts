@@ -8,7 +8,7 @@
  *
  * Run: npx tsx scripts/fix-seed-defects.ts
  */
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 
 const prisma = new PrismaClient();
 

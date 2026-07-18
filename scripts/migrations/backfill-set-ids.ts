@@ -4,7 +4,7 @@
  * Idempotent — only touches rows where setId is currently null.
  * Run: npx tsx scripts/backfill-set-ids.ts
  */
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 import { randomBytes } from "crypto";
 
 const prisma = new PrismaClient();

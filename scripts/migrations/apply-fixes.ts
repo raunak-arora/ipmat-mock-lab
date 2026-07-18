@@ -1,4 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 const p = new PrismaClient();
 async function main() {
   await p.question.update({ where:{id:"cmqdsfvg90000ul51pmyh3lgz"}, data:{

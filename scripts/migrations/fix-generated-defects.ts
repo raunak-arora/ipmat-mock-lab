@@ -11,7 +11,7 @@
  *
  * Run: npx tsx scripts/fix-generated-defects.ts
  */
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 
 const prisma = new PrismaClient();
 const CAT = ["CAT_QA", "CAT_VARC", "CAT_DILR"] as const;

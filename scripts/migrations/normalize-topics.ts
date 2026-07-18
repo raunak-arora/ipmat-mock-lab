@@ -4,7 +4,7 @@
  * Or via: export $(grep -v '^#' .env | xargs) && node ... (see apply-audit-fixes.ts pattern)
  */
 
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../../src/generated/prisma";
 
 const prisma = new PrismaClient();
 
