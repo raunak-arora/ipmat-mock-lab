@@ -29,11 +29,18 @@ function shuffle<T>(arr: T[]): T[] {
  * by one topic. Questions that share a `setId` (a DILR caselet or an RC
  * passage generating several linked questions) are treated as one indivisible
  * unit — picked and kept contiguous together — so a student never re-reads
- * the same passage scattered across the section. Falls back gracefully when
- * the pool is smaller than `count`.
+ * the same passage scattered across the section.
+ *
+ * When `titaTarget > 0` (CAT mixed sections), the pick also honours the
+ * section's type quota: exactly `count - titaTarget` MCQ and `titaTarget`
+ * SHORT_ANSWER where the pool allows. Most CAT sets mix both types, so the
+ * quota is enforced against each unit's composition — a unit is only accepted
+ * if it fits BOTH remaining type budgets, which also guarantees no unit is
+ * ever truncated to fit the section. Falls back gracefully (reported upstream
+ * as a shortfall) when the pool can't satisfy the targets.
  */
-function pickWithTopicSpread(pool: Question[], count: number): Question[] {
-  type Unit = { topic: string; questions: Question[] };
+function pickWithTopicSpread(pool: Question[], count: number, titaTarget = 0): Question[] {
+  type Unit = { topic: string; questions: Question[]; mcq: number; tita: number };
 
   const bySet = new Map<string, Question[]>();
   const loose: Question[] = [];
@@ -46,9 +53,15 @@ function pickWithTopicSpread(pool: Question[], count: number): Question[] {
       loose.push(q);
     }
   }
+  const toUnit = (qs: Question[]): Unit => ({
+    topic: qs[0].topic,
+    questions: qs,
+    mcq: qs.filter((q) => q.type === "MCQ").length,
+    tita: qs.filter((q) => q.type === "SHORT_ANSWER").length,
+  });
   const units: Unit[] = [
-    ...[...bySet.values()].map((qs) => ({ topic: qs[0].topic, questions: qs })),
-    ...loose.map((q) => ({ topic: q.topic, questions: [q] })),
+    ...[...bySet.values()].map(toUnit),
+    ...loose.map((q) => toUnit([q])),
   ];
 
   const byTopic = new Map<string, Unit[]>();
@@ -59,21 +72,32 @@ function pickWithTopicSpread(pool: Question[], count: number): Question[] {
   }
   const buckets = shuffle([...byTopic.values()]);
 
+  const quotaOn = titaTarget > 0;
+  const mcqTarget = count - titaTarget;
   const picked: Question[] = [];
+  let mcqSoFar = 0;
+  let titaSoFar = 0;
+
+  const fits = (u: Unit) =>
+    picked.length + u.questions.length <= count &&
+    (!quotaOn ||
+      (mcqSoFar + u.mcq <= mcqTarget && titaSoFar + u.tita <= titaTarget));
+
   let progress = true;
   while (picked.length < count && progress) {
     progress = false;
     for (const bucket of buckets) {
-      if (bucket.length === 0) continue;
-      const unit = bucket.shift()!;
+      const idx = bucket.findIndex(fits);
+      if (idx === -1) continue;
+      const [unit] = bucket.splice(idx, 1);
       picked.push(...unit.questions);
+      mcqSoFar += unit.mcq;
+      titaSoFar += unit.tita;
       progress = true;
       if (picked.length >= count) break;
     }
   }
-  // A picked unit can overshoot the target by a question or two (real DILR
-  // sets vary in size too); trim to the exact count so section totals hold.
-  return picked.slice(0, count);
+  return picked;
 }
 
 export interface GenerateOptions {
@@ -123,17 +147,23 @@ export async function generateMock(
         : {};
 
     // CAT sections mix MCQ + TITA (SHORT_ANSWER) within the same caselets, so
-    // the pool spans both types and pickWithTopicSpread's set-awareness keeps
-    // each caselet's questions (of whichever types) contiguous. The section's
-    // titaCount is a target ratio, not a hard split — real DILR/VARC sets mix
-    // MCQ and TITA in whatever proportion the caselet itself has.
+    // the pool spans both types; pickWithTopicSpread keeps each caselet's
+    // questions contiguous AND enforces the section's MCQ/TITA quota against
+    // each set's composition.
     const titaCount = section.titaCount ?? 0;
 
     if (titaCount > 0) {
       const pool = await prisma.question.findMany({ where: { subject: section.subject, ...topicFilter } });
       if (pool.length === 0) continue;
 
-      const combined = pickWithTopicSpread(pool, want);
+      // In TOPIC mode `want` shrinks below the full section count; scale the
+      // TITA quota proportionally so a 10-question drill isn't forced to the
+      // full section's absolute TITA count.
+      const titaTarget = Math.min(
+        Math.round((titaCount / section.count) * want),
+        want
+      );
+      const combined = pickWithTopicSpread(pool, want, titaTarget);
       if (combined.length < want) shortfalls.push({ section: section.key, got: combined.length, want });
 
       for (const q of combined) {
